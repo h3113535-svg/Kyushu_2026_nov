@@ -3670,3 +3670,56 @@ html[data-theme="wa"] .autumn-watch-row{background:linear-gradient(180deg,rgba(2
 .nov-day-art .day-scene-progress em{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#b75b42,#d8b24c);transition:width .28s ease}
 html[data-theme="wa"] .nov-day-art{display:block;border-color:#d8c5b2;background:#fbf4eb}
 html[data-theme="wa"] .nov-day-art:before{content:"AUTUMN JOURNEY";position:absolute;z-index:2;top:10px;right:10px;padding:5px 8px;border-radius:999px;background:rgba(250,244,235,.78);border:1px solid rgba(219,198,178,.72);color:#7d4a3d;font-size:8px;font-weight:900;letter-spacing:.12em;backdrop-filter:blur(5px)}
+
+
+/* ===== November v1.5 — typography, weather, autumn & usability ===== */
+:root{--nov-serif:"Noto Serif TC","Noto Serif CJK TC","PingFang TC","Microsoft JhengHei",serif}
+html[data-theme="wa"] .hero{min-height:336px;padding:24px 18px 20px;background-image:linear-gradient(90deg,rgba(248,241,232,.96) 0%,rgba(248,241,232,.87) 35%,rgba(248,241,232,.28) 62%,rgba(248,241,232,.04) 100%),linear-gradient(180deg,rgba(56,42,38,.01),rgba(56,42,38,.18)),url("./nov_hero_main_a.webp?v=150");background-position:center center}
+html[data-theme="wa"] .hero:after{display:none!important;content:none!important;border:0!important}
+html[data-theme="wa"] .hero:before{content:"九州";right:18px;bottom:18px;width:54px;height:54px;border:1px solid rgba(140,74,60,.34);border-radius:10px;color:rgba(140,74,60,.54);background:rgba(250,244,236,.42);font-family:var(--nov-serif);font-size:18px;transform:rotate(-3deg);box-shadow:none}
+html[data-theme="wa"] .buddy-hero-v42{min-height:286px;align-items:flex-end}
+html[data-theme="wa"] .buddy-hero-copy{max-width:min(82%,390px);padding:17px 17px 15px;border-radius:15px}
+html[data-theme="wa"] .buddy-season,html[data-theme="wa"] #heroPrivateTitle,html[data-theme="wa"] .hero-date,html[data-theme="wa"] .hero-route{font-family:var(--nov-serif)!important}
+html[data-theme="wa"] .buddy-season{display:block;color:#9A5143!important;font-size:11px;font-weight:700;letter-spacing:.07em!important;line-height:1.4;margin-bottom:6px;white-space:nowrap}
+html[data-theme="wa"] #heroPrivateTitle{font-size:clamp(27px,7vw,35px)!important;letter-spacing:.035em!important;line-height:1.16!important;margin:0 0 7px!important;font-weight:700!important;white-space:nowrap}
+html[data-theme="wa"] .hero-date{font-size:12px!important;letter-spacing:.02em;font-weight:700;margin:0 0 7px!important;white-space:nowrap}
+html[data-theme="wa"] .hero-route{display:flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:8.5px!important;line-height:1.45!important;letter-spacing:.01em;margin-top:0!important;color:#6B5A52}
+html[data-theme="wa"] .hero-route span,html[data-theme="wa"] .hero-route i{white-space:nowrap;font-style:normal}
+html[data-theme="wa"] .hero-submeta{display:none!important}
+
+/* Prevent awkward narrow-column wrapping. */
+.day-title h2,.section-heading h2,.event-title,.task-title,.planned-food-card h4,.family-meta-item b,.autumn-copy b,.driving-card b{word-break:normal;overflow-wrap:break-word;text-wrap:pretty}
+.event-top{align-items:flex-start}.event-title{min-width:0;line-height:1.38}.tag{flex:0 0 auto;white-space:nowrap}
+.task-top{flex-wrap:wrap;align-items:center}.task-top>b{white-space:nowrap}.task-title{line-height:1.4}
+.tool-card b,.nav-btn b,.day-btn .weekday,.day-btn .d{white-space:nowrap}
+
+/* Weather art is visible even before the official forecast window. */
+html[data-theme="wa"] .weather-icon.has-wa-weather-art{position:relative}
+html[data-theme="wa"] .weather-card.weather-no-forecast .weather-icon.has-wa-weather-art:after{content:"待預報";position:absolute;right:7px;bottom:7px;padding:4px 7px;border-radius:999px;background:rgba(54,43,37,.62);color:#fff;font-size:8px;font-weight:800;letter-spacing:.05em;backdrop-filter:blur(4px)}
+html[data-theme="wa"] .weather-card.weather-no-forecast .wa-weather-art{filter:saturate(.76) brightness(1.05);opacity:.86}
+
+/* Driving card */
+.driving-card{margin:14px 0;padding:16px 17px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#FFFDF9,#F7F0E7);box-shadow:0 10px 24px rgba(77,58,47,.055)}
+.driving-card[hidden]{display:none!important}.driving-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}.driving-head b{display:block;font-size:16px;margin-top:2px}.driving-head em{font-style:normal;font-size:10px;font-weight:800;color:#7A493E;background:#F7E7DD;border:1px solid #DFC5B5;padding:5px 8px;border-radius:999px;text-align:right}
+.driving-route{display:flex;flex-wrap:wrap;gap:6px 9px;margin:12px 0 10px;padding:11px 12px;border-radius:12px;background:#F6EFE6}.driving-route span{font-size:11px;font-weight:700;line-height:1.45;white-space:nowrap;color:#554941}.driving-nav{display:flex;justify-content:center;align-items:center;text-decoration:none;border:1px solid #DCC8B8;border-radius:11px;background:#FFFDF9;color:#874B43;font-size:11px;font-weight:800;padding:9px 10px}
+
+/* Autumn Watch is deliberately manual: show source links + last update. */
+.autumn-watch-head small{white-space:normal;text-align:right;line-height:1.35}.autumn-watch-item{position:relative;z-index:1}.autumn-title-line{display:flex;align-items:center;gap:7px}.autumn-title-line i{font-style:normal;font-size:8px;font-weight:900;color:#8B4B40;border:1px solid #D8B9A8;background:#FFF5EC;border-radius:999px;padding:2px 5px;white-space:nowrap}.autumn-updated{opacity:.72}.autumn-source-row{display:flex;gap:7px;padding:5px 4px 2px 74px}.autumn-source-row a{font-size:9.5px;font-weight:800;color:#8A5547;text-decoration:none;border-bottom:1px dotted #C9A693;white-space:nowrap}.autumn-watch-row em{position:relative;z-index:2}
+
+/* Booking v2 status chips */
+.booking-state{font-style:normal;font-size:8.5px;font-weight:900;border-radius:999px;padding:4px 7px;white-space:nowrap}.booking-state.pending{background:#FFF0D8;color:#8B5B28}.booking-state.onsite{background:#EAF1F5;color:#4C6878}.booking-state.done{background:#E7F0E9;color:#4E7056}
+
+/* Full-screen D1–D9 image viewer */
+body.modal-open{overflow:hidden}.day-image-lightbox{position:fixed;z-index:110;inset:0;display:none;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top)) 10px max(12px,env(safe-area-inset-bottom));}.day-image-lightbox.show{display:flex}.day-image-lightbox-backdrop{position:absolute;inset:0;background:rgba(24,20,18,.82);backdrop-filter:blur(8px)}.day-image-lightbox-card{position:relative;z-index:1;width:min(96vw,760px);max-height:96dvh;display:flex;flex-direction:column;background:#F8F1E8;border:1px solid rgba(255,255,255,.22);border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.38)}.day-image-lightbox-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px 10px 15px}.day-image-lightbox-head b{font-family:var(--nov-serif);font-size:14px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.day-image-lightbox-head button{width:34px;height:34px;border:0;border-radius:50%;background:#EADFD3;color:#574A42;font-size:22px}.day-image-lightbox-stage{position:relative;min-height:0;background:#171514;touch-action:pan-y}.day-image-lightbox-stage img{display:block;width:100%;max-height:calc(96dvh - 100px);object-fit:contain;background:#171514}.day-lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:52px;border:0;background:rgba(24,21,19,.58);color:#fff;font-size:34px;line-height:1;border-radius:12px;backdrop-filter:blur(5px)}.day-lightbox-nav.prev{left:8px}.day-lightbox-nav.next{right:8px}.day-image-lightbox-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 13px 10px;color:#6F625A}.day-image-lightbox-foot span{font-size:11px;font-weight:900}.day-image-lightbox-foot small{font-size:9.5px}
+
+@media(max-width:420px){
+  html[data-theme="wa"] .hero{min-height:306px;background-position:56% center;padding:20px 14px 18px}
+  html[data-theme="wa"] .buddy-hero-v42{min-height:258px}
+  html[data-theme="wa"] .buddy-hero-copy{max-width:88%;padding:14px 14px 13px}
+  html[data-theme="wa"] #heroPrivateTitle{font-size:clamp(25px,8.1vw,31px)!important}
+  html[data-theme="wa"] .hero-route{font-size:8px!important;gap:4px}
+  .event-top{display:flex;flex-direction:column;gap:7px}.tag{align-self:flex-start}
+  .family-meta-grid{grid-template-columns:1fr}.family-meta-item.wide{grid-column:auto}
+  .autumn-watch-row{grid-template-columns:58px 1fr}.autumn-state-thumb{width:58px;height:58px}.autumn-watch-row em{grid-column:2;justify-self:start}.autumn-source-row{padding-left:68px;flex-wrap:wrap}
+  .driving-head{align-items:flex-start;flex-direction:column}.driving-head em{align-self:flex-start}
+}

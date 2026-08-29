@@ -1,4 +1,4 @@
-/* Kyushu family autumn PWA · November 2026 · v1.4.1 WA Autumn day-art visibility fix */
+/* Kyushu family autumn PWA · November 2026 · v1.5.0 WA Autumn usability polish */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -19,8 +19,8 @@ let cloudReconnectInFlight = false;
 const GUIDE_DEVICE_ID_KEY = `${APP_NAMESPACE}:guide-device-id`;
 
 const BUDDY_FAST_ASSETS=[
-  "./day-scene-v52-01.webp?v=541","./day-scene-v52-02.webp?v=541","./day-scene-v52-03.webp?v=541","./day-scene-v52-04.webp?v=541","./day-scene-v52-05.webp?v=541",
-  "./day-scene-v52-06.webp?v=541","./day-scene-v52-07.webp?v=541","./day-scene-v52-08.webp?v=541","./day-scene-v52-09.webp?v=541",
+  "./day-scene-v52-01.webp?v=550","./day-scene-v52-02.webp?v=550","./day-scene-v52-03.webp?v=550","./day-scene-v52-04.webp?v=550","./day-scene-v52-05.webp?v=550",
+  "./day-scene-v52-06.webp?v=550","./day-scene-v52-07.webp?v=550","./day-scene-v52-08.webp?v=550","./day-scene-v52-09.webp?v=550",
   "./weather-rain-usagi-v47.webp?v=470","./weather-sunny-usagi-v536.webp?v=536","./weather-teruteru-usagi-v536.webp?v=536","./weather-cloudy-usagi-v536.webp?v=536","./weather-thunder-usagi-v536.webp?v=536","./weather-snow-usagi-v536.webp?v=536","./booking-check-purin.webp?v=460","./booking-dash-usagi.webp?v=460","./hotel-return-duo.webp?v=460",
   "./egg-sendoff-v539.png?v=539","./egg-cry-v539.png?v=539","./egg-home-sleep-v539.png?v=539",
   "./duck_gang.png?v=5311","./seal_gang.png?v=5311",
@@ -182,6 +182,7 @@ function normalizeGuideNotesMap(raw){
 function uid(){return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`}
 function esc(v=""){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function mapSearch(q){return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`}
+function googleSearch(q){return `https://www.google.com/search?q=${encodeURIComponent(q)}`}
 function mapNav(q,mode="driving"){return mapSearch(q)}
 function japanToday(){
   const parts=new Intl.DateTimeFormat("en-CA",{timeZone:TRIP?.timezone||"Asia/Tokyo",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
@@ -1579,16 +1580,32 @@ function buddyPeek(kind="purin"){
   buddyPeek._timer=setTimeout(()=>{layer.classList.remove("show");setTimeout(()=>{layer.className="buddy-peek-layer buddy-only-art";layer.innerHTML=""},480)},2400);
 }
 function dailySceneAsset(index){
-  return `./day-scene-v52-${String(index+1).padStart(2,"0")}.webp?v=520`;
+  return `./day-scene-v52-${String(index+1).padStart(2,"0")}.webp?v=550`;
 }
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
   if(!img)return;
   const src=dailySceneAsset(state.dayIndex);
   if(img.getAttribute("src")!==src) img.src=src;
-  img.alt=`D${state.dayIndex+1} 今日旅程主題視覺`;
+  img.alt=`D${state.dayIndex+1} 九州家族紅葉旅主題圖`;
   if(bar) bar.style.width=`${((state.dayIndex+1)/TRIP.days.length)*100}%`;
 }
+let dayLightboxIndex=0;
+function renderDayLightbox(){
+  const wrap=$("#dayImageLightbox"),img=$("#dayLightboxImage");if(!wrap||!img||!TRIP?.days?.length)return;
+  dayLightboxIndex=Math.max(0,Math.min(TRIP.days.length-1,dayLightboxIndex));
+  const d=TRIP.days[dayLightboxIndex];
+  img.src=dailySceneAsset(dayLightboxIndex);
+  img.alt=`D${dayLightboxIndex+1} ${d.title||"旅程主題圖"}`;
+  $("#dayLightboxTitle").textContent=`D${dayLightboxIndex+1}｜${d.title||"旅程"}`;
+  $("#dayLightboxCounter").textContent=`${dayLightboxIndex+1} / ${TRIP.days.length}`;
+}
+function openDayLightbox(index=state.dayIndex){
+  const wrap=$("#dayImageLightbox");if(!wrap)return;
+  dayLightboxIndex=index;renderDayLightbox();wrap.classList.add("show");wrap.setAttribute("aria-hidden","false");document.body.classList.add("modal-open");
+}
+function closeDayLightbox(){const wrap=$("#dayImageLightbox");if(!wrap)return;wrap.classList.remove("show");wrap.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
+function moveDayLightbox(step){dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox()}
 
 
 const WEATHER_BUDDY_STORAGE_KEY=`${APP_NAMESPACE}:weather-buddy-mode`;
@@ -1772,32 +1789,60 @@ function renderFamilyMeta(day){
   box.hidden=!rows.length;
   box.innerHTML=rows.length?`<div class="family-meta-head"><span class="eyebrow">FAMILY DAY</span><b>今天怎麼走</b></div><div class="family-meta-grid">${rows.map(r=>`<div class="family-meta-item ${r.wide?"wide":""}"><span>${r.icon}</span><div><small>${esc(r.label)}</small><b>${esc(r.value)}</b></div></div>`).join("")}</div>`:"";
 }
+function renderDrivingCard(day){
+  const box=$("#drivingCard");if(!box)return;
+  const drive=String(day?.familyMeta?.drive||"").trim();
+  const legs=(day?.events||[]).filter(e=>["🚗","🚐"].includes(e.transport));
+  const useful=drive&&drive!=="0"&&legs.length;
+  box.hidden=!useful;if(!useful){box.innerHTML="";return}
+  const mode=legs.some(e=>e.transport==="🚐")?"包車 / 乘車":"自駕";
+  const route=[];for(const e of legs){if(!route.includes(e.title))route.push(e.title)}
+  const now=day.date===japanToday()?japanClockMinutes():-1;
+  const next=legs.find(e=>{const m=eventTimeMinutes(e.time);return now<0||!Number.isFinite(m)||m>=now})||legs[0];
+  box.innerHTML=`<div class="driving-head"><div><span class="eyebrow">DRIVE</span><b>${esc(mode)}安排</b></div><em>${esc(drive)}</em></div><div class="driving-route">${route.slice(0,6).map((x,i)=>`<span>${i?"→ ":""}${esc(x)}</span>`).join("")}</div>${next?`<a class="driving-nav" target="_blank" rel="noopener" href="${mapSearch(next.nav||next.title)}">下一個駕車點：${esc(next.title)}　↗</a>`:""}`;
+}
 const AUTUMN_STATUS_ORDER=["unknown","coloring","peak","past","skip"];
 const AUTUMN_STATUS_META={
-  unknown:{label:"未確認",icon:"?",image:"./autumn-status-unknown.webp?v=140"},
-  coloring:{label:"色づき始め",icon:"🍂",image:"./autumn-status-coloring.webp?v=140"},
-  peak:{label:"見頃",icon:"🍁",image:"./autumn-status-peak.webp?v=140"},
-  past:{label:"見頃過ぎ",icon:"🍂",image:"./autumn-status-past.webp?v=140"},
-  skip:{label:"不追",icon:"—",image:"./autumn-status-skip.webp?v=140"}
+  unknown:{label:"未確認",icon:"?",image:"./autumn-status-unknown.webp?v=150"},
+  coloring:{label:"色づき始め",icon:"🍂",image:"./autumn-status-coloring.webp?v=150"},
+  peak:{label:"見頃",icon:"🍁",image:"./autumn-status-peak.webp?v=150"},
+  past:{label:"見頃過ぎ",icon:"🍂",image:"./autumn-status-past.webp?v=150"},
+  skip:{label:"不追",icon:"—",image:"./autumn-status-skip.webp?v=150"}
+};
+const AUTUMN_PRIORITY={
+  "akizuki-autumn":"S","kamado-autumn":"S","kumamoto-ginkgo":"S",
+  "takachiho-autumn":"A","hitome-hakkei":"A","keisekien":"A",
+  "yufuin-autumn":"B+","chojabaru":"B+","maizuru-ginkgo":"B"
 };
 function autumnSpotById(id){return (TRIP.autumnSpots||[]).find(x=>x.id===id)}
-function autumnStatusFor(id){return state.autumnStatus?.[id]||"unknown"}
+function autumnStatusRecord(id){
+  const raw=state.autumnStatus?.[id];
+  if(typeof raw==="string")return {status:raw,updatedAt:0};
+  if(raw&&typeof raw==="object")return {status:raw.status||"unknown",updatedAt:Number(raw.updatedAt||0)};
+  return {status:"unknown",updatedAt:0};
+}
+function autumnStatusFor(id){return autumnStatusRecord(id).status}
+function autumnUpdatedText(ts){
+  if(!ts)return "尚未手動確認";
+  try{return new Intl.DateTimeFormat("zh-TW",{timeZone:TRIP?.timezone||"Asia/Tokyo",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).format(new Date(ts)).replace("/","/")}catch{return "已更新"}
+}
 function renderAutumnWatch(day){
   const box=$("#autumnWatch"); if(!box)return;
   const ids=day.autumnIds||[];
   const spots=ids.map(autumnSpotById).filter(Boolean);
   box.hidden=!spots.length;
   if(!spots.length){box.innerHTML="";return}
-  box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏即時狀態</b></div><small>點狀態可更新</small></div><div class="autumn-watch-list">${spots.map(s=>{
-    const status=autumnStatusFor(s.id), meta=AUTUMN_STATUS_META[status]||AUTUMN_STATUS_META.unknown;
-    return `<button type="button" class="autumn-watch-row status-${esc(status)}" data-autumn-id="${esc(s.id)}"><span class="autumn-state-thumb"><img src="${esc(meta.image)}" alt="${esc(meta.label)}"></span><span class="autumn-copy"><b>${esc(s.label)}</b>${s.note?`<small>${esc(s.note)}</small>`:""}</span><em>${meta.icon} ${esc(meta.label)}</em></button>`;
+  box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏狀態</b></div><small>手動紀錄・查情報後更新</small></div><div class="autumn-watch-list">${spots.map(s=>{
+    const rec=autumnStatusRecord(s.id),status=rec.status,meta=AUTUMN_STATUS_META[status]||AUTUMN_STATUS_META.unknown;
+    const priority=AUTUMN_PRIORITY[s.id]||"—";
+    return `<div class="autumn-watch-item"><button type="button" class="autumn-watch-row status-${esc(status)}" data-autumn-id="${esc(s.id)}"><span class="autumn-state-thumb"><img src="${esc(meta.image)}" alt="${esc(meta.label)}"></span><span class="autumn-copy"><span class="autumn-title-line"><b>${esc(s.label)}</b><i>${esc(priority)}</i></span>${s.note?`<small>${esc(s.note)}</small>`:""}<small class="autumn-updated">最後紀錄：${esc(autumnUpdatedText(rec.updatedAt))}</small></span><em>${meta.icon} ${esc(meta.label)}</em></button><div class="autumn-source-row"><a target="_blank" rel="noopener" href="${mapSearch(s.label)}">最近照片 / 地圖 ↗</a><a target="_blank" rel="noopener" href="${googleSearch(`${s.label} 紅葉 2026`)}">紅葉情報 ↗</a></div></div>`;
   }).join("")}</div>`;
 }
 async function cycleAutumnStatus(id){
   if(!id)return;
   const current=autumnStatusFor(id), idx=AUTUMN_STATUS_ORDER.indexOf(current);
   const next=AUTUMN_STATUS_ORDER[(idx+1+AUTUMN_STATUS_ORDER.length)%AUTUMN_STATUS_ORDER.length];
-  state.autumnStatus={...(state.autumnStatus||{}),[id]:next};
+  state.autumnStatus={...(state.autumnStatus||{}),[id]:{status:next,updatedAt:Date.now()}};
   saveLocal("autumnStatus",state.autumnStatus);
   renderAutumnWatch(TRIP.days[state.dayIndex]);
   if(state.cloud){try{await setCloud("autumnStatus",state.autumnStatus)}catch{}}
@@ -2332,6 +2377,7 @@ function renderSchedule(){
   renderDayBrief(d);
   renderNowNext(d);
   renderFamilyMeta(d);
+  renderDrivingCard(d);
   renderAutumnWatch(d);
   renderDailyScene();
   $("#decisionArea").innerHTML=renderDecisionCards(d);
@@ -2358,11 +2404,11 @@ function renderSchedule(){
 const WEATHER_CACHE_KEY=`${APP_NAMESPACE}:weather-cache`;
 const WEATHER_CACHE_TTL=30*60*1000;
 const WA_WEATHER_ART={
-  sunny:"./nov_weather_sunny.webp?v=130",
-  cloudy:"./nov_weather_cloudy.webp?v=130",
-  rain:"./nov_weather_rainy.webp?v=130",
-  storm:"./nov_weather_storm.webp?v=130",
-  snow:"./nov_weather_snow.webp?v=130"
+  sunny:"./nov_weather_sunny.webp?v=150",
+  cloudy:"./nov_weather_cloudy.webp?v=150",
+  rain:"./nov_weather_rainy.webp?v=150",
+  storm:"./nov_weather_storm.webp?v=150",
+  snow:"./nov_weather_snow.webp?v=150"
 };
 function renderWeatherVisual(icon,artKey,alt=""){
   const el=$("#weatherIcon"); if(!el)return;
@@ -2463,7 +2509,7 @@ async function renderWeather(d){
   $("#weatherLocation").textContent=(d.weather?.label||d.location)+" · "+d.shortDate;
   $("#weatherTemp").textContent="載入中";
   $("#weatherDesc").textContent="正在取得旅行日期預報";
-  renderWeatherVisual("☁️",null,"天氣載入中");$("#rainBox").innerHTML=""; ensureWeatherBuddy();
+  renderWeatherVisual("☁️","cloudy","旅行天氣預報等待中");$("#rainBox").innerHTML=""; ensureWeatherBuddy();
   if(typeof getWeather!=="function"){
     card.classList.add("weather-no-forecast");
     $("#weatherTemp").textContent="—";
@@ -2478,7 +2524,8 @@ async function renderWeather(d){
       card.classList.add("weather-no-forecast");
       $("#weatherTemp").textContent="—";
       $("#weatherDesc").textContent=w.message;
-      $("#rainBox").innerHTML="進入預報範圍後，這裡會顯示高低溫、降雨機率與預計下雨時段。";
+      renderWeatherVisual("☁️","cloudy","尚未進入正式預報範圍");
+      $("#rainBox").innerHTML="進入 16 日預報範圍後，圖片會依實際天氣自動切換晴／陰／雨／雷／雪。";
     }else{
       renderWeatherVisual(w.icon,w.art,`${w.desc}天氣插畫`);
       $("#weatherTemp").textContent=w.current!==null?`${w.current}° · ${w.high}° / ${w.low}°`:`${w.high}° / ${w.low}°`;
@@ -2491,6 +2538,7 @@ async function renderWeather(d){
     }
   }catch(e){
     $("#weatherTemp").textContent="—";$("#weatherDesc").textContent="天氣暫時無法更新";
+    renderWeatherVisual("☁️","cloudy","天氣暫時無法更新");
     $("#rainBox").textContent="保留上次行程資料；網路恢復後重新切換日期即可再抓。";
   }finally{card.classList.remove("skeleton")}
 }
@@ -2544,12 +2592,18 @@ async function toggleBookingTask(id){
     buddyCelebrate(allDone?pickLine(BUDDY_DIALOG.booking.all):pickLine(BUDDY_DIALOG.booking.complete),allDone?"./buddy_celebrate.png?v=430":"./usagi_success.png?v=430","booking");
   }
 }
+function bookingVisualStatus(t,done){
+  if(done)return {label:"已完成",cls:"done"};
+  if(/現場|小火車/i.test(`${t.title||""} ${t.detail||""}`))return {label:"現場處理",cls:"onsite"};
+  if(/預約|訂位|包車|租車|確認/i.test(`${t.title||""} ${t.detail||""}`))return {label:"待確認",cls:"pending"};
+  return {label:"待處理",cls:"pending"};
+}
 function bookingTaskCard(t){
-  const done=taskDone(t);
+  const done=taskDone(t),vs=bookingVisualStatus(t,done);
   return `<div class="task-card ${done?"done":"buddy-task-pending"}">
     <button class="task-check" data-task-id="${esc(t.id)}" aria-label="${done?"標記未完成":"標記完成"}">${done?"✓":"○"}</button>
     <div class="task-body">
-      <div class="task-top"><span>${esc(t.type)}</span><b>${esc(t.when||"")}</b></div>
+      <div class="task-top"><span>${esc(t.type)}</span><b>${esc(t.when||"")}</b><em class="booking-state ${vs.cls}">${vs.label}</em></div>
       <div class="task-title">${esc(t.title)}</div>
       <div class="task-detail">${esc(t.detail||"")}</div>
       ${!done?`<div class="task-countdown">${esc(countdownText(t))}</div>`:""}
@@ -2750,6 +2804,7 @@ function bind(){
   document.addEventListener("click",async e=>{
     const weatherSwitch=e.target.closest("[data-weather-switch]");
     if(weatherSwitch){handleWeatherBuddyTap();return;}
+    const dayArt=e.target.closest("#daySceneCard");if(dayArt){openDayLightbox(state.dayIndex);return;}
     const buddyReaction=e.target.closest("[data-buddy-react]");
     if(buddyReaction){buddyReact(buddyReaction.dataset.buddyReact,buddyReaction);}
     const themeChoice=e.target.closest("[data-theme-choice]");if(themeChoice){setDisplayTheme(themeChoice.dataset.themeChoice);return}
@@ -2847,6 +2902,12 @@ function bind(){
     if(wrap.dataset.heroEgg==="1"){if(e.target===wrap)closeHeroEgg();return}
     wrap.classList.remove("show");
   });
+  $("#dayLightboxClose")?.addEventListener("click",closeDayLightbox);
+  $("#dayLightboxPrev")?.addEventListener("click",()=>moveDayLightbox(-1));
+  $("#dayLightboxNext")?.addEventListener("click",()=>moveDayLightbox(1));
+  $("#dayImageLightbox")?.addEventListener("click",e=>{if(e.target.closest?.("[data-day-lightbox-close]"))closeDayLightbox()});
+  const dayLightboxStage=$("#dayImageLightbox .day-image-lightbox-stage");
+  if(dayLightboxStage){let lx=0,ly=0,lpid=null;dayLightboxStage.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;lx=e.clientX;ly=e.clientY;lpid=e.pointerId},{passive:true});dayLightboxStage.addEventListener("pointerup",e=>{if(lpid!==e.pointerId)return;const dx=e.clientX-lx,dy=e.clientY-ly;lpid=null;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)*1.15)moveDayLightbox(dx<0?1:-1)},{passive:true});dayLightboxStage.addEventListener("pointercancel",()=>{lpid=null},{passive:true})}
   $("#guideClose")?.addEventListener("click",()=>closeGuide());
   $("#guideSaveBtn")?.addEventListener("click",saveGuideNote);
   $("#guideNoteArea")?.addEventListener("input",e=>{
@@ -3049,8 +3110,12 @@ function formatTripDate(){
 function applyPrivateTripMeta(){
   const title=$("#heroPrivateTitle"); if(title) title.textContent=TRIP.heroTitle||TRIP.title||"九州家族紅葉旅";
   const date=$("#heroPrivateDate"); if(date) date.textContent=formatTripDate();
-  const route=$("#heroPrivateRoute"); if(route) route.textContent=TRIP.heroRoute||"FUKUOKA → YUFUIN → ASO → KUMAMOTO";
-  const season=$("#heroPrivateSeason"); if(season) season.textContent=TRIP.season||"2026・晩秋";
+  const route=$("#heroPrivateRoute"); if(route){
+    const raw=TRIP.heroRoute||"FUKUOKA → YUFUIN → ASO → KUMAMOTO";
+    const places=raw.split("→").map(x=>x.trim()).filter(Boolean);
+    route.innerHTML=places.map((x,i)=>`${i?'<i>→</i>':''}<span>${esc(x)}</span>`).join("");
+  }
+  const season=$("#heroPrivateSeason"); if(season) season.textContent=String(TRIP.season||"2026・晩秋").replace("・"," · ");
   const duration=$("#heroTripDuration"); if(duration) duration.textContent=TRIP.durationLabel||`${TRIP.days?.length||9}天`;
   document.title=TRIP.appTitle||"九州家族紅葉旅";
 }
@@ -3171,7 +3236,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=141",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=150",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

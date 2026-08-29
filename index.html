@@ -16,16 +16,16 @@
       document.documentElement.dataset.fontSize=localStorage.getItem("kyushu-nov-2026:fontSize")||"standard";
     }catch(e){}
   </script>
-  <link rel="stylesheet" href="./style.css?v=141" />
+  <link rel="stylesheet" href="./style.css?v=150" />
   <title>九州家族紅葉旅</title>
-  <meta name="app-version" content="1.3.0" />
-  <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=130" fetchpriority="high">
-  <link rel="preload" as="image" href="./day-scene-v52-01.webp?v=541">
+  <meta name="app-version" content="1.5.0" />
+  <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=150" fetchpriority="high">
+  <link rel="preload" as="image" href="./day-scene-v52-01.webp?v=550">
 </head>
 <body>
   <section id="authGate" class="auth-gate">
     <div class="auth-card">
-      <div class="auth-brand-icon"><img src="./nov_app_icon_a.webp?v=141" alt="九州家族紅葉旅"></div>
+      <div class="auth-brand-icon"><img src="./nov_app_icon_a.webp?v=150" alt="九州家族紅葉旅"></div>
       <span class="auth-kicker">PRIVATE TRIP</span>
       <h1>九州家族紅葉旅</h1>
       <p>行程內容只有已授權的 Google 帳號才能載入。</p>
@@ -86,12 +86,13 @@
           <p id="daySubtitle"></p>
         </section>
         <button type="button" id="daySceneCard" class="day-scene-card buddy-reactable nov-day-art" data-buddy-react="duo" data-buddy-context="day" aria-label="今日旅程主題視覺">
-          <img id="daySceneImage" src="./day-scene-v52-01.webp?v=541" alt="今日旅程主題視覺">
+          <img id="daySceneImage" src="./day-scene-v52-01.webp?v=550" alt="今日旅程主題視覺">
           <span class="day-scene-progress"><i><em id="daySceneProgressBar"></em></i></span>
         </button>
         <section id="dayBrief" class="day-brief"></section>
         <section id="nowNextCard" class="now-next-card" hidden></section>
         <section id="familyMetaCard" class="family-meta-card" hidden></section>
+        <section id="drivingCard" class="driving-card" hidden></section>
         <section id="autumnWatch" class="autumn-watch" hidden></section>
         <div id="decisionArea"></div>
         <section id="timeline" class="timeline"></section>
@@ -254,6 +255,18 @@
   </dialog>
 
 
+  <div id="dayImageLightbox" class="day-image-lightbox" aria-hidden="true">
+    <div class="day-image-lightbox-backdrop" data-day-lightbox-close="1"></div>
+    <div class="day-image-lightbox-card" role="dialog" aria-modal="true" aria-label="每日旅程圖片檢視">
+      <div class="day-image-lightbox-head"><b id="dayLightboxTitle">D1</b><button type="button" id="dayLightboxClose" aria-label="關閉">×</button></div>
+      <div class="day-image-lightbox-stage">
+        <img id="dayLightboxImage" alt="每日旅程主題圖">
+        <button type="button" id="dayLightboxPrev" class="day-lightbox-nav prev" aria-label="上一天">‹</button>
+        <button type="button" id="dayLightboxNext" class="day-lightbox-nav next" aria-label="下一天">›</button>
+      </div>
+      <div class="day-image-lightbox-foot"><span id="dayLightboxCounter">1 / 9</span><small>左右滑動或按箭頭切換</small></div>
+    </div>
+  </div>
 
   <dialog id="guideModal" class="guide-modal">
     <div class="guide-sheet">
@@ -351,7 +364,7 @@
   <div id="toast" class="toast" role="status"></div>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script defer src="./firebase-config.js?v=141"></script>
-  <script defer src="./app.js?v=141"></script>
+  <script defer src="./firebase-config.js?v=150"></script>
+  <script defer src="./app.js?v=150"></script>
 </body>
 </html>
