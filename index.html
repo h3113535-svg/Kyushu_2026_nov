@@ -16,21 +16,22 @@
       document.documentElement.dataset.fontSize=localStorage.getItem("kyushu-nov-2026:fontSize")||"standard";
     }catch(e){}
   </script>
-  <link rel="stylesheet" href="./style.css?v=150" />
+  <link rel="stylesheet" href="./style.css?v=160" />
   <title>九州家族紅葉旅</title>
-  <meta name="app-version" content="1.5.0" />
-  <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=150" fetchpriority="high">
+  <meta name="app-version" content="1.6.0" />
+  <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=160" fetchpriority="high">
   <link rel="preload" as="image" href="./day-scene-v52-01.webp?v=550">
 </head>
 <body>
   <section id="authGate" class="auth-gate">
     <div class="auth-card">
-      <div class="auth-brand-icon"><img src="./nov_app_icon_a.webp?v=150" alt="九州家族紅葉旅"></div>
+      <div class="auth-brand-icon"><img src="./nov_app_icon_a.webp?v=160" alt="九州家族紅葉旅"></div>
       <span class="auth-kicker">PRIVATE TRIP</span>
       <h1>九州家族紅葉旅</h1>
       <p>行程內容只有已授權的 Google 帳號才能載入。</p>
       <button type="button" class="google-login-btn" id="googleLoginBtn"><span>G</span> 使用 Google 登入</button>
       <div class="auth-status" id="authStatus">正在確認登入狀態…</div>
+      <div id="authLoadingArt" class="auth-loading-art"><img src="./nov_loading_scene.webp?v=160" alt="正在載入秋日旅程"></div>
     </div>
   </section>
   <div id="app" hidden>
@@ -191,6 +192,7 @@
 
         <div id="notePanel" class="tool-panel">
           <div class="panel-heading"><div><span class="eyebrow">旅行備忘</span><h3>旅行記事</h3></div></div><div class="notes-chill buddy-only-art buddy-reactable" data-buddy-react="duo" data-buddy-context="note"><img src="./buddy_chill.png?v=430" alt="布丁狗與烏薩奇休息"></div>
+          <div id="notesEmptyState" class="empty-art-card note-empty-art" hidden><img src="./nov_empty_notes.webp?v=160" alt="目前還沒有任何記事"></div>
           <textarea id="notesArea" class="notes-area" placeholder="行前提醒、臨時備註、想買的東西…"></textarea>
           <button type="button" class="primary-btn" id="firebaseTestBtn" style="margin-top:10px">測試 Firebase 連線</button>
           <div id="noteStatus" class="save-status">輸入後自動儲存</div>
@@ -364,7 +366,7 @@
   <div id="toast" class="toast" role="status"></div>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script defer src="./firebase-config.js?v=150"></script>
-  <script defer src="./app.js?v=150"></script>
+  <script defer src="./firebase-config.js?v=160"></script>
+  <script defer src="./app.js?v=160"></script>
 </body>
 </html>

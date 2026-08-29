@@ -1,11 +1,11 @@
 const CACHE_PREFIX = "kyushu-nov-";
-const CACHE = "kyushu-nov-v1.5.0";
+const CACHE = "kyushu-nov-v1.6.0";
 const SHELL = [
-  "./","./index.html","./style.css?v=150","./app.js?v=150",
-  "./manifest.json","./firebase-config.js?v=150","./icon-192.png","./icon-512.png","./icon-maskable-512.png",
-  "./nov_app_icon_a.webp?v=150","./nov_app_icon_b.webp?v=150","./nov_app_icon_c.webp?v=150",
-  "./nov_hero_main_a.webp?v=150","./nov_hero_main_b.webp?v=150",
-  "./nov_weather_sunny.webp?v=150","./nov_weather_cloudy.webp?v=150","./nov_weather_rainy.webp?v=150","./nov_weather_storm.webp?v=150","./nov_weather_snow.webp?v=150",
+  "./","./index.html","./style.css?v=160","./app.js?v=160",
+  "./manifest.json","./firebase-config.js?v=160","./icon-192.png","./icon-512.png","./icon-maskable-512.png",
+  "./nov_app_icon_a.webp?v=160","./nov_app_icon_b.webp?v=160","./nov_app_icon_c.webp?v=160",
+  "./nov_hero_main_a.webp?v=160","./nov_hero_main_b.webp?v=160",
+  "./nov_weather_sunny.webp?v=160","./nov_weather_cloudy.webp?v=160","./nov_weather_rainy.webp?v=160","./nov_weather_storm.webp?v=160","./nov_weather_snow.webp?v=160",
   "./hero-cover-v51.webp?v=510",
   "./buddy_hero.png","./buddy_celebrate.png","./buddy_chill.png","./buddy_eat.png","./buddy_success.png",
   "./egg-sendoff-v539.png","./egg-cry-v539.png","./egg-home-sleep-v539.png","./duck_gang.png","./seal_gang.png",
@@ -31,7 +31,19 @@ const SHELL = [
   "./booking-dash-usagi.webp?v=460",
   "./hotel-return-duo.webp?v=460",
   "./autumn-status-unknown.webp?v=140","./autumn-status-coloring.webp?v=140","./autumn-status-peak.webp?v=140","./autumn-status-past.webp?v=140","./autumn-status-skip.webp?v=140",
-  "./wa-paper-texture.webp?v=150","./wa-leaf-scatter.webp?v=150"];
+  "./wa-paper-texture.webp?v=160","./wa-leaf-scatter.webp?v=160",
+  "./nov_decision_d4_chill.webp?v=160",
+  "./nov_decision_d4_ropeway.webp?v=160",
+  "./nov_decision_d5_autumn.webp?v=160",
+  "./nov_decision_d5_chill.webp?v=160",
+  "./nov_decision_d7_crater_open.webp?v=160",
+  "./nov_decision_d7_museum.webp?v=160",
+  "./nov_empty_autumnwatch.webp?v=160",
+  "./nov_empty_expense.webp?v=160",
+  "./nov_empty_notes.webp?v=160",
+  "./nov_empty_shopping.webp?v=160",
+  "./nov_loading_scene.webp?v=160"
+];
 
 self.addEventListener("install", event => {
   event.waitUntil(

@@ -1,3 +1,12 @@
+Kyushu Nov PWA v1.6.0
+
+更新重點：
+- 導入 D4 / D5 / D7 六張 Decision 專屬圖片。
+- 導入購物、記帳、記事、紅葉觀測 Empty State 圖。
+- 導入秋旅載入畫面，登入／資料讀取時顯示。
+- Decision 選項改成圖片＋文字卡片，支援暫選／確認狀態。
+- 所有本次新增 PNG 已轉為 WebP 後納入 GitHub 更新包。
+
 Kyushu Nov PWA v1.5.0
 
 本版重點：

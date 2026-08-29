@@ -1,4 +1,4 @@
-/* Kyushu family autumn PWA · November 2026 · v1.5.0 WA Autumn usability polish */
+/* Kyushu family autumn PWA · November 2026 · v1.6.0 WA Autumn decision + empty-state artwork */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -1803,11 +1803,11 @@ function renderDrivingCard(day){
 }
 const AUTUMN_STATUS_ORDER=["unknown","coloring","peak","past","skip"];
 const AUTUMN_STATUS_META={
-  unknown:{label:"未確認",icon:"?",image:"./autumn-status-unknown.webp?v=150"},
-  coloring:{label:"色づき始め",icon:"🍂",image:"./autumn-status-coloring.webp?v=150"},
-  peak:{label:"見頃",icon:"🍁",image:"./autumn-status-peak.webp?v=150"},
-  past:{label:"見頃過ぎ",icon:"🍂",image:"./autumn-status-past.webp?v=150"},
-  skip:{label:"不追",icon:"—",image:"./autumn-status-skip.webp?v=150"}
+  unknown:{label:"未確認",icon:"?",image:"./autumn-status-unknown.webp?v=160"},
+  coloring:{label:"色づき始め",icon:"🍂",image:"./autumn-status-coloring.webp?v=160"},
+  peak:{label:"見頃",icon:"🍁",image:"./autumn-status-peak.webp?v=160"},
+  past:{label:"見頃過ぎ",icon:"🍂",image:"./autumn-status-past.webp?v=160"},
+  skip:{label:"不追",icon:"—",image:"./autumn-status-skip.webp?v=160"}
 };
 const AUTUMN_PRIORITY={
   "akizuki-autumn":"S","kamado-autumn":"S","kumamoto-ginkgo":"S",
@@ -1832,7 +1832,8 @@ function renderAutumnWatch(day){
   const spots=ids.map(autumnSpotById).filter(Boolean);
   box.hidden=!spots.length;
   if(!spots.length){box.innerHTML="";return}
-  box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏狀態</b></div><small>手動紀錄・查情報後更新</small></div><div class="autumn-watch-list">${spots.map(s=>{
+  const allUnknown=spots.every(s=>autumnStatusFor(s.id)==="unknown");
+  box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏狀態</b></div><small>手動紀錄・查情報後更新</small></div>${allUnknown?`<div class="autumn-first-use-art"><img src="./nov_empty_autumnwatch.webp?v=160" alt="尚未設定紅葉狀態"></div>`:""}<div class="autumn-watch-list">${spots.map(s=>{
     const rec=autumnStatusRecord(s.id),status=rec.status,meta=AUTUMN_STATUS_META[status]||AUTUMN_STATUS_META.unknown;
     const priority=AUTUMN_PRIORITY[s.id]||"—";
     return `<div class="autumn-watch-item"><button type="button" class="autumn-watch-row status-${esc(status)}" data-autumn-id="${esc(s.id)}"><span class="autumn-state-thumb"><img src="${esc(meta.image)}" alt="${esc(meta.label)}"></span><span class="autumn-copy"><span class="autumn-title-line"><b>${esc(s.label)}</b><i>${esc(priority)}</i></span>${s.note?`<small>${esc(s.note)}</small>`:""}<small class="autumn-updated">最後紀錄：${esc(autumnUpdatedText(rec.updatedAt))}</small></span><em>${meta.icon} ${esc(meta.label)}</em></button><div class="autumn-source-row"><a target="_blank" rel="noopener" href="${mapSearch(s.label)}">最近照片 / 地圖 ↗</a><a target="_blank" rel="noopener" href="${googleSearch(`${s.label} 紅葉 2026`)}">紅葉情報 ↗</a></div></div>`;
@@ -1906,6 +1907,21 @@ async function clearDecision(id){
   renderSchedule();
   if(had)toast("已清除選擇，可以晚點再決定");
 }
+const DECISION_ART={
+  "d4-beppu-weather":{
+    ropeway:"./nov_decision_d4_ropeway.webp?v=160",
+    chill:"./nov_decision_d4_chill.webp?v=160"
+  },
+  "d5-autumn-route":{
+    autumn:"./nov_decision_d5_autumn.webp?v=160",
+    chill:"./nov_decision_d5_chill.webp?v=160"
+  },
+  "d7-crater":{
+    open:"./nov_decision_d7_crater_open.webp?v=160",
+    closed:"./nov_decision_d7_museum.webp?v=160"
+  }
+};
+function decisionArt(decisionId,optionId){return DECISION_ART[decisionId]?.[optionId]||""}
 function renderDecisionCards(day){
   const ids=day.decisionIds||[];
   if(!ids.length)return "";
@@ -1923,10 +1939,10 @@ function renderDecisionCards(day){
       ${checklist}
       <div class="decision-options">${d.options.map(o=>{
         const isDraft=draft===o.id,isConfirmed=selected===o.id&&!draft;
-        return `<button class="decision-option ${isDraft?"draft":isConfirmed?"selected":""}" data-decision-id="${esc(d.id)}" data-decision-option="${esc(o.id)}">
-          <span class="decision-icon">${esc(o.icon||"→")}</span>
-          <span><b>${esc(o.label)}</b><small>${esc(o.detail||"")}</small></span>
-          <em>${isDraft?"暫選":isConfirmed?"已確認":"選擇"}</em>
+        const art=decisionArt(d.id,o.id);
+        return `<button class="decision-option ${art?"has-art":""} ${isDraft?"draft":isConfirmed?"selected":""}" data-decision-id="${esc(d.id)}" data-decision-option="${esc(o.id)}">
+          ${art?`<span class="decision-option-art"><img src="${esc(art)}" alt="${esc(o.label)}" loading="lazy"></span>`:""}
+          <span class="decision-option-copy"><span class="decision-icon">${esc(o.icon||"→")}</span><span class="decision-option-text"><b>${esc(o.label)}</b><small>${esc(o.detail||"")}</small></span><em>${isDraft?"暫選":isConfirmed?"已確認":"選擇"}</em></span>
         </button>`}).join("")}
       </div>
       <div class="decision-confirm-row">
@@ -2404,11 +2420,11 @@ function renderSchedule(){
 const WEATHER_CACHE_KEY=`${APP_NAMESPACE}:weather-cache`;
 const WEATHER_CACHE_TTL=30*60*1000;
 const WA_WEATHER_ART={
-  sunny:"./nov_weather_sunny.webp?v=150",
-  cloudy:"./nov_weather_cloudy.webp?v=150",
-  rain:"./nov_weather_rainy.webp?v=150",
-  storm:"./nov_weather_storm.webp?v=150",
-  snow:"./nov_weather_snow.webp?v=150"
+  sunny:"./nov_weather_sunny.webp?v=160",
+  cloudy:"./nov_weather_cloudy.webp?v=160",
+  rain:"./nov_weather_rainy.webp?v=160",
+  storm:"./nov_weather_storm.webp?v=160",
+  snow:"./nov_weather_snow.webp?v=160"
 };
 function renderWeatherVisual(icon,artKey,alt=""){
   const el=$("#weatherIcon"); if(!el)return;
@@ -2644,7 +2660,7 @@ function renderShopping(){
           <button class="mini-btn" data-delete-shopping="${i.id}">刪</button>
         </div>
       </div>
-    </div>`).join(""):`<div class="empty">目前沒有購物項目。</div>`;
+    </div>`).join(""):`<div class="empty-art-card"><img src="./nov_empty_shopping.webp?v=160" alt="目前還沒有購物清單"></div>`;
 }
 function computeExpense(){
   const paid=Object.fromEntries(TRIP.members.map(m=>[m,0]));
@@ -2673,9 +2689,12 @@ function renderExpenses(){
   $("#expenseList").innerHTML=state.expenses.length?state.expenses.slice().reverse().map(i=>`
     <div class="list-item"><div class="list-main"><div><div class="list-title">${esc(i.name)}</div>
       <div class="list-meta">¥${Number(i.amount).toLocaleString()} · ${esc(i.payer)} 付款 · 分攤：${esc((i.participants||TRIP.members).join("、"))}${i.date?` · ${esc(i.date)}`:""}</div>
-      </div><button class="mini-btn" data-delete-expense="${i.id}">刪</button></div></div>`).join(""):`<div class="empty">還沒有記帳紀錄。</div>`;
+      </div><button class="mini-btn" data-delete-expense="${i.id}">刪</button></div></div>`).join(""):`<div class="empty-art-card"><img src="./nov_empty_expense.webp?v=160" alt="目前還沒有花費紀錄"></div>`;
 }
-function renderNotes(){ $("#notesArea").value=state.notes||""; }
+function renderNotes(){
+  const area=$("#notesArea"); if(area)area.value=state.notes||"";
+  const empty=$("#notesEmptyState"); if(empty)empty.hidden=!!String(state.notes||"").trim();
+}
 function renderTools(){renderBookings();renderShopping();renderExpenses();renderNotes()}
 function renderAll(){renderDays();renderSchedule();renderFood();renderTools()}
 
@@ -2953,7 +2972,7 @@ function bind(){
     }
   });
   $("#notesArea").addEventListener("input",e=>{
-    state.notes=e.target.value;saveLocal("notes",state.notes);$("#noteStatus").textContent="本機已儲存";
+    state.notes=e.target.value;saveLocal("notes",state.notes);const noteEmpty=$("#notesEmptyState");if(noteEmpty)noteEmpty.hidden=!!String(state.notes||"").trim();$("#noteStatus").textContent="本機已儲存";
     clearTimeout(state.noteTimer);
     state.noteTimer=setTimeout(async()=>{
       if(state.cloud){
@@ -3073,6 +3092,11 @@ function setAuthStatus(message,kind=""){
   if(!el)return;
   el.textContent=message||"";
   el.dataset.kind=kind;
+  const art=$("#authLoadingArt");
+  if(art){
+    const busy=!kind && /正在|載入|確認登入/.test(String(message||""));
+    art.hidden=!busy;
+  }
 }
 function showAuthGate(){
   $("#authGate")?.removeAttribute("hidden");
@@ -3236,7 +3260,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=150",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=160",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });
