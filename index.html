@@ -16,9 +16,9 @@
       document.documentElement.dataset.fontSize=localStorage.getItem("kyushu-nov-2026:fontSize")||"standard";
     }catch(e){}
   </script>
-  <link rel="stylesheet" href="./style.css?v=100" />
+  <link rel="stylesheet" href="./style.css?v=110" />
   <title>九州家族紅葉旅</title>
-  <meta name="app-version" content="1.0.0" />
+  <meta name="app-version" content="1.1.0" />
   <link rel="preload" as="image" href="./day-scene-v52-01.webp?v=520" fetchpriority="high">
 </head>
 <body>
@@ -89,6 +89,7 @@
           <span class="day-scene-progress"><i><em id="daySceneProgressBar"></em></i></span>
         </button>
         <section id="dayBrief" class="day-brief"></section>
+        <section id="nowNextCard" class="now-next-card" hidden></section>
         <section id="familyMetaCard" class="family-meta-card" hidden></section>
         <section id="autumnWatch" class="autumn-watch" hidden></section>
         <div id="decisionArea"></div>
@@ -349,7 +350,7 @@
   <div id="toast" class="toast" role="status"></div>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script defer src="./firebase-config.js?v=100"></script>
-  <script defer src="./app.js?v=100"></script>
+  <script defer src="./firebase-config.js?v=110"></script>
+  <script defer src="./app.js?v=110"></script>
 </body>
 </html>

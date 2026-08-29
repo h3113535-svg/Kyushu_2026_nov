@@ -1,8 +1,8 @@
 const CACHE_PREFIX = "kyushu-nov-";
-const CACHE = `${CACHE_PREFIX}v1.0.0`;
+const CACHE = `${CACHE_PREFIX}v1.1.0`;
 const SHELL = [
-  "./","./index.html","./style.css?v=100","./app.js?v=100",
-  "./manifest.json","./firebase-config.js?v=100","./icon-192.png","./icon-512.png","./hero-cover-v51.webp?v=510",
+  "./","./index.html","./style.css?v=110","./app.js?v=110",
+  "./manifest.json","./firebase-config.js?v=110","./icon-192.png","./icon-512.png","./hero-cover-v51.webp?v=510",
   "./buddy_hero.png","./buddy_celebrate.png","./buddy_chill.png","./buddy_eat.png","./buddy_success.png",
   "./egg-sendoff-v539.png","./egg-cry-v539.png","./egg-home-sleep-v539.png","./duck_gang.png","./seal_gang.png",
   "./purin_peek_edge.png","./purin_walk.png","./usagi_peek.png","./usagi_dash.png","./usagi_success.png","./weather-rain-usagi-v47.webp",

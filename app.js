@@ -1719,6 +1719,46 @@ function intensityText(value){
   }
   return value?String(value):"";
 }
+function japanClockMinutes(){
+  const parts=new Intl.DateTimeFormat("en-GB",{
+    timeZone:TRIP?.timezone||"Asia/Tokyo",
+    hour:"2-digit",minute:"2-digit",hourCycle:"h23"
+  }).formatToParts(new Date());
+  const o=Object.fromEntries(parts.filter(p=>p.type!=="literal").map(p=>[p.type,p.value]));
+  return Number(o.hour)*60+Number(o.minute);
+}
+function eventTimeMinutes(value){
+  const m=String(value||"").match(/^(\d{1,2}):(\d{2})/);
+  if(!m)return null;
+  return Number(m[1])*60+Number(m[2]);
+}
+function formatCountdown(mins){
+  if(mins<=0)return "現在";
+  if(mins<60)return `${mins} 分後`;
+  const h=Math.floor(mins/60),m=mins%60;
+  return m?`${h} 小時 ${m} 分後`:`${h} 小時後`;
+}
+function renderNowNext(day){
+  const box=$("#nowNextCard"); if(!box)return;
+  if(!day||day.date!==japanToday()){
+    box.hidden=true;box.innerHTML="";return;
+  }
+  const events=(day.events||[]).filter(eventVisible)
+    .map(e=>({...e,_mins:eventTimeMinutes(e.time)}))
+    .filter(e=>Number.isFinite(e._mins))
+    .sort((a,b)=>a._mins-b._mins);
+  if(!events.length){box.hidden=true;box.innerHTML="";return}
+  const now=japanClockMinutes();
+  const next=events.find(e=>e._mins>=now);
+  box.hidden=false;
+  if(!next){
+    box.innerHTML=`<div class="now-next-kicker">TODAY</div><div class="now-next-finished"><b>今天主要行程完成</b><span>接下來就照家人的體力慢慢收尾。</span></div>`;
+    return;
+  }
+  const mins=Math.max(0,next._mins-now);
+  box.innerHTML=`<div class="now-next-head"><div><span class="eyebrow">NEXT UP</span><b>下一站</b></div><em>${esc(formatCountdown(mins))}</em></div>
+    <div class="now-next-main"><strong>${esc(next.time)}</strong><div><b>${esc(next.title)}</b>${next.travel?`<small>${esc(next.transport||"→")} ${esc(next.travel)}</small>`:""}</div></div>`;
+}
 function renderFamilyMeta(day){
   const box=$("#familyMetaCard"); if(!box)return;
   const m=day.familyMeta||{};
@@ -2290,6 +2330,7 @@ function renderSchedule(){
   $("#dayTitle").textContent=d.title;
   $("#daySubtitle").textContent=d.subtitle;
   renderDayBrief(d);
+  renderNowNext(d);
   renderFamilyMeta(d);
   renderAutumnWatch(d);
   renderDailyScene();
@@ -3006,6 +3047,11 @@ async function bootTrip(content,user,{offline=false}={}){
   applyDisplaySettings();
   bind();
   renderAll();
+  if(!window.__kyushuNowNextTimer){
+    window.__kyushuNowNextTimer=setInterval(()=>{
+      if(TRIP&&state)renderNowNext(TRIP.days[state.dayIndex]);
+    },60000);
+  }
   showPrivateApp();
   setTimeout(()=>{maybePurinWalkEgg();maybeUrgentBookingEgg();maybeTripStartEgg()},650);
   const email=$("#accountEmail"); if(email) email.textContent=user?.email||"離線已授權裝置";
@@ -3104,7 +3150,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=100",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=110",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

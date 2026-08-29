@@ -15,4 +15,10 @@ Private, mobile-first PWA shell for the 2026/11/21–11/29 Kyushu family autumn 
 ## Important
 The public repo must not contain the private Firebase `content` itinerary payload. Import that payload separately into the protected Realtime Database root.
 
-Artwork in v1.0 is temporary carry-over/placeholder material from the October UI template. Visual replacement is intentionally deferred until after architecture/data validation.
+Artwork in v1.1 is temporary carry-over/placeholder material from the October UI template. Visual replacement is intentionally deferred until after architecture/data validation.
+
+## v1.1 architecture hardening
+- Added a Japan-time `NEXT UP` card for the actual trip day.
+- Firebase Web config is now populated for the shared Kyushu Firebase project while keeping the November RTDB root isolated.
+- PWA/cache asset version advanced to 1.1.0.
+- Artwork replacement is still intentionally deferred.

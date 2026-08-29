@@ -3361,3 +3361,25 @@ html[data-theme="buddy"] #buddyCelebrateText.caption-swap{animation:buddyEggCapt
 .autumn-watch-row.status-past{opacity:.78}
 .autumn-watch-row.status-skip{opacity:.58}
 @media(max-width:380px){.family-meta-grid{grid-template-columns:1fr}.family-meta-item.wide{grid-column:auto}.autumn-watch-row{grid-template-columns:auto 1fr}.autumn-watch-row em{grid-column:2;justify-self:start}}
+
+/* ===== November family-trip architecture v1.1 — live NEXT UP ===== */
+.now-next-card{
+  margin:14px 0;
+  padding:16px 18px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--paper);
+  box-shadow:var(--shadow);
+}
+.now-next-card[hidden]{display:none!important}
+.now-next-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px}
+.now-next-head b{display:block;font-size:17px;margin-top:2px}
+.now-next-head em{font-style:normal;font-size:11px;font-weight:900;padding:6px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent-strong);white-space:nowrap}
+.now-next-main{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--soft-bg)}
+.now-next-main>strong{font-family:Georgia,"Noto Serif TC","Noto Serif CJK TC",serif;font-size:19px;color:var(--accent-strong)}
+.now-next-main b{display:block;font-size:14px;line-height:1.35}
+.now-next-main small{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:750}
+.now-next-kicker{font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--accent);margin-bottom:6px}
+.now-next-finished{display:flex;flex-direction:column;gap:3px}
+.now-next-finished b{font-size:15px}
+.now-next-finished span{font-size:12px;color:var(--muted)}
