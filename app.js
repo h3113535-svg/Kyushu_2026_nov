@@ -1,4 +1,4 @@
-/* Kyushu family autumn PWA · November 2026 · v1.0.0 architecture baseline */
+/* Kyushu family autumn PWA · November 2026 · v1.3.0 WA Autumn visual integration */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -2357,17 +2357,36 @@ function renderSchedule(){
 }
 const WEATHER_CACHE_KEY=`${APP_NAMESPACE}:weather-cache`;
 const WEATHER_CACHE_TTL=30*60*1000;
+const WA_WEATHER_ART={
+  sunny:"./nov_weather_sunny.webp?v=130",
+  cloudy:"./nov_weather_cloudy.webp?v=130",
+  rain:"./nov_weather_rainy.webp?v=130",
+  storm:"./nov_weather_storm.webp?v=130",
+  snow:"./nov_weather_snow.webp?v=130"
+};
+function renderWeatherVisual(icon,artKey,alt=""){
+  const el=$("#weatherIcon"); if(!el)return;
+  const isWa=document.documentElement.dataset.theme==="wa";
+  if(isWa&&artKey&&WA_WEATHER_ART[artKey]){
+    el.classList.add("has-wa-weather-art");
+    el.innerHTML=`<img class="wa-weather-art" src="${WA_WEATHER_ART[artKey]}" alt="${esc(alt||"天氣插畫")}">`;
+  }else{
+    el.classList.remove("has-wa-weather-art");
+    el.textContent=icon||"☁️";
+  }
+}
+
 function weatherCodeMeta(code){
   const c=Number(code);
-  if(c===0)return {icon:"☀️",desc:"晴"};
-  if([1,2].includes(c))return {icon:"🌤️",desc:c===1?"大致晴朗":"局部多雲"};
-  if(c===3)return {icon:"☁️",desc:"多雲"};
-  if([45,48].includes(c))return {icon:"🌫️",desc:"霧"};
-  if([51,53,55,56,57].includes(c))return {icon:"🌦️",desc:"毛毛雨"};
-  if([61,63,65,66,67,80,81,82].includes(c))return {icon:"🌧️",desc:"有雨"};
-  if([71,73,75,77,85,86].includes(c))return {icon:"🌨️",desc:"有雪"};
-  if([95,96,99].includes(c))return {icon:"⛈️",desc:"雷雨"};
-  return {icon:"☁️",desc:"天氣變化"};
+  if(c===0)return {icon:"☀️",desc:"晴",art:"sunny"};
+  if([1,2].includes(c))return {icon:"🌤️",desc:c===1?"大致晴朗":"局部多雲",art:"sunny"};
+  if(c===3)return {icon:"☁️",desc:"多雲",art:"cloudy"};
+  if([45,48].includes(c))return {icon:"🌫️",desc:"霧",art:"cloudy"};
+  if([51,53,55,56,57].includes(c))return {icon:"🌦️",desc:"毛毛雨",art:"rain"};
+  if([61,63,65,66,67,80,81,82].includes(c))return {icon:"🌧️",desc:"有雨",art:"rain"};
+  if([71,73,75,77,85,86].includes(c))return {icon:"🌨️",desc:"有雪",art:"snow"};
+  if([95,96,99].includes(c))return {icon:"⛈️",desc:"雷雨",art:"storm"};
+  return {icon:"☁️",desc:"天氣變化",art:"cloudy"};
 }
 function isoDayDiff(a,b){
   const ms=Date.parse(`${b}T00:00:00Z`)-Date.parse(`${a}T00:00:00Z`);
@@ -2424,7 +2443,7 @@ async function getWeather(day){
     if(i<0)return {state:"not-ready",message:"尚未取得這一天的正式預報"};
     const meta=weatherCodeMeta(raw.daily.weather_code?.[i]);
     const data={
-      state:"forecast", icon:meta.icon, desc:meta.desc,
+      state:"forecast", icon:meta.icon, desc:meta.desc, art:meta.art,
       current:diff===0&&Number.isFinite(Number(raw.current?.temperature_2m))?Math.round(Number(raw.current.temperature_2m)):null,
       high:Math.round(Number(raw.daily.temperature_2m_max?.[i])),
       low:Math.round(Number(raw.daily.temperature_2m_min?.[i])),
@@ -2444,7 +2463,7 @@ async function renderWeather(d){
   $("#weatherLocation").textContent=(d.weather?.label||d.location)+" · "+d.shortDate;
   $("#weatherTemp").textContent="載入中";
   $("#weatherDesc").textContent="正在取得旅行日期預報";
-  $("#weatherIcon").textContent="☁️";$("#rainBox").innerHTML=""; ensureWeatherBuddy();
+  renderWeatherVisual("☁️",null,"天氣載入中");$("#rainBox").innerHTML=""; ensureWeatherBuddy();
   if(typeof getWeather!=="function"){
     card.classList.add("weather-no-forecast");
     $("#weatherTemp").textContent="—";
@@ -2461,7 +2480,7 @@ async function renderWeather(d){
       $("#weatherDesc").textContent=w.message;
       $("#rainBox").innerHTML="進入預報範圍後，這裡會顯示高低溫、降雨機率與預計下雨時段。";
     }else{
-      $("#weatherIcon").textContent=w.icon;
+      renderWeatherVisual(w.icon,w.art,`${w.desc}天氣插畫`);
       $("#weatherTemp").textContent=w.current!==null?`${w.current}° · ${w.high}° / ${w.low}°`:`${w.high}° / ${w.low}°`;
       $("#weatherDesc").textContent=`${w.desc} · 全日最高降雨機率 ${w.rainMax}%${w.stale?" · 離線快取":""}`;
       if(w.rainGroups.length){
@@ -2716,6 +2735,8 @@ function setDisplayTheme(theme){
   if(!["travel","sea","wa","buddy"].includes(theme))return;
   try{localStorage.setItem(DISPLAY_THEME_KEY,theme)}catch{}
   applyDisplaySettings();
+  const currentDayIndex=state?.dayIndex??0;
+  if(TRIP?.days?.[currentDayIndex]) renderWeather(TRIP.days[currentDayIndex]).catch(()=>{});
   if(theme==="buddy"){setTimeout(()=>buddySparkBurst(50,32),120);setTimeout(()=>maybePurinWalkEgg(),900)}
 }
 function setFontSize(size){
@@ -3150,7 +3171,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=120",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=130",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

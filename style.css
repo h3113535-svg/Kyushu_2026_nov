@@ -3556,3 +3556,95 @@ html[data-theme="wa"] .autumn-watch-head .eyebrow,
 html[data-theme="wa"] .now-next-card .eyebrow{color:var(--wa-maple)}
 html[data-theme="wa"] .buddy-only-art{opacity:.95}
 html[data-theme="wa"] .theme-preview-wa .preview-washi{background:linear-gradient(180deg,#FBF0E4,#F7E8D8);border:1px solid #E2D0BE;color:#7B433B}
+
+/* ===== November v1.3 — artwork integration ===== */
+html[data-theme="wa"] .hero{
+  min-height:348px;
+  padding:26px 18px 22px;
+  background-image:
+    linear-gradient(90deg,rgba(248,241,232,.96) 0%,rgba(248,241,232,.88) 34%,rgba(248,241,232,.35) 60%,rgba(248,241,232,.06) 100%),
+    linear-gradient(180deg,rgba(56,42,38,.02),rgba(56,42,38,.22)),
+    url("./nov_hero_main_a.webp?v=130");
+  background-size:cover;
+  background-position:center center;
+  border-bottom:1px solid #D7C4B2;
+  box-shadow:0 12px 30px rgba(66,45,35,.10);
+}
+html[data-theme="wa"] .hero:before{
+  content:"九州";
+  right:22px;bottom:22px;
+  width:66px;height:66px;
+  border:2px solid rgba(140,74,60,.42);
+  color:rgba(140,74,60,.48);
+  background:rgba(250,244,236,.28);
+  backdrop-filter:blur(2px);
+}
+html[data-theme="wa"] .hero:after{
+  display:block;
+  content:"";
+  position:absolute;
+  inset:0;
+  height:auto;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(52,39,34,.04));
+  pointer-events:none;
+}
+html[data-theme="wa"] .buddy-hero-v42{min-height:296px;display:flex;align-items:flex-end}
+html[data-theme="wa"] .buddy-hero-copy{
+  position:relative;z-index:2;
+  max-width:86%;
+  padding:16px 16px 14px;
+  border:1px solid rgba(221,203,187,.84);
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,251,245,.92),rgba(248,239,228,.84));
+  box-shadow:0 12px 32px rgba(55,38,31,.11);
+  backdrop-filter:blur(7px);
+}
+html[data-theme="wa"] .hero h1{font-size:35px;line-height:1.22;margin:4px 0 5px}
+html[data-theme="wa"] .hero-date{font-size:12px;font-weight:800;color:#765148}
+html[data-theme="wa"] .hero-route{font-size:9.5px;line-height:1.55;color:#6B5A52;margin-top:5px}
+html[data-theme="wa"] .hero-submeta{margin-top:10px;background:rgba(255,252,247,.86)}
+html[data-theme="wa"] .settings-btn{z-index:4;background:rgba(255,251,245,.92)}
+
+/* WA weather artwork: real forecast decides which seasonal scene is shown. */
+html[data-theme="wa"] .weather-main{align-items:stretch;gap:14px}
+html[data-theme="wa"] .weather-icon.has-wa-weather-art{
+  width:112px;height:112px;flex:0 0 112px;
+  border-radius:18px;overflow:hidden;padding:0;
+  background:#F4EADD;border:1px solid #E1D1C2;
+  box-shadow:0 8px 20px rgba(69,48,39,.08);
+}
+html[data-theme="wa"] .wa-weather-art{display:block;width:100%;height:100%;object-fit:cover}
+html:not([data-theme="wa"]) .wa-weather-art{display:none}
+html[data-theme="wa"] .weather-card.weather-no-forecast .weather-icon{font-size:34px}
+
+/* Login becomes part of the November visual identity. */
+html[data-theme="wa"] .auth-gate{
+  background:
+    linear-gradient(180deg,rgba(246,239,230,.72),rgba(242,231,217,.90)),
+    url("./nov_hero_main_b.webp?v=130") center/cover no-repeat;
+}
+.auth-brand-icon{width:84px;height:84px;margin:0 auto 12px;border-radius:22px;overflow:hidden;box-shadow:0 10px 28px rgba(64,44,34,.15);border:1px solid rgba(140,74,60,.16)}
+.auth-brand-icon img{display:block;width:100%;height:100%;object-fit:cover}
+html[data-theme="wa"] .auth-card{background:rgba(255,251,245,.92);border:1px solid #DDCBBB;backdrop-filter:blur(12px)}
+html[data-theme="wa"] .auth-kicker{color:#8C4A3C}
+
+/* WA theme picker preview now previews the actual autumn art language. */
+html[data-theme="wa"] .theme-preview-wa .preview-washi,
+.theme-preview-wa .preview-washi{
+  background:
+    linear-gradient(180deg,rgba(249,241,231,.18),rgba(77,47,34,.20)),
+    url("./nov_hero_main_b.webp?v=130") center/cover no-repeat;
+  color:#fff;
+  border-color:#D9C4B0;
+}
+.theme-preview-wa .preview-seal{background:rgba(250,242,232,.82);color:#7A433B;border-color:#8C4A3C}
+.theme-preview-wa .preview-wa-line{border-left-color:rgba(255,247,237,.78)}
+.theme-preview-wa .preview-wa-row{color:#FFF8ED;text-shadow:0 1px 4px rgba(45,28,22,.75);font-weight:800}
+
+@media(max-width:420px){
+  html[data-theme="wa"] .hero{min-height:326px;background-position:53% center}
+  html[data-theme="wa"] .buddy-hero-v42{min-height:274px}
+  html[data-theme="wa"] .buddy-hero-copy{max-width:91%;padding:14px}
+  html[data-theme="wa"] .hero h1{font-size:32px}
+  html[data-theme="wa"] .weather-icon.has-wa-weather-art{width:96px;height:96px;flex-basis:96px}
+}

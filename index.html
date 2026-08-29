@@ -16,15 +16,16 @@
       document.documentElement.dataset.fontSize=localStorage.getItem("kyushu-nov-2026:fontSize")||"standard";
     }catch(e){}
   </script>
-  <link rel="stylesheet" href="./style.css?v=120" />
+  <link rel="stylesheet" href="./style.css?v=130" />
   <title>九州家族紅葉旅</title>
-  <meta name="app-version" content="1.2.0" />
-  <link rel="preload" as="image" href="./day-scene-v52-01.webp?v=520" fetchpriority="high">
+  <meta name="app-version" content="1.3.0" />
+  <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=130" fetchpriority="high">
+  <link rel="preload" as="image" href="./day-scene-v52-01.webp?v=520">
 </head>
 <body>
   <section id="authGate" class="auth-gate">
     <div class="auth-card">
-      <div class="auth-lock">🔒</div>
+      <div class="auth-brand-icon"><img src="./nov_app_icon_a.webp?v=130" alt="九州家族紅葉旅"></div>
       <span class="auth-kicker">PRIVATE TRIP</span>
       <h1>九州家族紅葉旅</h1>
       <p>行程內容只有已授權的 Google 帳號才能載入。</p>
@@ -223,7 +224,7 @@
         <div class="theme-preview-grid">
           <button type="button" class="theme-preview-card theme-preview-travel" data-theme-choice="travel">
             <span class="preview-paper"><span class="preview-kicker">2026・晩秋</span><span class="preview-title">九州 家族紅葉旅</span><span class="preview-line"></span><span class="preview-row"><i>D5</i><b>紅葉路線</b></span><span class="preview-row"><i>D8</i><b>秋月・竈門</b></span></span>
-            <span class="theme-preview-copy"><b>旅冊</b><small>日本旅遊雜誌・紙張感</small></span><em>預設</em>
+            <span class="theme-preview-copy"><b>旅冊</b><small>日本旅遊雜誌・紙張感</small></span><em></em>
           </button>
           <button type="button" class="theme-preview-card theme-preview-sea" data-theme-choice="sea">
             <span class="preview-sea"><span class="preview-sun"></span><span class="preview-wave"></span><span class="preview-time">17:50</span><span class="preview-place">海邊散步</span></span>
@@ -231,7 +232,7 @@
           </button>
           <button type="button" class="theme-preview-card theme-preview-wa" data-theme-choice="wa">
             <span class="preview-washi"><span class="preview-seal">九州</span><span class="preview-wa-line"></span><span class="preview-wa-row">十一月廿五日　紅葉</span><span class="preview-wa-row">十一月廿八日　秋月</span></span>
-            <span class="theme-preview-copy"><b>和風</b><small>御朱印帳・旅館・紀念章</small></span><em></em>
+            <span class="theme-preview-copy"><b>和風秋旅</b><small>楓葉・銀杏・旅館手冊</small></span><em>預設</em>
           </button>
           <button type="button" class="theme-preview-card theme-preview-buddy" data-theme-choice="buddy">
             <span class="preview-buddy preview-buddy-v42">
@@ -350,7 +351,7 @@
   <div id="toast" class="toast" role="status"></div>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script defer src="./firebase-config.js?v=110"></script>
-  <script defer src="./app.js?v=110"></script>
+  <script defer src="./firebase-config.js?v=130"></script>
+  <script defer src="./app.js?v=130"></script>
 </body>
 </html>

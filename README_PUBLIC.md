@@ -22,3 +22,12 @@ Artwork in v1.1 is temporary carry-over/placeholder material from the October UI
 - Firebase Web config is now populated for the shared Kyushu Firebase project while keeping the November RTDB root isolated.
 - PWA/cache asset version advanced to 1.1.0.
 - Artwork replacement is still intentionally deferred.
+
+## v1.3 visual integration
+- WA / 和風秋旅 remains the default November theme.
+- Added November-exclusive autumn brand artwork and converted the supplied art assets to WebP for GitHub deployment.
+- App icon candidate A is the default November brand mark; candidates B/C are retained as alternatives.
+- Main WA Hero uses `nov_hero_main_a.webp`; authentication screen uses `nov_hero_main_b.webp`.
+- Added weather-specific WA artwork for sunny, cloudy, rain, thunder/storm and snow, selected from the live forecast code.
+- PWA icon derivatives remain PNG (`icon-192.png`, `icon-512.png`) intentionally for broad iOS/PWA compatibility; the supplied icon source candidates are stored as WebP.
+- October-style Pompompurin/Usagi artwork remains available only as the temporary Buddy theme and is no longer the November default visual identity.
