@@ -1,4 +1,4 @@
-/* Kyushu family autumn PWA · November 2026 · v1.4.0 WA Autumn refreshed artwork pack */
+/* Kyushu family autumn PWA · November 2026 · v1.4.1 WA Autumn day-art visibility fix */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -19,8 +19,8 @@ let cloudReconnectInFlight = false;
 const GUIDE_DEVICE_ID_KEY = `${APP_NAMESPACE}:guide-device-id`;
 
 const BUDDY_FAST_ASSETS=[
-  "./day-scene-v52-01.webp?v=540","./day-scene-v52-02.webp?v=540","./day-scene-v52-03.webp?v=540","./day-scene-v52-04.webp?v=540","./day-scene-v52-05.webp?v=540",
-  "./day-scene-v52-06.webp?v=540","./day-scene-v52-07.webp?v=540","./day-scene-v52-08.webp?v=540","./day-scene-v52-09.webp?v=540",
+  "./day-scene-v52-01.webp?v=541","./day-scene-v52-02.webp?v=541","./day-scene-v52-03.webp?v=541","./day-scene-v52-04.webp?v=541","./day-scene-v52-05.webp?v=541",
+  "./day-scene-v52-06.webp?v=541","./day-scene-v52-07.webp?v=541","./day-scene-v52-08.webp?v=541","./day-scene-v52-09.webp?v=541",
   "./weather-rain-usagi-v47.webp?v=470","./weather-sunny-usagi-v536.webp?v=536","./weather-teruteru-usagi-v536.webp?v=536","./weather-cloudy-usagi-v536.webp?v=536","./weather-thunder-usagi-v536.webp?v=536","./weather-snow-usagi-v536.webp?v=536","./booking-check-purin.webp?v=460","./booking-dash-usagi.webp?v=460","./hotel-return-duo.webp?v=460",
   "./egg-sendoff-v539.png?v=539","./egg-cry-v539.png?v=539","./egg-home-sleep-v539.png?v=539",
   "./duck_gang.png?v=5311","./seal_gang.png?v=5311",
@@ -1586,7 +1586,7 @@ function renderDailyScene(){
   if(!img)return;
   const src=dailySceneAsset(state.dayIndex);
   if(img.getAttribute("src")!==src) img.src=src;
-  img.alt=`D${state.dayIndex+1} 布丁狗與烏薩奇旅行主題插畫`;
+  img.alt=`D${state.dayIndex+1} 今日旅程主題視覺`;
   if(bar) bar.style.width=`${((state.dayIndex+1)/TRIP.days.length)*100}%`;
 }
 
@@ -3171,7 +3171,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=140",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=141",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

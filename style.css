@@ -3651,11 +3651,22 @@ html[data-theme="wa"] .theme-preview-wa .preview-washi,
 
 
 /* ===== November v1.4 — refreshed uploaded artwork ===== */
-html[data-theme="wa"] body{background-image:radial-gradient(circle at 12% 0%, rgba(212,175,82,.11), transparent 20%),radial-gradient(circle at 88% 8%, rgba(184,94,64,.10), transparent 24%),linear-gradient(180deg,rgba(251,246,239,.92),rgba(242,232,218,.94)),url("./wa-paper-texture.webp?v=140");background-size:auto,auto,auto,cover;background-blend-mode:normal,normal,normal,multiply;}
+html[data-theme="wa"] body{background-image:radial-gradient(circle at 12% 0%, rgba(212,175,82,.11), transparent 20%),radial-gradient(circle at 88% 8%, rgba(184,94,64,.10), transparent 24%),linear-gradient(180deg,rgba(251,246,239,.92),rgba(242,232,218,.94)),url("./wa-paper-texture.webp?v=141");background-size:auto,auto,auto,cover;background-blend-mode:normal,normal,normal,multiply;}
 .autumn-state-thumb{width:62px;height:62px;display:grid;place-items:center;border-radius:16px;overflow:hidden;flex:0 0 auto;background:rgba(255,255,255,.74);border:1px solid rgba(215,202,189,.85);box-shadow:0 6px 18px rgba(88,63,42,.06)}
 .autumn-state-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .autumn-watch-row{grid-template-columns:62px 1fr auto;min-height:82px}
 html[data-theme="wa"] .autumn-watch{position:relative;overflow:hidden}
-html[data-theme="wa"] .autumn-watch:after{content:"";position:absolute;right:-24px;bottom:-20px;width:170px;height:120px;background:url("./wa-leaf-scatter.webp?v=140") no-repeat center/contain;opacity:.18;pointer-events:none}
+html[data-theme="wa"] .autumn-watch:after{content:"";position:absolute;right:-24px;bottom:-20px;width:170px;height:120px;background:url("./wa-leaf-scatter.webp?v=141") no-repeat center/contain;opacity:.18;pointer-events:none}
 html[data-theme="wa"] .autumn-watch-row{background:linear-gradient(180deg,rgba(255,252,248,.98),rgba(249,241,232,.98))}
 @media(max-width:380px){.autumn-state-thumb{width:54px;height:54px}.autumn-watch-row{grid-template-columns:54px 1fr}.autumn-watch-row em{grid-column:2;justify-self:start}}
+
+
+/* ===== November v1.4.1 — WA day artwork visibility fix ===== */
+.nov-day-art{display:block;width:100%;height:auto;margin:10px 0 18px;padding:0;border:1px solid #dfd0c0;border-radius:18px;overflow:hidden;background:#f8efe4;box-shadow:0 12px 28px rgba(77,58,47,.08);position:relative;text-align:left}
+.nov-day-art>img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;transition:transform .2s ease}
+.nov-day-art:active>img{transform:scale(.995)}
+.nov-day-art .day-scene-progress{display:block;position:absolute;left:16px;right:16px;bottom:10px;padding:4px 6px;border-radius:99px;background:rgba(45,33,27,.28);backdrop-filter:blur(5px)}
+.nov-day-art .day-scene-progress i{display:block;height:3px;border-radius:99px;background:rgba(255,255,255,.30);overflow:hidden}
+.nov-day-art .day-scene-progress em{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#b75b42,#d8b24c);transition:width .28s ease}
+html[data-theme="wa"] .nov-day-art{display:block;border-color:#d8c5b2;background:#fbf4eb}
+html[data-theme="wa"] .nov-day-art:before{content:"AUTUMN JOURNEY";position:absolute;z-index:2;top:10px;right:10px;padding:5px 8px;border-radius:999px;background:rgba(250,244,235,.78);border:1px solid rgba(219,198,178,.72);color:#7d4a3d;font-size:8px;font-weight:900;letter-spacing:.12em;backdrop-filter:blur(5px)}

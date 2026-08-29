@@ -1,9 +1,9 @@
 const CACHE_PREFIX = "kyushu-nov-";
-const CACHE = "kyushu-nov-v1.4.0";
+const CACHE = "kyushu-nov-v1.4.1";
 const SHELL = [
-  "./","./index.html","./style.css?v=140","./app.js?v=140",
-  "./manifest.json","./firebase-config.js?v=140","./icon-192.png","./icon-512.png","./icon-maskable-512.png",
-  "./nov_app_icon_a.webp?v=140","./nov_app_icon_b.webp?v=140","./nov_app_icon_c.webp?v=140",
+  "./","./index.html","./style.css?v=141","./app.js?v=141",
+  "./manifest.json","./firebase-config.js?v=141","./icon-192.png","./icon-512.png","./icon-maskable-512.png",
+  "./nov_app_icon_a.webp?v=141","./nov_app_icon_b.webp?v=141","./nov_app_icon_c.webp?v=141",
   "./nov_hero_main_a.webp?v=130","./nov_hero_main_b.webp?v=130",
   "./nov_weather_sunny.webp?v=130","./nov_weather_cloudy.webp?v=130","./nov_weather_rainy.webp?v=130","./nov_weather_storm.webp?v=130","./nov_weather_snow.webp?v=130",
   "./hero-cover-v51.webp?v=510",
@@ -16,22 +16,22 @@ const SHELL = [
   "./mini-purin-clap.webp","./mini-purin-hero.webp","./mini-purin-lie.webp","./mini-purin-surprise.webp",
   "./mini-usagi-point.webp","./mini-usagi-excited.webp","./mini-usagi-success.webp","./mini-usagi-sticker.webp"
 ,
-  "./day-scene-v52-01.webp?v=540",
-  "./day-scene-v52-02.webp?v=540",
-  "./day-scene-v52-03.webp?v=540",
-  "./day-scene-v52-04.webp?v=540",
-  "./day-scene-v52-05.webp?v=540",
-  "./day-scene-v52-06.webp?v=540",
-  "./day-scene-v52-07.webp?v=540",
-  "./day-scene-v52-08.webp?v=540",
-  "./day-scene-v52-09.webp?v=540",
+  "./day-scene-v52-01.webp?v=541",
+  "./day-scene-v52-02.webp?v=541",
+  "./day-scene-v52-03.webp?v=541",
+  "./day-scene-v52-04.webp?v=541",
+  "./day-scene-v52-05.webp?v=541",
+  "./day-scene-v52-06.webp?v=541",
+  "./day-scene-v52-07.webp?v=541",
+  "./day-scene-v52-08.webp?v=541",
+  "./day-scene-v52-09.webp?v=541",
   "./weather-rain-usagi-v47.webp?v=470",
   "./weather-sunny-usagi-v536.webp?v=536","./weather-teruteru-usagi-v536.webp?v=536","./weather-cloudy-usagi-v536.webp?v=536","./weather-thunder-usagi-v536.webp?v=536","./weather-snow-usagi-v536.webp?v=536",
   "./booking-check-purin.webp?v=460",
   "./booking-dash-usagi.webp?v=460",
   "./hotel-return-duo.webp?v=460",
   "./autumn-status-unknown.webp?v=140","./autumn-status-coloring.webp?v=140","./autumn-status-peak.webp?v=140","./autumn-status-past.webp?v=140","./autumn-status-skip.webp?v=140",
-  "./wa-paper-texture.webp?v=140","./wa-leaf-scatter.webp?v=140"];
+  "./wa-paper-texture.webp?v=141","./wa-leaf-scatter.webp?v=141"];
 
 self.addEventListener("install", event => {
   event.waitUntil(

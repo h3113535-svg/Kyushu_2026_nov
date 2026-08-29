@@ -1,3 +1,7 @@
+Kyushu Nov PWA v1.4.1
+
+修正：和風預設主題下，D1–D9 圖片卡原本誤套 buddy-only-art 而被 display:none 隱藏；v1.4.1 已改成獨立 nov-day-art，並強制 cache bust。
+
 Kyushu Nov PWA v1.4.0
 
 更新重點：
