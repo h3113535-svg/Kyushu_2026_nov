@@ -14,13 +14,14 @@
     try{
       document.documentElement.dataset.theme=localStorage.getItem("kyushu-nov-2026:displayTheme")||"wa";
       document.documentElement.dataset.fontSize=localStorage.getItem("kyushu-nov-2026:fontSize")||"standard";
+      document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-  <link rel="stylesheet" href="./style.css?v=160" />
+  <link rel="stylesheet" href="./style.css?v=170" />
   <title>九州家族紅葉旅</title>
-  <meta name="app-version" content="1.6.0" />
+  <meta name="app-version" content="1.7.0" />
   <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=160" fetchpriority="high">
-  <link rel="preload" as="image" href="./day-scene-v52-01.webp?v=550">
+  <link rel="preload" as="image" href="./day-scene-zh-v17-01.webp?v=170">
 </head>
 <body>
   <section id="authGate" class="auth-gate">
@@ -66,6 +67,7 @@
         <div class="day-strip-wrap">
           <div id="dayStrip" class="day-strip" aria-label="旅行日期"></div>
         </div>
+        <section id="journeyChapters" class="journey-chapters" aria-label="旅程章節"></section>
         <section id="weatherCard" class="weather-card skeleton">
           <div class="weather-main">
             <div>
@@ -76,18 +78,22 @@
             <div class="weather-icon" id="weatherIcon">☁️</div>
           </div>
           <div class="rain-box" id="rainBox"></div>
+          <div class="weather-mode-hint" id="weatherModeHint"></div>
           <div class="weather-buddy-speech buddy-only-art" id="weatherBuddySpeech" role="status" aria-live="polite"></div>
           <div class="weather-buddy-slot buddy-only-art" id="weatherBuddySlot"></div>
         </section>
         <section class="day-title day-title-v46">
-          <div class="day-title-main">
-            <span id="dayNumber">D1</span>
-            <h2 id="dayTitle">行程</h2>
+          <div class="day-title-main-group">
+            <div class="day-title-main">
+              <span id="dayNumber">D1</span>
+              <h2 id="dayTitle">行程</h2>
+            </div>
+            <div id="dayTitleMeta" class="day-title-meta" aria-label="今日資訊"></div>
           </div>
           <p id="daySubtitle"></p>
         </section>
         <button type="button" id="daySceneCard" class="day-scene-card buddy-reactable nov-day-art" data-buddy-react="duo" data-buddy-context="day" aria-label="今日旅程主題視覺">
-          <img id="daySceneImage" src="./day-scene-v52-01.webp?v=550" alt="今日旅程主題視覺">
+          <img id="daySceneImage" src="./day-scene-zh-v17-01.webp?v=170" alt="今日旅程主題視覺">
           <span class="day-scene-progress"><i><em id="daySceneProgressBar"></em></i></span>
         </button>
         <section id="dayBrief" class="day-brief"></section>
@@ -247,6 +253,13 @@
           </button>
         </div>
       </section>
+            <section class="setting-section">
+        <div class="setting-label"><b>每日主圖語系</b><small>D1–D9 主題圖預設顯示中文，可切換成日文版本，之後會維持同一語系。</small></div>
+        <div class="segmented-control two" role="group" aria-label="每日主圖語系">
+          <button type="button" data-scene-lang-choice="zh">中文</button>
+          <button type="button" data-scene-lang-choice="ja">日本語</button>
+        </div>
+      </section>
       <section class="setting-section account-setting">
         <div class="setting-label"><b>私人帳號</b><small id="accountEmail">—</small></div>
         <button type="button" class="logout-btn" id="logoutBtn">登出這台裝置</button>
@@ -366,7 +379,7 @@
   <div id="toast" class="toast" role="status"></div>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script defer src="./firebase-config.js?v=160"></script>
-  <script defer src="./app.js?v=160"></script>
+  <script defer src="./firebase-config.js?v=170"></script>
+  <script defer src="./app.js?v=170"></script>
 </body>
 </html>

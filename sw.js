@@ -1,8 +1,8 @@
 const CACHE_PREFIX = "kyushu-nov-";
-const CACHE = "kyushu-nov-v1.6.0";
+const CACHE = "kyushu-nov-v1.7.0";
 const SHELL = [
-  "./","./index.html","./style.css?v=160","./app.js?v=160",
-  "./manifest.json","./firebase-config.js?v=160","./icon-192.png","./icon-512.png","./icon-maskable-512.png",
+  "./","./index.html","./style.css?v=170","./app.js?v=170",
+  "./manifest.json","./firebase-config.js?v=170","./icon-192.png","./icon-512.png","./icon-maskable-512.png",
   "./nov_app_icon_a.webp?v=160","./nov_app_icon_b.webp?v=160","./nov_app_icon_c.webp?v=160",
   "./nov_hero_main_a.webp?v=160","./nov_hero_main_b.webp?v=160",
   "./nov_weather_sunny.webp?v=160","./nov_weather_cloudy.webp?v=160","./nov_weather_rainy.webp?v=160","./nov_weather_storm.webp?v=160","./nov_weather_snow.webp?v=160",
@@ -42,7 +42,16 @@ const SHELL = [
   "./nov_empty_expense.webp?v=160",
   "./nov_empty_notes.webp?v=160",
   "./nov_empty_shopping.webp?v=160",
-  "./nov_loading_scene.webp?v=160"
+  "./nov_loading_scene.webp?v=160",
+  "./day-scene-zh-v17-01.webp?v=170",
+  "./day-scene-zh-v17-02.webp?v=170",
+  "./day-scene-zh-v17-03.webp?v=170",
+  "./day-scene-zh-v17-04.webp?v=170",
+  "./day-scene-zh-v17-05.webp?v=170",
+  "./day-scene-zh-v17-06.webp?v=170",
+  "./day-scene-zh-v17-07.webp?v=170",
+  "./day-scene-zh-v17-08.webp?v=170",
+  "./day-scene-zh-v17-09.webp?v=170"
 ];
 
 self.addEventListener("install", event => {
