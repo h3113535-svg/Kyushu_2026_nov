@@ -2690,13 +2690,13 @@ async function handleSubmit(e){
 
 const DISPLAY_THEME_KEY=`${APP_NAMESPACE}:displayTheme`;
 const FONT_SIZE_KEY=`${APP_NAMESPACE}:fontSize`;
-const THEME_META={travel:"#A8673F",sea:"#58788C",wa:"#874B43",buddy:"#E0A93A"};
+const THEME_META={travel:"#A8673F",sea:"#58788C",wa:"#8C4A3C",buddy:"#E0A93A"};
 
 function getDisplaySetting(key,fallback){
   try{return localStorage.getItem(key)||fallback}catch{return fallback}
 }
 function applyDisplaySettings(){
-  const theme=getDisplaySetting(DISPLAY_THEME_KEY,"travel");
+  const theme=getDisplaySetting(DISPLAY_THEME_KEY,"wa");
   const fontSize=getDisplaySetting(FONT_SIZE_KEY,"standard");
   document.documentElement.dataset.theme=theme;
   document.documentElement.dataset.fontSize=fontSize;
@@ -3150,7 +3150,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=110",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=120",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

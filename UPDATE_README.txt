@@ -1,20 +1,17 @@
-Kyushu_2026_nov v1.1 UPDATE ONLY
+Kyushu_2026_nov v1.2 UPDATE ONLY
 
-用途：從 v1.0 architecture 升級到 v1.1 functional。
-
-更新方式：
-1. 解壓縮此 ZIP。
-2. 將內含檔案直接覆蓋到 Kyushu_2026_nov GitHub repo 根目錄。
-3. 不要刪除 repo 內其他圖片與素材檔。
-4. Commit changes，等待 GitHub Pages 更新。
-
-本次變更檔案：
-- README_PUBLIC.md
+Updated files:
 - app.js
 - firebase-config.js
 - index.html
 - manifest.json
 - style.css
 - sw.js
+- README_PUBLIC.md
 
-此更新包不含全部圖片素材；需要完整還原時請使用 FULL BACKUP 包。
+Summary:
+- Set WA (和風秋旅) as default theme.
+- Upgraded WA theme into late-autumn maple + ginkgo visual direction.
+- Updated theme-color / manifest / service-worker version to v1.2.0.
+- Refined theme selector labels to mark WA as default.
+- No Firebase seed re-import required.
