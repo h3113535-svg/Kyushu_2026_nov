@@ -3648,3 +3648,14 @@ html[data-theme="wa"] .theme-preview-wa .preview-washi,
   html[data-theme="wa"] .hero h1{font-size:32px}
   html[data-theme="wa"] .weather-icon.has-wa-weather-art{width:96px;height:96px;flex-basis:96px}
 }
+
+
+/* ===== November v1.4 — refreshed uploaded artwork ===== */
+html[data-theme="wa"] body{background-image:radial-gradient(circle at 12% 0%, rgba(212,175,82,.11), transparent 20%),radial-gradient(circle at 88% 8%, rgba(184,94,64,.10), transparent 24%),linear-gradient(180deg,rgba(251,246,239,.92),rgba(242,232,218,.94)),url("./wa-paper-texture.webp?v=140");background-size:auto,auto,auto,cover;background-blend-mode:normal,normal,normal,multiply;}
+.autumn-state-thumb{width:62px;height:62px;display:grid;place-items:center;border-radius:16px;overflow:hidden;flex:0 0 auto;background:rgba(255,255,255,.74);border:1px solid rgba(215,202,189,.85);box-shadow:0 6px 18px rgba(88,63,42,.06)}
+.autumn-state-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.autumn-watch-row{grid-template-columns:62px 1fr auto;min-height:82px}
+html[data-theme="wa"] .autumn-watch{position:relative;overflow:hidden}
+html[data-theme="wa"] .autumn-watch:after{content:"";position:absolute;right:-24px;bottom:-20px;width:170px;height:120px;background:url("./wa-leaf-scatter.webp?v=140") no-repeat center/contain;opacity:.18;pointer-events:none}
+html[data-theme="wa"] .autumn-watch-row{background:linear-gradient(180deg,rgba(255,252,248,.98),rgba(249,241,232,.98))}
+@media(max-width:380px){.autumn-state-thumb{width:54px;height:54px}.autumn-watch-row{grid-template-columns:54px 1fr}.autumn-watch-row em{grid-column:2;justify-self:start}}

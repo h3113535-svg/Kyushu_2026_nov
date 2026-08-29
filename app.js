@@ -1,4 +1,4 @@
-/* Kyushu family autumn PWA · November 2026 · v1.3.0 WA Autumn visual integration */
+/* Kyushu family autumn PWA · November 2026 · v1.4.0 WA Autumn refreshed artwork pack */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -19,8 +19,8 @@ let cloudReconnectInFlight = false;
 const GUIDE_DEVICE_ID_KEY = `${APP_NAMESPACE}:guide-device-id`;
 
 const BUDDY_FAST_ASSETS=[
-  "./day-scene-v52-01.webp?v=520","./day-scene-v52-02.webp?v=520","./day-scene-v52-03.webp?v=520","./day-scene-v52-04.webp?v=520","./day-scene-v52-05.webp?v=520",
-  "./day-scene-v52-06.webp?v=520","./day-scene-v52-07.webp?v=520","./day-scene-v52-08.webp?v=520","./day-scene-v52-09.webp?v=520",
+  "./day-scene-v52-01.webp?v=540","./day-scene-v52-02.webp?v=540","./day-scene-v52-03.webp?v=540","./day-scene-v52-04.webp?v=540","./day-scene-v52-05.webp?v=540",
+  "./day-scene-v52-06.webp?v=540","./day-scene-v52-07.webp?v=540","./day-scene-v52-08.webp?v=540","./day-scene-v52-09.webp?v=540",
   "./weather-rain-usagi-v47.webp?v=470","./weather-sunny-usagi-v536.webp?v=536","./weather-teruteru-usagi-v536.webp?v=536","./weather-cloudy-usagi-v536.webp?v=536","./weather-thunder-usagi-v536.webp?v=536","./weather-snow-usagi-v536.webp?v=536","./booking-check-purin.webp?v=460","./booking-dash-usagi.webp?v=460","./hotel-return-duo.webp?v=460",
   "./egg-sendoff-v539.png?v=539","./egg-cry-v539.png?v=539","./egg-home-sleep-v539.png?v=539",
   "./duck_gang.png?v=5311","./seal_gang.png?v=5311",
@@ -1774,11 +1774,11 @@ function renderFamilyMeta(day){
 }
 const AUTUMN_STATUS_ORDER=["unknown","coloring","peak","past","skip"];
 const AUTUMN_STATUS_META={
-  unknown:{label:"未確認",icon:"○"},
-  coloring:{label:"色づき始め",icon:"◐"},
-  peak:{label:"見頃",icon:"●"},
-  past:{label:"見頃過ぎ",icon:"◒"},
-  skip:{label:"不追",icon:"–"}
+  unknown:{label:"未確認",icon:"?",image:"./autumn-status-unknown.webp?v=140"},
+  coloring:{label:"色づき始め",icon:"🍂",image:"./autumn-status-coloring.webp?v=140"},
+  peak:{label:"見頃",icon:"🍁",image:"./autumn-status-peak.webp?v=140"},
+  past:{label:"見頃過ぎ",icon:"🍂",image:"./autumn-status-past.webp?v=140"},
+  skip:{label:"不追",icon:"—",image:"./autumn-status-skip.webp?v=140"}
 };
 function autumnSpotById(id){return (TRIP.autumnSpots||[]).find(x=>x.id===id)}
 function autumnStatusFor(id){return state.autumnStatus?.[id]||"unknown"}
@@ -1790,7 +1790,7 @@ function renderAutumnWatch(day){
   if(!spots.length){box.innerHTML="";return}
   box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏即時狀態</b></div><small>點狀態可更新</small></div><div class="autumn-watch-list">${spots.map(s=>{
     const status=autumnStatusFor(s.id), meta=AUTUMN_STATUS_META[status]||AUTUMN_STATUS_META.unknown;
-    return `<button type="button" class="autumn-watch-row status-${esc(status)}" data-autumn-id="${esc(s.id)}"><span class="autumn-kind">${esc(s.icon||"🍁")}</span><span class="autumn-copy"><b>${esc(s.label)}</b>${s.note?`<small>${esc(s.note)}</small>`:""}</span><em>${meta.icon} ${esc(meta.label)}</em></button>`;
+    return `<button type="button" class="autumn-watch-row status-${esc(status)}" data-autumn-id="${esc(s.id)}"><span class="autumn-state-thumb"><img src="${esc(meta.image)}" alt="${esc(meta.label)}"></span><span class="autumn-copy"><b>${esc(s.label)}</b>${s.note?`<small>${esc(s.note)}</small>`:""}</span><em>${meta.icon} ${esc(meta.label)}</em></button>`;
   }).join("")}</div>`;
 }
 async function cycleAutumnStatus(id){
@@ -3171,7 +3171,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=130",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=140",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

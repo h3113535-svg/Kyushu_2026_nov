@@ -1,3 +1,11 @@
+Kyushu Nov PWA v1.4.0
+
+更新重點：
+- 套用使用者提供的新版 Day 1–Day 9 主視覺拼貼圖。
+- AUTUMN WATCH 改為圖像化狀態貼章（未確認 / 色づき始め / 見頃 / 見頃過ぎ / 不追）。
+- App icon / manifest icons 更新為新版楓葉銀杏圓章。
+- WA 主題底圖整合新版紙質背景與葉片裝飾。
+
 # Kyushu_2026_nov
 
 Private, mobile-first PWA shell for the 2026/11/21–11/29 Kyushu family autumn trip.
