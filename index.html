@@ -17,7 +17,7 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-  <link rel="stylesheet" href="./style.css?v=170" />
+  <link rel="stylesheet" href="./style.css?v=180" />
   <title>九州家族紅葉旅</title>
   <meta name="app-version" content="1.7.0" />
   <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=160" fetchpriority="high">
@@ -209,7 +209,7 @@
     <nav class="bottom-nav" aria-label="主選單">
       <button class="nav-btn active" data-view="schedule"><span>🗓️</span><b>行程</b></button>
       <button class="nav-btn" data-view="food"><span>🍴</span><b>美食</b></button>
-      <button class="nav-btn" data-view="tools"><span>☰</span><b>旅程工具</b></button>
+      <button class="nav-btn" data-view="tools" data-tool="note"><span>📝</span><b>記事</b></button>
     </nav>
   </div>
 
@@ -379,7 +379,7 @@
   <div id="toast" class="toast" role="status"></div>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script defer src="./firebase-config.js?v=170"></script>
-  <script defer src="./app.js?v=170"></script>
+  <script defer src="./firebase-config.js?v=180"></script>
+  <script defer src="./app.js?v=180"></script>
 </body>
 </html>

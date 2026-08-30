@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.7.0 scene language + chapter navigation + typography polish */
+/* Kyushu family autumn PWA · November 2026 · v1.8.0 fixed bottom nav + family labels + chapter artwork */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.7.0";
+const APP_VERSION = "1.8.0";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -22,6 +22,7 @@ const GUIDE_DEVICE_ID_KEY = `${APP_NAMESPACE}:guide-device-id`;
 const BUDDY_FAST_ASSETS=[
   "./day-scene-zh-v17-01.webp?v=170","./day-scene-zh-v17-02.webp?v=170","./day-scene-zh-v17-03.webp?v=170","./day-scene-zh-v17-04.webp?v=170","./day-scene-zh-v17-05.webp?v=170",
   "./day-scene-zh-v17-06.webp?v=170","./day-scene-zh-v17-07.webp?v=170","./day-scene-zh-v17-08.webp?v=170","./day-scene-zh-v17-09.webp?v=170",
+  "./chapter-v18-d1-3.webp?v=180","./chapter-v18-d4-6.webp?v=180","./chapter-v18-d7-9.webp?v=180",
   "./day-scene-v52-01.webp?v=550","./day-scene-v52-02.webp?v=550","./day-scene-v52-03.webp?v=550","./day-scene-v52-04.webp?v=550","./day-scene-v52-05.webp?v=550",
   "./day-scene-v52-06.webp?v=550","./day-scene-v52-07.webp?v=550","./day-scene-v52-08.webp?v=550","./day-scene-v52-09.webp?v=550",
   "./weather-rain-usagi-v47.webp?v=470","./weather-sunny-usagi-v536.webp?v=536","./weather-teruteru-usagi-v536.webp?v=536","./weather-cloudy-usagi-v536.webp?v=536","./weather-thunder-usagi-v536.webp?v=536","./weather-snow-usagi-v536.webp?v=536","./booking-check-purin.webp?v=460","./booking-dash-usagi.webp?v=460","./hotel-return-duo.webp?v=460",
@@ -183,6 +184,16 @@ function normalizeGuideNotesMap(raw){
   return out;
 }
 function uid(){return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`}
+const FAMILY_MEMBER_LABELS=["父","母","兄","弟"];
+const LEGACY_MEMBER_MAP={"長輩A":"父","長輩B":"母","35歲":"兄","31歲":"弟"};
+function normalizeMemberLabel(value){return LEGACY_MEMBER_MAP[value]||value}
+function normalizeFamilyCollections(){
+  if(!state)return;
+  state.shopping=(state.shopping||[]).map(x=>({...x,owner:normalizeMemberLabel(x.owner)}));
+  state.expenses=(state.expenses||[]).map(x=>({...x,payer:normalizeMemberLabel(x.payer),participants:(x.participants||[]).map(normalizeMemberLabel)}));
+  if(state.shoppingMember&&state.shoppingMember!=="全部")state.shoppingMember=normalizeMemberLabel(state.shoppingMember);
+  saveLocal("shopping",state.shopping);saveLocal("expenses",state.expenses);
+}
 function esc(v=""){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function mapSearch(q){return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`}
 function googleSearch(q){return `https://www.google.com/search?q=${encodeURIComponent(q)}`}
@@ -1691,14 +1702,19 @@ function setSceneLanguage(lang){
   try{localStorage.setItem(SCENE_LANG_STORAGE_KEY,lang)}catch{}
   applySceneLanguageUI();
   renderDailyScene();
+  renderJourneyChapters();
   if(document.querySelector('#dayImageLightbox.show'))renderDayLightbox();
   if(TRIP?.days?.[state?.dayIndex??0])renderSchedule();
 }
 const TRIP_CHAPTERS=[
-  {id:'c1',start:0,end:2,kicker:'Chapter 1',range:'D1–D3',title:'旅程開始・福岡與由布院',note:'抵達福岡、城市秋日、前往由布院 Villa'},
-  {id:'c2',start:3,end:5,kicker:'Chapter 2',range:'D4–D6',title:'別府・九重・高千穗・阿蘇',note:'動物園、絕景自駕、峽谷與溫泉夜'},
-  {id:'c3',start:6,end:8,kicker:'Chapter 3',range:'D7–D9',title:'熊本與太宰府・旅程收尾',note:'阿蘇、熊本、秋月太宰府，最後回到福岡'}
+  {id:'c1',start:0,end:2,kicker:'Chapter 1',range:'D1–D3',title:'旅程開始・福岡與由布院',note:'抵達福岡、城市秋日、前往由布院 Villa',artZh:'./chapter-v18-d1-3.webp?v=180'},
+  {id:'c2',start:3,end:5,kicker:'Chapter 2',range:'D4–D6',title:'別府・九重・高千穗・阿蘇',note:'動物園、絕景自駕、峽谷與溫泉夜',artZh:'./chapter-v18-d4-6.webp?v=180'},
+  {id:'c3',start:6,end:8,kicker:'Chapter 3',range:'D7–D9',title:'熊本與太宰府・旅程收尾',note:'阿蘇、熊本、秋月太宰府，最後回到福岡',artZh:'./chapter-v18-d7-9.webp?v=180'}
 ];
+function chapterImageAsset(ch,lang=getSceneLanguage()){
+  // 中文使用專屬三日章節圖；日文模式在尚未有日文章節圖時，退回該章第一天的日文主圖，避免語系混用。
+  return lang==='zh' ? ch.artZh : dailySceneAsset(ch.start,'ja');
+}
 function chapterForDay(index){
   return TRIP_CHAPTERS.find(ch=>index>=ch.start&&index<=ch.end)||TRIP_CHAPTERS[0];
 }
@@ -1706,7 +1722,7 @@ function renderJourneyChapters(){
   const wrap=$('#journeyChapters'); if(!wrap)return;
   const current=chapterForDay(state?.dayIndex??0);
   const lang=getSceneLanguage();
-  wrap.innerHTML=`<div class="journey-chapter-head"><span class="eyebrow">CHAPTER</span><b>章節導覽</b><small>三段旅程快速切換</small></div><div class="journey-chapter-row">${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-card ${current.id===ch.id?'active':''}" data-chapter-start="${ch.start}"><img class="journey-chapter-art" src="${dailySceneAsset(ch.start,lang)}" alt="${ch.range} ${esc(ch.title)}"><span class="journey-chapter-copy"><small>${ch.kicker} · ${ch.range}</small><b>${ch.title}</b><span>${ch.note}</span></span></button>`).join('')}</div>`;
+  wrap.innerHTML=`<div class="journey-chapter-head"><span class="eyebrow">CHAPTER</span><b>章節導覽</b><small>三段旅程快速切換</small></div><div class="journey-chapter-row">${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-card ${current.id===ch.id?'active':''}" data-chapter-start="${ch.start}"><img class="journey-chapter-art" src="${chapterImageAsset(ch,lang)}" alt="${ch.range} ${esc(ch.title)}"><span class="journey-chapter-copy"><small>${ch.kicker} · ${ch.range}</small><b>${ch.title}</b><span>${ch.note}</span></span></button>`).join('')}</div>`;
 }
 const WEATHER_PREVIEW_STORAGE_KEY=`${APP_NAMESPACE}:weather-preview-mode`;
 const WEATHER_PREVIEW_VARIANTS=[
@@ -2943,7 +2959,7 @@ function bind(){
     const sceneLangChoice=e.target.closest("[data-scene-lang-choice]");if(sceneLangChoice){setSceneLanguage(sceneLangChoice.dataset.sceneLangChoice);return}
     const chapterJump=e.target.closest("[data-chapter-start]");if(chapterJump){state.dayIndex=Number(chapterJump.dataset.chapterStart);state.decisionDrafts={};renderDays();renderSchedule();return}
     const d=e.target.closest("[data-day]");if(d){state.dayIndex=Number(d.dataset.day);state.decisionDrafts={};renderDays();renderSchedule();return}
-    const n=e.target.closest("[data-view]");if(n){switchView(n.dataset.view);return}
+    const n=e.target.closest("[data-view]");if(n){switchView(n.dataset.view);if(n.dataset.tool)switchTool(n.dataset.tool);return}
     const t=e.target.closest("[data-tool]");if(t){switchTool(t.dataset.tool);return}
     const o=e.target.closest("[data-open-modal]");if(o){openModal(o.dataset.openModal);return}
     const m=e.target.closest("[data-member]");if(m){state.shoppingMember=m.dataset.member;renderShopping();return}
@@ -3142,8 +3158,8 @@ async function connectCloud(){
 
   const mappings=[
     ["foods",v=>{if(v!==null){state.foods=normalizeCloud(v);saveLocal("foods",state.foods);renderFood()}}],
-    ["shopping",v=>{if(v!==null){state.shopping=normalizeCloud(v);saveLocal("shopping",state.shopping);renderShopping()}}],
-    ["expenses",v=>{if(v!==null){state.expenses=normalizeCloud(v);saveLocal("expenses",state.expenses);renderExpenses()}}],
+    ["shopping",v=>{if(v!==null){state.shopping=normalizeCloud(v).map(x=>({...x,owner:normalizeMemberLabel(x.owner)}));saveLocal("shopping",state.shopping);renderShopping()}}],
+    ["expenses",v=>{if(v!==null){state.expenses=normalizeCloud(v).map(x=>({...x,payer:normalizeMemberLabel(x.payer),participants:(x.participants||[]).map(normalizeMemberLabel)}));saveLocal("expenses",state.expenses);renderExpenses()}}],
     ["taskStatus",v=>{if(v && typeof v==="object"){state.taskStatus=v;saveLocal("taskStatus",v);renderBookings()}}],
     ["decisions",v=>{if(v && typeof v==="object"){state.decisions=v;saveLocal("decisions",v);renderSchedule()}}],
     ["autumnStatus",v=>{if(v && typeof v==="object"){state.autumnStatus=v;saveLocal("autumnStatus",v);renderAutumnWatch(TRIP.days[state.dayIndex])}}],
@@ -3263,9 +3279,10 @@ async function fetchPrivateTrip(){
   return content;
 }
 async function bootTrip(content,user,{offline=false}={}){
-  TRIP=content;
+  TRIP={...content,members:FAMILY_MEMBER_LABELS.slice()};
   currentAuthUser=user||null;
   state=createState();
+  normalizeFamilyCollections();
   state.dayIndex=initialDay();
   applyPrivateTripMeta();
   applyDisplaySettings();
@@ -3374,7 +3391,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=170",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=180",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

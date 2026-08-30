@@ -3772,3 +3772,38 @@ html[data-theme="buddy"][data-font-size="large"] .day-title-v46 #dayTitle,html[d
 
 .journey-chapter-card{overflow:hidden;padding:0!important;display:grid!important;grid-template-columns:92px minmax(0,1fr)!important;gap:0!important;align-items:stretch}.journey-chapter-art{width:92px;height:100%;min-height:108px;object-fit:cover;display:block}.journey-chapter-copy{display:grid;align-content:center;gap:5px;padding:12px 13px;min-width:0}.journey-chapter-copy>span{display:block}.journey-chapter-card.active .journey-chapter-art{filter:saturate(1.06) contrast(1.02)}
 @media (max-width:420px){.journey-chapter-card{grid-template-columns:78px minmax(0,1fr)!important}.journey-chapter-art{width:78px;min-height:104px}.journey-chapter-copy{padding:10px 11px}.journey-chapter-copy b{font-size:14px}}
+
+
+/* ===== v1.8 fixed bottom nav + chapter artwork ===== */
+:root{--bottom-nav-space:92px}
+#app{padding-bottom:calc(var(--bottom-nav-space) + env(safe-area-inset-bottom))}
+main{padding-bottom:calc(var(--bottom-nav-space) + env(safe-area-inset-bottom))}
+.bottom-nav,
+html[data-theme="travel"] .bottom-nav,
+html[data-theme="sea"] .bottom-nav,
+html[data-theme="wa"] .bottom-nav,
+html[data-theme="buddy"] .bottom-nav{
+  position:fixed!important;
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:9999!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:calc(10px + env(safe-area-inset-bottom))!important;
+  transform:translateX(-50%)!important;
+  width:min(calc(100% - 24px),470px)!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+.bottom-nav .nav-btn{min-width:0;white-space:nowrap}
+.bottom-nav .nav-btn b{white-space:nowrap;overflow:visible;text-overflow:clip}
+.journey-chapter-card{grid-template-columns:132px minmax(0,1fr)!important;min-width:min(360px,90vw)!important}
+.journey-chapter-art{width:132px!important;min-height:112px!important;object-fit:cover!important;object-position:center!important}
+@media(max-width:420px){
+  :root{--bottom-nav-space:86px}
+  .bottom-nav{width:calc(100% - 16px)!important;bottom:calc(6px + env(safe-area-inset-bottom))!important;padding:6px!important}
+  .bottom-nav .nav-btn{min-height:48px!important;padding:6px 3px!important;gap:5px!important}
+  .bottom-nav .nav-btn span{font-size:16px!important}.bottom-nav .nav-btn b{font-size:12px!important}
+  .journey-chapter-card{grid-template-columns:112px minmax(0,1fr)!important;min-width:92vw!important}
+  .journey-chapter-art{width:112px!important;min-height:108px!important}
+}
