@@ -1,4 +1,4 @@
-/* Kyushu family autumn PWA · November 2026 · v1.8.0 fixed bottom nav + family labels + chapter artwork */
+/* Kyushu family autumn PWA · November 2026 · v1.9.5 chapter-free navigation + refreshed icon */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -22,7 +22,6 @@ const GUIDE_DEVICE_ID_KEY = `${APP_NAMESPACE}:guide-device-id`;
 const BUDDY_FAST_ASSETS=[
   "./day-scene-zh-v17-01.webp?v=170","./day-scene-zh-v17-02.webp?v=170","./day-scene-zh-v17-03.webp?v=170","./day-scene-zh-v17-04.webp?v=170","./day-scene-zh-v17-05.webp?v=170",
   "./day-scene-zh-v17-06.webp?v=170","./day-scene-zh-v17-07.webp?v=170","./day-scene-zh-v17-08.webp?v=170","./day-scene-zh-v17-09.webp?v=170",
-  "./chapter-v18-d1-3.webp?v=180","./chapter-v18-d4-6.webp?v=180","./chapter-v18-d7-9.webp?v=180",
   "./day-scene-v52-01.webp?v=550","./day-scene-v52-02.webp?v=550","./day-scene-v52-03.webp?v=550","./day-scene-v52-04.webp?v=550","./day-scene-v52-05.webp?v=550",
   "./day-scene-v52-06.webp?v=550","./day-scene-v52-07.webp?v=550","./day-scene-v52-08.webp?v=550","./day-scene-v52-09.webp?v=550",
   "./weather-rain-usagi-v47.webp?v=470","./weather-sunny-usagi-v536.webp?v=536","./weather-teruteru-usagi-v536.webp?v=536","./weather-cloudy-usagi-v536.webp?v=536","./weather-thunder-usagi-v536.webp?v=536","./weather-snow-usagi-v536.webp?v=536","./booking-check-purin.webp?v=460","./booking-dash-usagi.webp?v=460","./hotel-return-duo.webp?v=460",
@@ -1712,32 +1711,7 @@ function getChapterPreview(){
   const current=chapterForDay(state?.dayIndex??0);
   return TRIP_CHAPTERS.find(ch=>ch.id===chapterPreviewId)||current;
 }
-function renderJourneyChapters(){
-  const wrap=$('#journeyChapters'); if(!wrap)return;
-  const current=chapterForDay(state?.dayIndex??0);
-  const preview=getChapterPreview();
-  const lang=getSceneLanguage();
-  wrap.innerHTML=`
-    <div class="journey-chapter-head">
-      <div><span class="eyebrow">CHAPTER</span><b>章節導覽</b></div>
-      <small>切換章節預覽・圖片可放大</small>
-    </div>
-    <div class="journey-chapter-tabs" role="tablist" aria-label="旅程章節">
-      ${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-tab ${preview.id===ch.id?'selected':''} ${current.id===ch.id?'current':''}" data-chapter-tab="${ch.id}" role="tab" aria-selected="${preview.id===ch.id}"><small>${ch.range}</small><b>${ch.kicker.replace('Chapter ','第')}章</b></button>`).join('')}
-    </div>
-    <article class="journey-chapter-feature">
-      <button type="button" class="journey-chapter-image-btn" data-chapter-zoom="${preview.id}" aria-label="放大 ${esc(preview.title)} 圖片">
-        <img class="journey-chapter-feature-art" src="${chapterImageAsset(preview,lang)}" alt="${preview.range} ${esc(preview.title)}">
-        <span class="chapter-zoom-badge">⌕ 放大</span>
-      </button>
-      <div class="journey-chapter-feature-copy">
-        <small>${preview.kicker} · ${preview.range}</small>
-        <b>${preview.title}</b>
-        <span>${preview.note}</span>
-        <button type="button" class="chapter-enter-btn" data-chapter-start="${preview.start}">前往 D${preview.start+1} 行程 →</button>
-      </div>
-    </article>`;
-}
+function renderJourneyChapters(){return}
 function renderChapterLightbox(){
   const ch=TRIP_CHAPTERS[chapterLightboxIndex]||TRIP_CHAPTERS[0];
   const lang=getSceneLanguage();
@@ -2530,12 +2504,11 @@ function bindGuideTargets(visibleEvents=[]){
 
 function renderSchedule(){
   const d=TRIP.days[state.dayIndex];
-  const chapter=chapterForDay(state.dayIndex);
   $("#dayNumber").textContent=`D${state.dayIndex+1}`;
   $("#dayTitle").textContent=d.title;
   $("#daySubtitle").textContent=d.subtitle;
   const meta=$("#dayTitleMeta");
-  if(meta) meta.innerHTML=`<span class="day-meta-pill">${chapter.kicker}</span><span class="day-meta-text">${d.shortDate}</span><span class="day-meta-text">今日主圖</span>`;
+  if(meta) meta.innerHTML=`<span class="day-meta-pill">D${state.dayIndex+1}</span><span class="day-meta-text">${d.shortDate}</span><span class="day-meta-text">今日主圖</span>`;
   renderJourneyChapters();
   renderDayBrief(d);
   renderNowNext(d);
@@ -3450,7 +3423,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=180",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=195",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

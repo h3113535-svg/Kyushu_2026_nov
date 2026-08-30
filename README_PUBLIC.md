@@ -1,22 +1,12 @@
 Kyushu 2026 Nov PWA
-Version: 1.9.4
+Version: 1.9.5
 
 更新內容：
-- Hero 標題群組改到左上角，採旅誌封面式排版
-- 主標改用和整體視覺一致的 serif 中文字體
-- 主標維持無框設計，避免卡片感
-- 日期與中文路線重新整理層級與間距
-- 手機窄螢幕同步調整字級與留白
-- Service Worker / PWA cache 升級至 v1.9.4
+- 移除首頁 Chapter 章節導覽與章節放大視窗，避免和 D1–D9 日期導航重複。
+- Chapter 圖不再預載 / 不加入 Service Worker 快取；完整備份仍保留原圖素材。
+- 每日 Header 的 Chapter 標籤改為單純 D1–D9。
+- App / PWA icon 換成最新淡色「九州・阿蘇・溫泉・楓葉銀杏」版本。
+- 更新 192 / 512 / maskable PWA icon 與登入品牌圖。
+- Service Worker / PWA cache 升級至 v1.9.5。
 
-Kyushu 2026 Nov PWA
-Version: 1.9.3
-
-更新內容：
-- Hero 主標改為乾淨無框版，移除左上突兀葉片裝飾。
-- Hero 與整體 UI 再提亮，改為奶油白、淡楓葉粉、柔和銀杏金。
-- Chapter 導覽改為三個明確章節按鈕 + 單一大型預覽卡。
-- Chapter 圖可點擊放大，放大後可左右滑動切換三章。
-- Chapter 明確分離「預覽章節」與「前往 Dn 行程」操作。
-- 套用最新淡色版 App / PWA icon，且調整 maskable icon，降低 Android 啟動畫面中圖示過小的問題。
-- PWA cache 升級為 v1.9.3。
+備註：手機已安裝舊 PWA 時，系統可能快取舊 icon。必要時請移除舊主畫面捷徑後重新加入。

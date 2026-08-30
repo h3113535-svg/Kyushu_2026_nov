@@ -17,16 +17,16 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-  <link rel="stylesheet" href="./style.css?v=194" />
+  <link rel="stylesheet" href="./style.css?v=195" />
   <title>九州家族紅葉旅</title>
-  <meta name="app-version" content="1.9.4" />
+  <meta name="app-version" content="1.9.5" />
   <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=160" fetchpriority="high">
   <link rel="preload" as="image" href="./day-scene-zh-v17-01.webp?v=170">
 </head>
 <body>
   <section id="authGate" class="auth-gate">
     <div class="auth-card">
-      <div class="auth-brand-icon"><img src="./nov_app_icon_v193.webp?v=193" alt="九州家族紅葉旅"></div>
+      <div class="auth-brand-icon"><img src="./nov_app_icon_v195.webp?v=195" alt="九州家族紅葉旅"></div>
       <span class="auth-kicker">PRIVATE TRIP</span>
       <h1>九州家族紅葉旅</h1>
       <p>行程內容只有已授權的 Google 帳號才能載入。</p>
@@ -67,7 +67,6 @@
         <div class="day-strip-wrap">
           <div id="dayStrip" class="day-strip" aria-label="旅行日期"></div>
         </div>
-        <section id="journeyChapters" class="journey-chapters" aria-label="旅程章節"></section>
         <section id="weatherCard" class="weather-card skeleton">
           <div class="weather-main">
             <div>
@@ -262,19 +261,6 @@
     </div>
   </dialog>
 
-  <div id="chapterImageLightbox" class="chapter-image-lightbox" aria-hidden="true">
-    <div class="chapter-image-lightbox-backdrop" data-chapter-lightbox-close="1"></div>
-    <div class="chapter-image-lightbox-card" role="dialog" aria-modal="true" aria-label="旅程章節圖片檢視">
-      <div class="chapter-image-lightbox-head"><div><span id="chapterLightboxKicker">Chapter 1 · D1–D3</span><b id="chapterLightboxTitle">旅程開始・福岡與由布院</b></div><button type="button" id="chapterLightboxClose" aria-label="關閉">×</button></div>
-      <div class="chapter-image-lightbox-stage">
-        <img id="chapterLightboxImage" alt="旅程章節主題圖">
-        <button type="button" id="chapterLightboxPrev" class="chapter-lightbox-nav prev" aria-label="上一章">‹</button>
-        <button type="button" id="chapterLightboxNext" class="chapter-lightbox-nav next" aria-label="下一章">›</button>
-      </div>
-      <div class="chapter-image-lightbox-foot"><span id="chapterLightboxCounter">1 / 3</span><small>左右滑動或按箭頭切換章節</small></div>
-    </div>
-  </div>
-
   <div id="dayImageLightbox" class="day-image-lightbox" aria-hidden="true">
     <div class="day-image-lightbox-backdrop" data-day-lightbox-close="1"></div>
     <div class="day-image-lightbox-card" role="dialog" aria-modal="true" aria-label="每日旅程圖片檢視">
@@ -384,7 +370,7 @@
   <div id="toast" class="toast" role="status"></div>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script defer src="./firebase-config.js?v=194"></script>
-  <script defer src="./app.js?v=194"></script>
+  <script defer src="./firebase-config.js?v=195"></script>
+  <script defer src="./app.js?v=195"></script>
 </body>
 </html>

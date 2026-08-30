@@ -1,8 +1,8 @@
 const CACHE_PREFIX = "kyushu-nov-";
-const CACHE = "kyushu-nov-v1.9.4";
+const CACHE = "kyushu-nov-v1.9.5";
 const SHELL = [
-  "./","./index.html","./style.css?v=194","./app.js?v=194",
-  "./manifest.json","./firebase-config.js?v=194","./icon-192.png","./icon-512.png","./icon-maskable-512.png","./nov_app_icon_v193.webp?v=193",
+  "./","./index.html","./style.css?v=195","./app.js?v=195",
+  "./manifest.json","./firebase-config.js?v=195","./icon-192.png","./icon-512.png","./icon-maskable-512.png","./nov_app_icon_v195.webp?v=195",
   "./nov_app_icon_a.webp?v=160","./nov_app_icon_b.webp?v=160","./nov_app_icon_c.webp?v=160",
   "./nov_hero_main_a.webp?v=160","./nov_hero_main_b.webp?v=160",
   "./nov_weather_sunny.webp?v=160","./nov_weather_cloudy.webp?v=160","./nov_weather_rainy.webp?v=160","./nov_weather_storm.webp?v=160","./nov_weather_snow.webp?v=160",
@@ -52,9 +52,6 @@ const SHELL = [
   "./day-scene-zh-v17-07.webp?v=170",
   "./day-scene-zh-v17-08.webp?v=170",
   "./day-scene-zh-v17-09.webp?v=170",
-  "./chapter-v18-d1-3.webp?v=180",
-  "./chapter-v18-d4-6.webp?v=180",
-  "./chapter-v18-d7-9.webp?v=180"
 ];
 
 self.addEventListener("install", event => {
