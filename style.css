@@ -4245,3 +4245,41 @@ html[data-theme="wa"] .settings-btn{top:12px!important;right:13px!important;z-in
 #journeyChapters,.journey-chapters,.chapter-image-lightbox{display:none!important}
 .day-strip-wrap{margin-bottom:12px!important}
 #weatherSection,.weather-card{scroll-margin-top:12px}
+
+
+/* ===== v1.9.6 lean November build ===== */
+.auth-gate.is-busy{
+  background:#FCF8F2!important;
+}
+.auth-gate.is-busy .auth-card{
+  width:min(88vw,360px);
+  padding:22px 18px 18px;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+.auth-gate.is-busy .auth-kicker,
+.auth-gate.is-busy .auth-card>h1,
+.auth-gate.is-busy .auth-card>p,
+.auth-gate.is-busy .google-login-btn{
+  display:none!important;
+}
+.auth-gate.is-busy .auth-loading-art{
+  display:block!important;
+  max-width:280px;
+  margin:0 auto 12px;
+}
+.auth-gate.is-busy .auth-loading-art img{
+  border-radius:24px;
+  box-shadow:0 14px 34px rgba(91,68,49,.08);
+}
+.auth-gate.is-busy .auth-status{
+  margin-top:8px;
+  color:#806A5D;
+  font-size:12px;
+  text-align:center;
+}
+@media(max-width:420px){
+  .auth-gate.is-busy .auth-loading-art{max-width:248px}
+}

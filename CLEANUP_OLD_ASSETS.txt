@@ -1,0 +1,45 @@
+OPTIONAL REPOSITORY CLEANUP
+===========================
+
+v1.9.6 已經不會預載或使用下列 10 月旅伴／舊素材，所以即使 GitHub 上暫時留著，也不會拖慢 App 載入。
+如果想讓 Repository 本身也變小，可之後刪除：
+
+buddy_*.png
+purin_*.png
+usagi_*.png
+mini-purin-*.webp
+mini-usagi-*.webp
+booking-check-purin.webp
+booking-dash-usagi.webp
+hotel-return-duo.webp
+weather-rain-usagi-v47.webp
+weather-sunny-usagi-v536.webp
+weather-teruteru-usagi-v536.webp
+weather-cloudy-usagi-v536.webp
+weather-thunder-usagi-v536.webp
+weather-snow-usagi-v536.webp
+hero-cover-v51.webp
+egg-*-v539.png
+duck_gang.png
+seal_gang.png
+secret-life-*.webp
+ui-cloud.webp
+ui-coffee.webp
+ui-purin-tip.webp
+ui-suitcase.webp
+travel_camera.png
+travel_coffee.png
+travel_shopping.png
+travel_suitcase.png
+travel_ticket.png
+nov_app_icon_a.webp
+nov_app_icon_b.webp
+nov_app_icon_c.webp
+nov_app_icon_v192.webp
+nov_app_icon_v193.webp
+nov_app_icon_v195.webp
+chapter-v18-d1-3.webp
+chapter-v18-d4-6.webp
+chapter-v18-d7-9.webp
+transport-sheet.webp
+travel-spot-sheet.webp

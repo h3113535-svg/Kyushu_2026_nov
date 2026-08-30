@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.9.5 chapter-free navigation + refreshed icon */
+/* Kyushu family autumn PWA · November 2026 · v1.9.6 chapter-free navigation + refreshed icon */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.8.0";
+const APP_VERSION = "1.9.6";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -19,32 +19,9 @@ const pollers = new Set();
 let cloudReconnectInFlight = false;
 const GUIDE_DEVICE_ID_KEY = `${APP_NAMESPACE}:guide-device-id`;
 
-const BUDDY_FAST_ASSETS=[
-  "./day-scene-zh-v17-01.webp?v=170","./day-scene-zh-v17-02.webp?v=170","./day-scene-zh-v17-03.webp?v=170","./day-scene-zh-v17-04.webp?v=170","./day-scene-zh-v17-05.webp?v=170",
-  "./day-scene-zh-v17-06.webp?v=170","./day-scene-zh-v17-07.webp?v=170","./day-scene-zh-v17-08.webp?v=170","./day-scene-zh-v17-09.webp?v=170",
-  "./day-scene-v52-01.webp?v=550","./day-scene-v52-02.webp?v=550","./day-scene-v52-03.webp?v=550","./day-scene-v52-04.webp?v=550","./day-scene-v52-05.webp?v=550",
-  "./day-scene-v52-06.webp?v=550","./day-scene-v52-07.webp?v=550","./day-scene-v52-08.webp?v=550","./day-scene-v52-09.webp?v=550",
-  "./weather-rain-usagi-v47.webp?v=470","./weather-sunny-usagi-v536.webp?v=536","./weather-teruteru-usagi-v536.webp?v=536","./weather-cloudy-usagi-v536.webp?v=536","./weather-thunder-usagi-v536.webp?v=536","./weather-snow-usagi-v536.webp?v=536","./booking-check-purin.webp?v=460","./booking-dash-usagi.webp?v=460","./hotel-return-duo.webp?v=460",
-  "./egg-sendoff-v539.png?v=539","./egg-cry-v539.png?v=539","./egg-home-sleep-v539.png?v=539",
-  "./duck_gang.png?v=5311","./seal_gang.png?v=5311",
-  "./ui-cloud.webp?v=440","./ui-coffee.webp?v=440","./ui-suitcase.webp?v=440","./ui-purin-tip.webp?v=440"
-];
-const buddyFastImageCache=[];
-function preloadBuddyFastAssets(){
-  if(preloadBuddyFastAssets.started)return;
-  preloadBuddyFastAssets.started=true;
-  const load=(src,priority="auto")=>{
-    const img=new Image(); img.decoding="async";
-    try{img.fetchPriority=priority}catch{}
-    img.src=src; buddyFastImageCache.push(img);
-    if(img.decode) img.decode().catch(()=>{});
-  };
-  BUDDY_FAST_ASSETS.slice(0,2).forEach(src=>load(src,"high"));
-  const rest=()=>BUDDY_FAST_ASSETS.slice(2).forEach(src=>load(src,"low"));
-  if("requestIdleCallback" in window) requestIdleCallback(rest,{timeout:1200});
-  else setTimeout(rest,450);
-}
-preloadBuddyFastAssets();
+// v1.9.6: no eager artwork preload at startup.
+// The loading scene is preloaded from <head>; itinerary/weather/decision art is fetched only when actually displayed.
+function preloadBuddyFastAssets(){}
 
 function pathFor(key){
   return `${ROOT}/${key}`;
@@ -1323,7 +1300,7 @@ function animateBuddyMood(el,kind,msg){
   setTimeout(()=>el.classList.remove(`buddy-react-${mood}`),620);
 }
 
-function isBuddyTheme(){return document.documentElement.dataset.theme==="buddy"}
+function isBuddyTheme(){return false}
 function buddySparkBurst(x=50,y=45,tone="duo"){
   if(!isBuddyTheme()) return;
   const layer=$("#buddySparkLayer"); if(!layer)return;
@@ -1974,7 +1951,7 @@ function renderDayBrief(day){
   const rainHtml=day.rainPlan?`<div class="rain-plan"><b>☔ 雨天備案</b><span>${esc(day.rainPlan)}</span></div>`:"";
   const hasContent=!!(day.alert||items||day.rainPlan);
   box.innerHTML=hasContent
-    ? `<div class="day-brief-head-v44"><div class="brief-title">今日提醒</div><img class="brief-tip-art buddy-only-art" src="./ui-purin-tip.webp?v=440" alt=""></div>${alertHtml}${items?`<ul>${items}</ul>`:""}${rainHtml}`
+    ? `<div class="day-brief-head-v44"><div class="brief-title">今日提醒</div></div>${alertHtml}${items?`<ul>${items}</ul>`:""}${rainHtml}`
     : "";
   box.classList.toggle("empty-brief",!hasContent);
 }
@@ -2010,7 +1987,7 @@ async function chooseDecision(id, option){
   saveLocal("decisions",state.decisions);
   if(state.cloud){try{await setCloud("decisions",state.decisions)}catch{}}
   renderSchedule();
-  buddyCelebrate("決定好啦！","./usagi_success.png?v=430");
+  toast("行程選擇已更新");
 }
 async function confirmDecision(id){
   const draft=draftDecision(id);if(!draft){toast("先點一個選項，再按確認");return}
@@ -2049,7 +2026,6 @@ function renderDecisionCards(day){
     const draftLabel=d.options.find(o=>o.id===draft)?.label||"";
     const checklist=(d.checklist||[]).length?`<div class="decision-checks">${d.checklist.map(x=>`<div>□ ${esc(x)}</div>`).join("")}</div>`:"";
     return `<section class="decision-card">
-      <img class="decision-usagi-art buddy-only-art buddy-reactable" data-buddy-react="usagi" data-buddy-context="booking" src="./usagi_think.png?v=430" alt="烏薩奇">
       <div class="decision-kicker">行程選擇</div>
       <h3>${esc(d.title)}</h3>
       <p>${esc(d.hint||"")}</p>
@@ -2161,7 +2137,7 @@ function renderHotelReturnCard(){
   const label=lastDay?"返台前據點":"今晚住這裡";
   const help=lastDay?"取行李或需要回住宿時，從這裡直接導航。":"一天走完要回飯店時，不用再往上找地址。";
   box.hidden=false;
-  box.innerHTML=`<div class="hotel-return-copy"><span class="eyebrow">${label}</span><h3>${esc(cleanHotelTitle(hotel.title))}</h3><p>${help}</p><a class="hotel-nav-btn" target="_blank" rel="noopener" href="${mapDirections(hotel.nav||hotel.title)}">↗ Google Maps 查看飯店</a></div><div class="hotel-return-art buddy-only-art buddy-reactable" data-buddy-react="duo" data-buddy-context="hotel"><img src="./hotel-return-duo.webp?v=460" alt="布丁狗與烏薩奇回飯店休息"></div>`;
+  box.innerHTML=`<div class="hotel-return-copy"><span class="eyebrow">${label}</span><h3>${esc(cleanHotelTitle(hotel.title))}</h3><p>${help}</p><a class="hotel-nav-btn" target="_blank" rel="noopener" href="${mapDirections(hotel.nav||hotel.title)}">↗ Google Maps 查看飯店</a></div>`;
 }
 
 
@@ -2188,10 +2164,7 @@ function eventBuddySpec(e,index){
   const img=pool[(state.dayIndex+index)%pool.length];
   return {kind,context,img};
 }
-function eventBuddyHtml(e,index){
-  const b=eventBuddySpec(e,index);
-  const who=b.kind==="purin"?"布丁狗":"烏薩奇";
-  return `<button type="button" class="event-buddy buddy-only-art buddy-reactable" data-buddy-react="${b.kind}" data-buddy-context="${b.context}" aria-label="和${who}聊聊"><img src="${b.img}" alt="${who}"></button>`;
+function eventBuddyHtml(){return ""
 }
 
 
@@ -2421,8 +2394,6 @@ function openGuide(data){
   const modal=$("#guideModal"); if(!modal||!data)return;
   activeGuideContext=data;
   migrateLegacyGuideNote(data);
-  const art=guideMascot(data.mascot);
-  const mascot=$("#guideMascot"); mascot.src=art.src;mascot.alt=art.alt;
   $("#guideTitle").textContent=data.title;
   $("#guideMeta").textContent=data.meta||"";
   $("#guideSections").innerHTML=renderGuideSections(data.sections||[]);
@@ -2919,13 +2890,14 @@ async function handleSubmit(e){
 
 const DISPLAY_THEME_KEY=`${APP_NAMESPACE}:displayTheme`;
 const FONT_SIZE_KEY=`${APP_NAMESPACE}:fontSize`;
-const THEME_META={travel:"#A8673F",sea:"#58788C",wa:"#8C4A3C",buddy:"#E0A93A"};
+const THEME_META={travel:"#A8673F",sea:"#58788C",wa:"#8C4A3C"};
 
 function getDisplaySetting(key,fallback){
   try{return localStorage.getItem(key)||fallback}catch{return fallback}
 }
 function applyDisplaySettings(){
-  const theme=getDisplaySetting(DISPLAY_THEME_KEY,"wa");
+  let theme=getDisplaySetting(DISPLAY_THEME_KEY,"wa");
+  if(!["travel","sea","wa"].includes(theme)){theme="wa";try{localStorage.setItem(DISPLAY_THEME_KEY,theme)}catch{}}
   const fontSize=getDisplaySetting(FONT_SIZE_KEY,"standard");
   document.documentElement.dataset.theme=theme;
   document.documentElement.dataset.fontSize=fontSize;
@@ -2943,12 +2915,11 @@ function applyDisplaySettings(){
   });
 }
 function setDisplayTheme(theme){
-  if(!["travel","sea","wa","buddy"].includes(theme))return;
+  if(!["travel","sea","wa"].includes(theme))return;
   try{localStorage.setItem(DISPLAY_THEME_KEY,theme)}catch{}
   applyDisplaySettings();
   const currentDayIndex=state?.dayIndex??0;
   if(TRIP?.days?.[currentDayIndex]) renderWeather(TRIP.days[currentDayIndex]).catch(()=>{});
-  if(theme==="buddy"){setTimeout(()=>buddySparkBurst(50,32),120);setTimeout(()=>maybePurinWalkEgg(),900)}
 }
 function setFontSize(size){
   if(!["standard","large","xlarge"].includes(size))return;
@@ -2983,7 +2954,7 @@ function bind(){
     const decision=e.target.closest("[data-decision-id]");if(decision){stageDecision(decision.dataset.decisionId,decision.dataset.decisionOption);return}
     const task=e.target.closest("[data-task-id]");if(task){await toggleBookingTask(task.dataset.taskId);return}
     for(const [attr,key,render] of [["data-check-food","foods",renderFood],["data-check-shopping","shopping",renderShopping]]){
-      const x=e.target.closest(`[${attr}]`);if(x){const id=x.getAttribute(attr);const before=state[key].find(i=>i.id===id)?.checked;await toggleItem(key,id);render();if(!before)buddyCelebrate(key==="foods"?pickLine(BUDDY_DIALOG.food.complete):pickLine(BUDDY_DIALOG.shop.complete),key==="foods"?"./purin_clap.png?v=430":"./buddy_success.png?v=430",key==="foods"?"food":"shop");return}
+      const x=e.target.closest(`[${attr}]`);if(x){const id=x.getAttribute(attr);const before=state[key].find(i=>i.id===id)?.checked;await toggleItem(key,id);render();if(!before)toast("已完成");return}
     }
     for(const [attr,key,render] of [["data-delete-food","foods",renderFood],["data-delete-shopping","shopping",renderShopping],["data-delete-expense","expenses",renderExpenses]]){
       const x=e.target.closest(`[${attr}]`);if(x){await deleteItem(key,x.getAttribute(attr));render();toast("已刪除");return}
@@ -3245,10 +3216,9 @@ function setAuthStatus(message,kind=""){
   el.textContent=message||"";
   el.dataset.kind=kind;
   const art=$("#authLoadingArt");
-  if(art){
-    const busy=!kind && /正在|載入|確認登入/.test(String(message||""));
-    art.hidden=!busy;
-  }
+  const busy=!kind && /正在|載入|確認登入/.test(String(message||""));
+  if(art)art.hidden=!busy;
+  $("#authGate")?.classList.toggle("is-busy",busy);
 }
 function showAuthGate(){
   $("#authGate")?.removeAttribute("hidden");
@@ -3423,7 +3393,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=195",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=196",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });
