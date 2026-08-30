@@ -4153,3 +4153,89 @@ html[data-theme="wa"] .bottom-nav .nav-btn.active{background:linear-gradient(180
   .journey-chapter-feature-copy>b{font-size:15px}
   .journey-chapter-tab b{font-size:10.5px}
 }
+
+
+/* ===== v1.9.4 Hero typography: upper-left editorial layout ===== */
+html[data-theme="wa"] .hero{
+  min-height:336px!important;
+  padding:22px 18px 18px!important;
+  background-image:
+    linear-gradient(90deg,rgba(255,253,249,.985) 0%,rgba(255,253,249,.94) 35%,rgba(255,253,249,.58) 58%,rgba(255,253,249,.10) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.04),rgba(145,101,72,.05)),
+    url("./nov_hero_main_a.webp?v=160")!important;
+  background-position:59% center!important;
+}
+html[data-theme="wa"] .buddy-hero-v42{
+  min-height:292px!important;
+  display:block!important;
+  position:relative!important;
+}
+html[data-theme="wa"] .buddy-hero-copy{
+  position:absolute!important;
+  top:26px!important;
+  left:4px!important;
+  width:min(82%,430px)!important;
+  max-width:min(82%,430px)!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  z-index:3!important;
+}
+html[data-theme="wa"] .buddy-season{
+  display:block!important;
+  margin:0 0 10px!important;
+  font-family:var(--nov-serif)!important;
+  font-size:13px!important;
+  line-height:1.1!important;
+  font-weight:700!important;
+  letter-spacing:.15em!important;
+  color:#A65F4E!important;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  margin:0 0 12px!important;
+  font-family:var(--nov-serif)!important;
+  font-size:clamp(32px,8.8vw,44px)!important;
+  line-height:1.08!important;
+  font-weight:700!important;
+  letter-spacing:.035em!important;
+  color:#4A352D!important;
+  white-space:nowrap!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.72)!important;
+}
+html[data-theme="wa"] .hero-date{
+  margin:0 0 9px!important;
+  font-family:var(--nov-serif)!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:700!important;
+  letter-spacing:.07em!important;
+  color:#725D54!important;
+}
+html[data-theme="wa"] .hero-route{
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:4px!important;
+  margin:0!important;
+  font-family:var(--nov-serif)!important;
+  font-size:10px!important;
+  line-height:1.55!important;
+  font-weight:500!important;
+  letter-spacing:.025em!important;
+  color:#8A776E!important;
+}
+html[data-theme="wa"] .hero-route span,
+html[data-theme="wa"] .hero-route i{white-space:nowrap!important}
+html[data-theme="wa"] .settings-btn{top:12px!important;right:13px!important;z-index:6!important}
+@media(max-width:420px){
+  html[data-theme="wa"] .hero{min-height:318px!important;padding:18px 14px 16px!important;background-position:61% center!important}
+  html[data-theme="wa"] .buddy-hero-v42{min-height:282px!important}
+  html[data-theme="wa"] .buddy-hero-copy{top:24px!important;left:2px!important;width:88%!important;max-width:88%!important}
+  html[data-theme="wa"] .buddy-season{font-size:11.5px!important;margin-bottom:8px!important}
+  html[data-theme="wa"] #heroPrivateTitle{font-size:clamp(29px,8.3vw,34px)!important;letter-spacing:.025em!important;margin-bottom:10px!important}
+  html[data-theme="wa"] .hero-date{font-size:12.5px!important;margin-bottom:8px!important}
+  html[data-theme="wa"] .hero-route{font-size:9px!important;gap:3px!important;letter-spacing:.01em!important}
+}

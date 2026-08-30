@@ -1,4 +1,15 @@
 Kyushu 2026 Nov PWA
+Version: 1.9.4
+
+更新內容：
+- Hero 標題群組改到左上角，採旅誌封面式排版
+- 主標改用和整體視覺一致的 serif 中文字體
+- 主標維持無框設計，避免卡片感
+- 日期與中文路線重新整理層級與間距
+- 手機窄螢幕同步調整字級與留白
+- Service Worker / PWA cache 升級至 v1.9.4
+
+Kyushu 2026 Nov PWA
 Version: 1.9.3
 
 更新內容：
