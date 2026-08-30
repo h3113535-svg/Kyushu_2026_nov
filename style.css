@@ -4531,3 +4531,42 @@ html[data-theme="wa"] .hero:before{display:none!important;content:none!important
   html[data-theme="wa"] .hero-date{font-size:12px!important}
   html[data-theme="wa"] .hero-route{font-size:8.8px!important;gap:3px!important}
 }
+
+
+/* ===== v1.9.10 Hero lighten pass ===== */
+html[data-theme="wa"] .hero{
+  background-image:
+    linear-gradient(180deg, rgba(252,248,241,.24) 0%, rgba(252,248,241,.14) 36%, rgba(252,248,241,.08) 100%),
+    url("./nov_hero_main_a.webp?v=160")!important;
+}
+html[data-theme="wa"] .buddy-hero-v42::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:
+    linear-gradient(90deg, rgba(248,244,237,.18) 0%, rgba(248,244,237,.11) 24%, rgba(248,244,237,.06) 52%, rgba(248,244,237,.03) 100%),
+    linear-gradient(180deg, rgba(255,252,247,.06) 0%, rgba(255,252,247,.02) 55%, rgba(255,252,247,0) 100%);
+  pointer-events:none;
+  z-index:1;
+}
+html[data-theme="wa"] .buddy-hero-copy,
+html[data-theme="wa"] .hero-actions,
+html[data-theme="wa"] .theme-switch,
+html[data-theme="wa"] .floating-settings{
+  position:relative;
+  z-index:6;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  color:#70584A!important;
+  text-shadow:0 1px 0 rgba(255,252,247,.72), 0 8px 18px rgba(255,248,240,.12)!important;
+}
+html[data-theme="wa"] .hero-date{color:#7B6458!important}
+html[data-theme="wa"] .hero-route{color:#938074!important}
+@media(max-width:420px){
+  html[data-theme="wa"] .buddy-hero-v42::after{
+    background:
+      linear-gradient(90deg, rgba(248,244,237,.22) 0%, rgba(248,244,237,.14) 30%, rgba(248,244,237,.07) 58%, rgba(248,244,237,.03) 100%),
+      linear-gradient(180deg, rgba(255,252,247,.08) 0%, rgba(255,252,247,.03) 55%, rgba(255,252,247,0) 100%);
+  }
+}
