@@ -3918,3 +3918,132 @@ html[data-theme="wa"] .nav-btn.active{
   background:linear-gradient(180deg,#9A5543,#804538);
   color:#fff;
 }
+
+
+/* ===== v1.9.1 — light autumn palette + true viewport bottom tabs + lightbox language toggle ===== */
+html[data-theme="wa"]{
+  --ivory:#FBF7F0;
+  --paper:#FFFCF8;
+  --ink:#40322D;
+  --muted:#89766C;
+  --accent:#B66B57;
+  --accent-strong:#9A5546;
+  --accent-soft:#F2DDD4;
+  --orange:#C98364;
+  --gold:#D8B66B;
+  --line:#EADDD0;
+  --soft-bg:#FAF2E8;
+  --shadow:0 10px 24px rgba(103,76,58,.055);
+}
+html[data-theme="wa"] body{
+  background:
+    radial-gradient(circle at 12% 3%,rgba(227,187,93,.12),transparent 23%),
+    radial-gradient(circle at 90% 8%,rgba(205,112,82,.08),transparent 24%),
+    linear-gradient(180deg,#FCF8F2 0%,#F8F1E8 100%);
+}
+html[data-theme="wa"] #app{background:rgba(255,252,248,.84)}
+html[data-theme="wa"] main{background:transparent}
+
+/* Hero stays autumnal but brighter and more open. */
+html[data-theme="wa"] .hero{
+  background-image:
+    linear-gradient(90deg,rgba(255,252,247,.98) 0%,rgba(255,251,245,.92) 34%,rgba(255,250,242,.48) 58%,rgba(255,248,239,.10) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.08),rgba(108,75,57,.06)),
+    url("./nov_hero_main_a.webp?v=130");
+  border-bottom:1px solid #EAD9CA;
+  box-shadow:none;
+}
+html[data-theme="wa"] .buddy-hero-copy{
+  background:rgba(255,252,248,.93);
+  border-color:#E7D6C8;
+  box-shadow:0 10px 24px rgba(104,78,61,.07);
+}
+html[data-theme="wa"] .hero h1{color:#493730}
+html[data-theme="wa"] .hero-kicker,html[data-theme="wa"] .buddy-season{color:#B56B57}
+html[data-theme="wa"] .hero-date,html[data-theme="wa"] .hero-route{color:#8A7469}
+
+/* Compact and intuitive settings control. */
+.settings-btn,
+html[data-theme="wa"] .settings-btn{
+  width:38px!important;min-width:38px!important;height:38px!important;padding:0!important;
+  border-radius:50%!important;
+  display:grid!important;place-items:center!important;
+  background:rgba(255,252,248,.94)!important;
+  border:1px solid #E2CDBD!important;
+  color:#9D5B4A!important;
+  font-size:19px!important;font-weight:700!important;letter-spacing:0!important;
+  box-shadow:0 5px 14px rgba(99,73,57,.06)!important;
+}
+
+/* True viewport-fixed bottom tab bar. It lives outside #app in v1.9.1. */
+:root{--bottom-nav-space:76px}
+body{padding-bottom:calc(var(--bottom-nav-space) + env(safe-area-inset-bottom))}
+#app,main{padding-bottom:18px!important}
+.bottom-nav,
+html[data-theme="travel"] .bottom-nav,
+html[data-theme="sea"] .bottom-nav,
+html[data-theme="wa"] .bottom-nav,
+html[data-theme="buddy"] .bottom-nav{
+  position:fixed!important;
+  left:50%!important;right:auto!important;bottom:0!important;
+  transform:translateX(-50%)!important;
+  width:min(520px,100%)!important;
+  z-index:2147483000!important;
+  display:grid!important;visibility:visible!important;opacity:1!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:4px!important;
+  padding:7px 10px calc(7px + env(safe-area-inset-bottom))!important;
+  border:0!important;border-top:1px solid rgba(221,204,190,.95)!important;
+  border-radius:18px 18px 0 0!important;
+  background:rgba(255,252,248,.98)!important;
+  backdrop-filter:blur(20px)!important;
+  box-shadow:0 -8px 24px rgba(85,63,50,.075)!important;
+}
+.bottom-nav .nav-btn{min-height:48px!important;border-radius:13px!important;color:#9A877C!important}
+.bottom-nav .nav-btn span{font-size:17px!important}.bottom-nav .nav-btn b{font-size:12px!important}
+.bottom-nav .nav-btn.active,
+html[data-theme="wa"] .nav-btn.active{
+  background:linear-gradient(180deg,#F7E8DF,#F3DDD2)!important;
+  color:#9B5948!important;
+  box-shadow:inset 0 0 0 1px rgba(198,131,105,.16)!important;
+}
+
+/* Lighter date tabs and content cards. */
+html[data-theme="wa"] .day-strip-wrap{background:linear-gradient(180deg,#FFFDF9,#FBF5ED);border-color:#EDE0D4}
+html[data-theme="wa"] .day-btn{background:#FFFDF9;border-color:#E6D6C8;color:#8E7C72;box-shadow:none}
+html[data-theme="wa"] .day-btn .date{color:#A45E4C}
+html[data-theme="wa"] .day-btn.active{background:#F5E3D8!important;border-color:#DDB39E!important;color:#985242!important;box-shadow:0 5px 12px rgba(152,82,66,.08)!important}
+html[data-theme="wa"] .day-btn.active .date,html[data-theme="wa"] .day-btn.active .weekday{color:#985242!important}
+html[data-theme="wa"] .weather-card,
+html[data-theme="wa"] .card,
+html[data-theme="wa"] .summary-card,
+html[data-theme="wa"] .family-meta-card,
+html[data-theme="wa"] .now-next-card,
+html[data-theme="wa"] .autumn-watch,
+html[data-theme="wa"] .event-card,
+html[data-theme="wa"] .task-card,
+html[data-theme="wa"] .planned-food-card,
+html[data-theme="wa"] .tool-card{
+  background:linear-gradient(180deg,#FFFDFC,#FCF7F0)!important;
+  border-color:#E9DDD2!important;
+  box-shadow:0 7px 18px rgba(101,76,60,.045)!important;
+}
+html[data-theme="wa"] .event-card{border-left-color:#C77960!important}
+html[data-theme="wa"] .timeline:before{background:linear-gradient(180deg,#D59A84,#E2BE76)!important}
+html[data-theme="wa"] .event-dot{background:#C87960!important;box-shadow:0 0 0 3px #FBF6EE!important}
+html[data-theme="wa"] .tag,html[data-theme="wa"] .info-chip,html[data-theme="wa"] .food-status{background:#FFF9F3!important;border-color:#E5CBB9!important;color:#A05F4E!important}
+
+/* Language control is available only after opening a daily image. */
+.day-image-lightbox-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.day-lightbox-head-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.day-lang-toggle{display:grid;grid-template-columns:1fr 1fr;padding:2px;border-radius:999px;background:#EEE3D8;border:1px solid #DFCCBD}
+.day-lang-toggle button{width:31px;height:28px;border:0;border-radius:999px;background:transparent;color:#8E796D;font-size:12px;font-weight:900;padding:0}
+.day-lang-toggle button.active{background:#FFFDFC;color:#A45E4C;box-shadow:0 2px 7px rgba(87,62,48,.08)}
+.day-image-lightbox-head>button,#dayLightboxClose{flex:0 0 auto}
+@media(max-width:420px){
+  :root{--bottom-nav-space:72px}
+  .bottom-nav{padding-left:7px!important;padding-right:7px!important}
+  .bottom-nav .nav-btn{min-height:46px!important}
+  .day-image-lightbox-head{padding-left:12px!important}
+  .day-image-lightbox-head b{font-size:12.5px!important}
+}

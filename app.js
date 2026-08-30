@@ -1593,16 +1593,16 @@ function buddyPeek(kind="purin"){
   requestAnimationFrame(()=>requestAnimationFrame(()=>layer.classList.add("show")));
   buddyPeek._timer=setTimeout(()=>{layer.classList.remove("show");setTimeout(()=>{layer.className="buddy-peek-layer buddy-only-art";layer.innerHTML=""},480)},2400);
 }
-function dailySceneAsset(index){
+function dailySceneAsset(index,lang=getSceneLanguage()){
   const day=String(index+1).padStart(2,"0");
-  return `./day-scene-zh-v17-${day}.webp?v=170`;
+  return lang==='ja' ? `./day-scene-v52-${day}.webp?v=550` : `./day-scene-zh-v17-${day}.webp?v=170`;
 }
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
   if(!img)return;
-  const src=dailySceneAsset(state.dayIndex);
+  const src=dailySceneAsset(state.dayIndex,getSceneLanguage());
   if(img.getAttribute("src")!==src) img.src=src;
-  img.alt=`D${state.dayIndex+1} 九州家族紅葉旅主題圖`;
+  img.alt=`D${state.dayIndex+1} 九州家族紅葉旅${getSceneLanguage()==="ja"?"日文":"中文"}主題圖`;
   if(bar) bar.style.width=`${((state.dayIndex+1)/TRIP.days.length)*100}%`;
 }
 let dayLightboxIndex=0;
@@ -1610,9 +1610,11 @@ function renderDayLightbox(){
   const wrap=$("#dayImageLightbox"),img=$("#dayLightboxImage");if(!wrap||!img||!TRIP?.days?.length)return;
   dayLightboxIndex=Math.max(0,Math.min(TRIP.days.length-1,dayLightboxIndex));
   const d=TRIP.days[dayLightboxIndex];
-  img.src=dailySceneAsset(dayLightboxIndex);
-  img.alt=`D${dayLightboxIndex+1} ${d.title||"旅程主題圖"}`;
+  const lang=getSceneLanguage();
+  img.src=dailySceneAsset(dayLightboxIndex,lang);
+  img.alt=`D${dayLightboxIndex+1} ${d.title||"旅程主題圖"}（${lang==='ja'?'日文':'中文'}）`;
   $("#dayLightboxTitle").textContent=`D${dayLightboxIndex+1}｜${d.title||"旅程"}`;
+  $$("[data-day-lang]").forEach(btn=>btn.classList.toggle("active",btn.dataset.dayLang===lang));
   $("#dayLightboxCounter").textContent=`${dayLightboxIndex+1} / ${TRIP.days.length}`;
 }
 function openDayLightbox(index=state.dayIndex){
@@ -1675,18 +1677,31 @@ function handleWeatherBuddyTap(){
 function ensureWeatherBuddy(){updateWeatherBuddy(WEATHER_BUDDY_VARIANTS[weatherBuddyIndex].mode);}
 
 const SCENE_LANG_STORAGE_KEY=`${APP_NAMESPACE}:scene-lang`;
-const SCENE_LANGS={zh:{label:"中文",tag:"主題圖"}};
-function getSceneLanguage(){return "zh"}
-function applySceneLanguageUI(){try{localStorage.setItem(SCENE_LANG_STORAGE_KEY,'zh')}catch{}}
-function setSceneLanguage(){applySceneLanguageUI();renderDailyScene();renderJourneyChapters();if(document.querySelector('#dayImageLightbox.show'))renderDayLightbox();if(TRIP?.days?.[state?.dayIndex??0])renderSchedule()}
+const SCENE_LANGS={zh:{label:"中文",tag:"中文主圖"},ja:{label:"日本語",tag:"日文主圖"}};
+function getSceneLanguage(){
+  try{return localStorage.getItem(SCENE_LANG_STORAGE_KEY)==='ja'?'ja':'zh'}catch{return 'zh'}
+}
+function applySceneLanguageUI(){
+  const lang=getSceneLanguage();
+  document.documentElement.dataset.sceneLang=lang;
+  $$('[data-day-lang]').forEach(btn=>btn.classList.toggle('active',btn.dataset.dayLang===lang));
+}
+function setSceneLanguage(lang){
+  const next=lang==='ja'?'ja':'zh';
+  try{localStorage.setItem(SCENE_LANG_STORAGE_KEY,next)}catch{}
+  applySceneLanguageUI();
+  renderDailyScene();
+  renderJourneyChapters();
+  if(document.querySelector('#dayImageLightbox.show'))renderDayLightbox();
+}
 
 const TRIP_CHAPTERS=[
   {id:'c1',start:0,end:2,kicker:'Chapter 1',range:'D1–D3',title:'旅程開始・福岡與由布院',note:'抵達福岡、城市秋日、前往由布院 Villa',artZh:'./chapter-v18-d1-3.webp?v=180'},
   {id:'c2',start:3,end:5,kicker:'Chapter 2',range:'D4–D6',title:'別府・九重・高千穗・阿蘇',note:'動物園、絕景自駕、峽谷與溫泉夜',artZh:'./chapter-v18-d4-6.webp?v=180'},
   {id:'c3',start:6,end:8,kicker:'Chapter 3',range:'D7–D9',title:'熊本與太宰府・旅程收尾',note:'阿蘇、熊本、秋月太宰府，最後回到福岡',artZh:'./chapter-v18-d7-9.webp?v=180'}
 ];
-function chapterImageAsset(ch){
-  return ch.artZh;
+function chapterImageAsset(ch,lang=getSceneLanguage()){
+  return lang==='ja' ? dailySceneAsset(ch.start,'ja') : ch.artZh;
 }
 function chapterForDay(index){
   return TRIP_CHAPTERS.find(ch=>index>=ch.start&&index<=ch.end)||TRIP_CHAPTERS[0];
@@ -1694,7 +1709,8 @@ function chapterForDay(index){
 function renderJourneyChapters(){
   const wrap=$('#journeyChapters'); if(!wrap)return;
   const current=chapterForDay(state?.dayIndex??0);
-  wrap.innerHTML=`<div class="journey-chapter-head"><span class="eyebrow">CHAPTER</span><b>章節導覽</b><small>三段旅程快速切換</small></div><div class="journey-chapter-row">${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-card ${current.id===ch.id?'active':''}" data-chapter-start="${ch.start}"><img class="journey-chapter-art" src="${chapterImageAsset(ch)}" alt="${ch.range} ${esc(ch.title)}"><span class="journey-chapter-copy"><small>${ch.kicker} · ${ch.range}</small><b>${ch.title}</b><span>${ch.note}</span></span></button>`).join('')}</div>`;
+  const lang=getSceneLanguage();
+  wrap.innerHTML=`<div class="journey-chapter-head"><span class="eyebrow">CHAPTER</span><b>章節導覽</b><small>三段旅程快速切換</small></div><div class="journey-chapter-row">${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-card ${current.id===ch.id?'active':''}" data-chapter-start="${ch.start}"><img class="journey-chapter-art" src="${chapterImageAsset(ch,lang)}" alt="${ch.range} ${esc(ch.title)}"><span class="journey-chapter-copy"><small>${ch.kicker} · ${ch.range}</small><b>${ch.title}</b><span>${ch.note}</span></span></button>`).join('')}</div>`;
 }
 const WEATHER_PREVIEW_STORAGE_KEY=`${APP_NAMESPACE}:weather-preview-mode`;
 const WEATHER_PREVIEW_VARIANTS=[
@@ -2888,7 +2904,7 @@ function applyDisplaySettings(){
   const fontSize=getDisplaySetting(FONT_SIZE_KEY,"standard");
   document.documentElement.dataset.theme=theme;
   document.documentElement.dataset.fontSize=fontSize;
-  document.documentElement.dataset.sceneLang='zh';
+  document.documentElement.dataset.sceneLang=getSceneLanguage();
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content",THEME_META[theme]||THEME_META.travel);
   $$("[data-theme-choice]").forEach(b=>{
     const selected=b.dataset.themeChoice===theme;
@@ -2927,7 +2943,7 @@ function bind(){
     if(buddyReaction){buddyReact(buddyReaction.dataset.buddyReact,buddyReaction);}
     const themeChoice=e.target.closest("[data-theme-choice]");if(themeChoice){setDisplayTheme(themeChoice.dataset.themeChoice);return}
     const fontChoice=e.target.closest("[data-font-choice]");if(fontChoice){setFontSize(fontChoice.dataset.fontChoice);return}
-    const sceneLangChoice=e.target.closest("[data-scene-lang-choice]");if(sceneLangChoice){setSceneLanguage(sceneLangChoice.dataset.sceneLangChoice);return}
+    const dayLangChoice=e.target.closest("[data-day-lang]");if(dayLangChoice){setSceneLanguage(dayLangChoice.dataset.dayLang);return}
     const chapterJump=e.target.closest("[data-chapter-start]");if(chapterJump){state.dayIndex=Number(chapterJump.dataset.chapterStart);state.decisionDrafts={};renderDays();renderSchedule();return}
     const d=e.target.closest("[data-day]");if(d){state.dayIndex=Number(d.dataset.day);state.decisionDrafts={};renderDays();renderSchedule();return}
     const n=e.target.closest("[data-view]");if(n){switchView(n.dataset.view);if(n.dataset.tool)switchTool(n.dataset.tool);return}
