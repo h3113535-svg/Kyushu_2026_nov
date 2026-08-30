@@ -4570,3 +4570,40 @@ html[data-theme="wa"] .hero-route{color:#938074!important}
       linear-gradient(180deg, rgba(255,252,247,.08) 0%, rgba(255,252,247,.03) 55%, rgba(255,252,247,0) 100%);
   }
 }
+
+
+/* ===== v1.9.11 Hero polish: remove visible translucent panel ===== */
+html[data-theme="wa"] .hero{
+  background-image:
+    radial-gradient(ellipse 54% 34% at 12% 9%, rgba(255,252,246,.16) 0%, rgba(255,252,246,.09) 34%, rgba(255,252,246,.035) 56%, rgba(255,252,246,0) 78%),
+    url("./nov_hero_main_a.webp?v=160")!important;
+  background-size:cover!important;
+  background-position:center center!important;
+}
+html[data-theme="wa"] .buddy-hero-v42::after{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+}
+html[data-theme="wa"] .buddy-hero-copy{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  color:#70584A!important;
+  font-weight:700!important;
+  text-shadow:0 1px 0 rgba(255,252,247,.54),0 2px 8px rgba(255,249,241,.12)!important;
+}
+html[data-theme="wa"] .buddy-season{color:#B16A58!important}
+html[data-theme="wa"] .hero-date{color:#806A60!important}
+html[data-theme="wa"] .hero-route{color:#9A887E!important}
+@media(max-width:420px){
+  html[data-theme="wa"] .hero{
+    background-image:
+      radial-gradient(ellipse 62% 34% at 10% 8%, rgba(255,252,246,.18) 0%, rgba(255,252,246,.09) 36%, rgba(255,252,246,.03) 58%, rgba(255,252,246,0) 80%),
+      url("./nov_hero_main_a.webp?v=160")!important;
+  }
+}
