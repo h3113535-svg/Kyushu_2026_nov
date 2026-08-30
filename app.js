@@ -1700,17 +1700,69 @@ const TRIP_CHAPTERS=[
   {id:'c2',start:3,end:5,kicker:'Chapter 2',range:'D4–D6',title:'別府・九重・高千穗・阿蘇',note:'動物園、絕景自駕、峽谷與溫泉夜',artZh:'./chapter-v18-d4-6.webp?v=180'},
   {id:'c3',start:6,end:8,kicker:'Chapter 3',range:'D7–D9',title:'熊本與太宰府・旅程收尾',note:'阿蘇、熊本、秋月太宰府，最後回到福岡',artZh:'./chapter-v18-d7-9.webp?v=180'}
 ];
+let chapterPreviewId=null;
+let chapterLightboxIndex=0;
 function chapterImageAsset(ch,lang=getSceneLanguage()){
   return lang==='ja' ? dailySceneAsset(ch.start,'ja') : ch.artZh;
 }
 function chapterForDay(index){
   return TRIP_CHAPTERS.find(ch=>index>=ch.start&&index<=ch.end)||TRIP_CHAPTERS[0];
 }
+function getChapterPreview(){
+  const current=chapterForDay(state?.dayIndex??0);
+  return TRIP_CHAPTERS.find(ch=>ch.id===chapterPreviewId)||current;
+}
 function renderJourneyChapters(){
   const wrap=$('#journeyChapters'); if(!wrap)return;
   const current=chapterForDay(state?.dayIndex??0);
+  const preview=getChapterPreview();
   const lang=getSceneLanguage();
-  wrap.innerHTML=`<div class="journey-chapter-head"><span class="eyebrow">CHAPTER</span><b>章節導覽</b><small>三段旅程快速切換</small></div><div class="journey-chapter-row">${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-card ${current.id===ch.id?'active':''}" data-chapter-start="${ch.start}"><img class="journey-chapter-art" src="${chapterImageAsset(ch,lang)}" alt="${ch.range} ${esc(ch.title)}"><span class="journey-chapter-copy"><small>${ch.kicker} · ${ch.range}</small><b>${ch.title}</b><span>${ch.note}</span></span></button>`).join('')}</div>`;
+  wrap.innerHTML=`
+    <div class="journey-chapter-head">
+      <div><span class="eyebrow">CHAPTER</span><b>章節導覽</b></div>
+      <small>切換章節預覽・圖片可放大</small>
+    </div>
+    <div class="journey-chapter-tabs" role="tablist" aria-label="旅程章節">
+      ${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-tab ${preview.id===ch.id?'selected':''} ${current.id===ch.id?'current':''}" data-chapter-tab="${ch.id}" role="tab" aria-selected="${preview.id===ch.id}"><small>${ch.range}</small><b>${ch.kicker.replace('Chapter ','第')}章</b></button>`).join('')}
+    </div>
+    <article class="journey-chapter-feature">
+      <button type="button" class="journey-chapter-image-btn" data-chapter-zoom="${preview.id}" aria-label="放大 ${esc(preview.title)} 圖片">
+        <img class="journey-chapter-feature-art" src="${chapterImageAsset(preview,lang)}" alt="${preview.range} ${esc(preview.title)}">
+        <span class="chapter-zoom-badge">⌕ 放大</span>
+      </button>
+      <div class="journey-chapter-feature-copy">
+        <small>${preview.kicker} · ${preview.range}</small>
+        <b>${preview.title}</b>
+        <span>${preview.note}</span>
+        <button type="button" class="chapter-enter-btn" data-chapter-start="${preview.start}">前往 D${preview.start+1} 行程 →</button>
+      </div>
+    </article>`;
+}
+function renderChapterLightbox(){
+  const ch=TRIP_CHAPTERS[chapterLightboxIndex]||TRIP_CHAPTERS[0];
+  const lang=getSceneLanguage();
+  const img=$('#chapterLightboxImage'); if(!img)return;
+  img.src=chapterImageAsset(ch,lang);
+  img.alt=`${ch.range} ${ch.title}`;
+  $('#chapterLightboxKicker').textContent=`${ch.kicker} · ${ch.range}`;
+  $('#chapterLightboxTitle').textContent=ch.title;
+  $('#chapterLightboxCounter').textContent=`${chapterLightboxIndex+1} / ${TRIP_CHAPTERS.length}`;
+}
+function openChapterLightbox(id){
+  const idx=TRIP_CHAPTERS.findIndex(ch=>ch.id===id);
+  chapterLightboxIndex=idx>=0?idx:0;
+  renderChapterLightbox();
+  const wrap=$('#chapterImageLightbox'); if(!wrap)return;
+  wrap.classList.add('show');wrap.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+}
+function closeChapterLightbox(){
+  const wrap=$('#chapterImageLightbox'); if(!wrap)return;
+  wrap.classList.remove('show');wrap.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');
+}
+function moveChapterLightbox(delta){
+  chapterLightboxIndex=(chapterLightboxIndex+delta+TRIP_CHAPTERS.length)%TRIP_CHAPTERS.length;
+  chapterPreviewId=TRIP_CHAPTERS[chapterLightboxIndex].id;
+  renderChapterLightbox();renderJourneyChapters();
 }
 const WEATHER_PREVIEW_STORAGE_KEY=`${APP_NAMESPACE}:weather-preview-mode`;
 const WEATHER_PREVIEW_VARIANTS=[
@@ -2944,7 +2996,9 @@ function bind(){
     const themeChoice=e.target.closest("[data-theme-choice]");if(themeChoice){setDisplayTheme(themeChoice.dataset.themeChoice);return}
     const fontChoice=e.target.closest("[data-font-choice]");if(fontChoice){setFontSize(fontChoice.dataset.fontChoice);return}
     const dayLangChoice=e.target.closest("[data-day-lang]");if(dayLangChoice){setSceneLanguage(dayLangChoice.dataset.dayLang);return}
-    const chapterJump=e.target.closest("[data-chapter-start]");if(chapterJump){state.dayIndex=Number(chapterJump.dataset.chapterStart);state.decisionDrafts={};renderDays();renderSchedule();return}
+    const chapterZoom=e.target.closest("[data-chapter-zoom]");if(chapterZoom){openChapterLightbox(chapterZoom.dataset.chapterZoom);return}
+    const chapterTab=e.target.closest("[data-chapter-tab]");if(chapterTab){chapterPreviewId=chapterTab.dataset.chapterTab;renderJourneyChapters();return}
+    const chapterJump=e.target.closest("[data-chapter-start]");if(chapterJump){state.dayIndex=Number(chapterJump.dataset.chapterStart);chapterPreviewId=chapterForDay(state.dayIndex).id;state.decisionDrafts={};renderDays();renderSchedule();return}
     const d=e.target.closest("[data-day]");if(d){state.dayIndex=Number(d.dataset.day);state.decisionDrafts={};renderDays();renderSchedule();return}
     const n=e.target.closest("[data-view]");if(n){switchView(n.dataset.view);if(n.dataset.tool)switchTool(n.dataset.tool);return}
     const t=e.target.closest("[data-tool]");if(t){switchTool(t.dataset.tool);return}
@@ -3038,6 +3092,12 @@ function bind(){
     if(wrap.dataset.heroEgg==="1"){if(e.target===wrap)closeHeroEgg();return}
     wrap.classList.remove("show");
   });
+  $("#chapterLightboxClose")?.addEventListener("click",closeChapterLightbox);
+  $("#chapterLightboxPrev")?.addEventListener("click",()=>moveChapterLightbox(-1));
+  $("#chapterLightboxNext")?.addEventListener("click",()=>moveChapterLightbox(1));
+  $("#chapterImageLightbox")?.addEventListener("click",e=>{if(e.target.closest?.("[data-chapter-lightbox-close]"))closeChapterLightbox()});
+  const chapterLightboxStage=$("#chapterImageLightbox .chapter-image-lightbox-stage");
+  if(chapterLightboxStage){let cx=0,cy=0,cpid=null;chapterLightboxStage.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;cx=e.clientX;cy=e.clientY;cpid=e.pointerId},{passive:true});chapterLightboxStage.addEventListener("pointerup",e=>{if(cpid!==e.pointerId)return;const dx=e.clientX-cx,dy=e.clientY-cy;cpid=null;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)*1.15)moveChapterLightbox(dx<0?1:-1)},{passive:true});chapterLightboxStage.addEventListener("pointercancel",()=>{cpid=null},{passive:true})}
   $("#dayLightboxClose")?.addEventListener("click",closeDayLightbox);
   $("#dayLightboxPrev")?.addEventListener("click",()=>moveDayLightbox(-1));
   $("#dayLightboxNext")?.addEventListener("click",()=>moveDayLightbox(1));
@@ -3057,6 +3117,8 @@ function bind(){
   $("#foodNearbyOpen")?.addEventListener("click",()=>$("#foodNearbyModal")?.showModal());
   $("#foodNearbyClose")?.addEventListener("click",()=>$("#foodNearbyModal")?.close());
   $("#foodNearbyModal")?.addEventListener("click",e=>{if(e.target===$("#foodNearbyModal"))$("#foodNearbyModal").close()});
+
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#chapterImageLightbox")?.classList.contains("show"))closeChapterLightbox()});
   $("#settingsBtn").addEventListener("click",()=>{$("#settingsModal").showModal();applyDisplaySettings()});
   $("#settingsClose").addEventListener("click",()=>$("#settingsModal").close());
   $("#settingsModal").addEventListener("click",e=>{if(e.target===$("#settingsModal"))$("#settingsModal").close()});

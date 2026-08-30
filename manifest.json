@@ -2,11 +2,11 @@
   "name": "2026 九州家族紅葉旅",
   "short_name": "九州家族旅",
   "description": "2026/11 九州家族紅葉旅行私人 PWA",
-  "start_url": "./?pwa=191",
+  "start_url": "./?pwa=193",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#FBF7F0",
-  "theme_color": "#FBF7F0",
+  "background_color": "#FCF8F2",
+  "theme_color": "#FCF8F2",
   "icons": [
     {
       "src": "./icon-192.png",

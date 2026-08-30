@@ -4047,3 +4047,109 @@ html[data-theme="wa"] .tag,html[data-theme="wa"] .info-chip,html[data-theme="wa"
   .day-image-lightbox-head{padding-left:12px!important}
   .day-image-lightbox-head b{font-size:12.5px!important}
 }
+
+
+/* ===== v1.9.3 polish: lighter hero + intuitive chapter navigator ===== */
+html[data-theme="wa"]{
+  --ink:#4E423D;
+  --muted:#897A72;
+  --accent:#CA8B76;
+  --accent-strong:#A86653;
+  --orange:#C98762;
+  --line:#EADFD5;
+  --paper:#FFFDF9;
+  --paper-2:#FBF6EF;
+}
+html[data-theme="wa"] body{
+  background:linear-gradient(180deg,#FFFDF9 0%,#FBF7F0 52%,#F8F2E9 100%)!important;
+}
+html[data-theme="wa"] .hero{
+  min-height:330px!important;
+  background-image:
+    linear-gradient(90deg,rgba(255,252,247,.98) 0%,rgba(255,252,247,.93) 32%,rgba(255,252,247,.54) 56%,rgba(255,252,247,.09) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.05),rgba(128,91,64,.05)),
+    url("./nov_hero_main_a.webp?v=160")!important;
+  background-position:58% center!important;
+}
+html[data-theme="wa"] .hero:before,
+html[data-theme="wa"] .hero:after{display:none!important;content:none!important}
+html[data-theme="wa"] .hero-row{padding-right:0!important}
+html[data-theme="wa"] .buddy-hero-copy{
+  width:min(76%,420px)!important;
+  max-width:min(76%,420px)!important;
+  padding:0!important;
+  margin-top:auto!important;
+  margin-bottom:10px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  text-align:left!important;
+}
+html[data-theme="wa"] .buddy-hero-copy h1{
+  margin:6px 0 7px!important;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif!important;
+  font-size:clamp(31px,8vw,44px)!important;
+  line-height:1.08!important;
+  font-weight:800!important;
+  letter-spacing:.025em!important;
+  color:#4C3932!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.7)!important;
+  white-space:nowrap!important;
+}
+html[data-theme="wa"] .buddy-season{font-family:inherit!important;font-weight:800!important;color:#B46B56!important;letter-spacing:.12em!important}
+html[data-theme="wa"] .hero-date{font-size:14px!important;color:#7E665C!important;font-weight:800!important}
+html[data-theme="wa"] .hero-route{font-size:10.5px!important;color:#948178!important;letter-spacing:.04em!important}
+html[data-theme="wa"] .settings-btn{
+  top:14px!important;right:15px!important;width:40px!important;min-width:40px!important;height:40px!important;padding:0!important;
+  border-radius:50%!important;background:rgba(255,252,247,.94)!important;border:1px solid #E0CFC0!important;
+  color:#9C6758!important;font-size:19px!important;box-shadow:0 5px 14px rgba(101,72,57,.08)!important;
+}
+html[data-theme="wa"] .day-strip-wrap{background:rgba(255,252,247,.82)!important;border-color:#EFE3D8!important}
+html[data-theme="wa"] .day-btn{background:#FFFDF9!important;border-color:#E7D6C7!important;color:#8A756C!important;box-shadow:none!important}
+html[data-theme="wa"] .day-btn.active{background:linear-gradient(180deg,#D59A83,#C17E68)!important;border-color:#C17E68!important;color:#fff!important;box-shadow:0 7px 16px rgba(174,111,88,.16)!important}
+html[data-theme="wa"] .weather-card,
+html[data-theme="wa"] .card,
+html[data-theme="wa"] .summary-card,
+html[data-theme="wa"] .family-meta-card,
+html[data-theme="wa"] .now-next-card,
+html[data-theme="wa"] .autumn-watch,
+html[data-theme="wa"] .event-card,
+html[data-theme="wa"] .tool-card{
+  background:rgba(255,253,249,.98)!important;
+  border-color:#EADFD5!important;
+  box-shadow:0 8px 22px rgba(101,76,61,.045)!important;
+}
+html[data-theme="wa"] .event-card{border-left-color:#CA8B76!important}
+html[data-theme="wa"] .tag,
+html[data-theme="wa"] .info-chip,
+html[data-theme="wa"] .food-status{background:#FFF8F1!important;border-color:#E7CFC0!important;color:#A25F4D!important}
+html[data-theme="wa"] .bottom-nav{background:rgba(255,252,247,.97)!important;border-color:#E7D7C9!important;box-shadow:0 9px 26px rgba(92,67,55,.08)!important}
+html[data-theme="wa"] .bottom-nav .nav-btn.active{background:linear-gradient(180deg,#CF9079,#BE7862)!important;color:#fff!important}
+
+/* Chapter navigator */
+.journey-chapters{margin:10px 0 18px!important}
+.journey-chapter-head{display:flex!important;align-items:end!important;justify-content:space-between!important;gap:10px!important;margin-bottom:9px!important;flex-wrap:nowrap!important}
+.journey-chapter-head>div{display:flex;align-items:baseline;gap:8px;min-width:0}.journey-chapter-head b{white-space:nowrap}.journey-chapter-head small{font-size:10.5px!important;text-align:right;color:#99877E!important}
+.journey-chapter-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:9px}
+.journey-chapter-tab{border:1px solid #E8D9CC;background:#FFFDF9;color:#8D776E;border-radius:12px;padding:8px 4px;display:grid;gap:1px;text-align:center;box-shadow:none}
+.journey-chapter-tab small{font-size:9px;color:#A28F85}.journey-chapter-tab b{font-size:11px;font-weight:800;white-space:nowrap}
+.journey-chapter-tab.selected{border-color:#D6A38D;background:#FFF5EC;color:#9F5F4D;box-shadow:0 5px 13px rgba(166,101,78,.08)}
+.journey-chapter-tab.current:after{content:"目前";font-size:8px;color:#B97762;margin-top:2px}
+.journey-chapter-feature{overflow:hidden;border:1px solid #E5D4C6;border-radius:18px;background:#FFFDF9;box-shadow:0 8px 22px rgba(100,74,58,.055)}
+.journey-chapter-image-btn{position:relative;width:100%;padding:0;border:0;background:#F5ECE3;display:block;overflow:hidden;aspect-ratio:4/3}
+.journey-chapter-feature-art{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.chapter-zoom-badge{position:absolute;right:9px;bottom:9px;padding:6px 9px;border-radius:999px;background:rgba(63,49,42,.72);color:#fff;font-size:10px;font-weight:800;backdrop-filter:blur(6px)}
+.journey-chapter-feature-copy{padding:12px 14px 13px;display:grid;gap:5px}.journey-chapter-feature-copy>small{font-size:10px;color:#B87560;font-weight:800;letter-spacing:.05em}.journey-chapter-feature-copy>b{font-size:16px;line-height:1.4;color:#55463F}.journey-chapter-feature-copy>span{font-size:11.5px;line-height:1.6;color:#8B7B72}
+.chapter-enter-btn{justify-self:start;margin-top:4px;border:1px solid #DAB8A5;background:#FFF7EF;color:#A05F4E;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800}
+
+/* Chapter image lightbox */
+.chapter-image-lightbox{position:fixed;z-index:115;inset:0;display:none;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top)) 10px max(12px,env(safe-area-inset-bottom))}.chapter-image-lightbox.show{display:flex}.chapter-image-lightbox-backdrop{position:absolute;inset:0;background:rgba(33,27,24,.78);backdrop-filter:blur(8px)}.chapter-image-lightbox-card{position:relative;z-index:1;width:min(96vw,820px);max-height:96dvh;display:flex;flex-direction:column;background:#FCF7F0;border:1px solid rgba(255,255,255,.22);border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.34)}.chapter-image-lightbox-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 14px}.chapter-image-lightbox-head>div{display:grid;gap:1px;min-width:0}.chapter-image-lightbox-head span{font-size:9px;color:#B5735D;font-weight:800}.chapter-image-lightbox-head b{font-size:13px;color:#55453F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chapter-image-lightbox-head button{width:34px;height:34px;border:0;border-radius:50%;background:#EEE1D6;color:#6A554C;font-size:22px}.chapter-image-lightbox-stage{position:relative;min-height:0;background:#1B1816;touch-action:pan-y}.chapter-image-lightbox-stage img{display:block;width:100%;max-height:calc(96dvh - 98px);object-fit:contain;background:#1B1816}.chapter-lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:52px;border:0;background:rgba(24,21,19,.58);color:#fff;font-size:34px;line-height:1;border-radius:12px;backdrop-filter:blur(5px)}.chapter-lightbox-nav.prev{left:8px}.chapter-lightbox-nav.next{right:8px}.chapter-image-lightbox-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 13px 10px;color:#74655E}.chapter-image-lightbox-foot span{font-size:11px;font-weight:900}.chapter-image-lightbox-foot small{font-size:9.5px}
+@media(max-width:420px){
+  html[data-theme="wa"] .buddy-hero-copy{width:82%!important;max-width:82%!important}
+  html[data-theme="wa"] .buddy-hero-copy h1{font-size:31px!important;letter-spacing:.015em!important}
+  .journey-chapter-head small{display:none}
+  .journey-chapter-feature-copy>b{font-size:15px}
+  .journey-chapter-tab b{font-size:10.5px}
+}
