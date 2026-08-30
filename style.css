@@ -111,10 +111,10 @@ body{
 .hero p{font-size:11px;line-height:1.65;letter-spacing:.03em;color:var(--muted);opacity:1}
 .hero-mark{display:none!important}
 .settings-btn{
-  position:absolute;top:16px;right:18px;z-index:2;width:43px;height:43px;border-radius:50%;
+  position:absolute;top:16px;right:18px;z-index:4;min-width:58px;height:38px;padding:0 14px;border-radius:999px;
   border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);
-  background:color-mix(in srgb,var(--paper) 75%,transparent);color:var(--accent-strong);
-  font-family:Georgia,serif;font-size:16px;font-weight:700;
+  background:color-mix(in srgb,var(--paper) 78%,transparent);color:var(--accent-strong);
+  font-size:13px;font-weight:800;letter-spacing:.04em;
   box-shadow:0 6px 18px rgba(71,52,40,.07);backdrop-filter:blur(10px)
 }
 .settings-btn:active{transform:scale(.96)}
@@ -3806,4 +3806,115 @@ html[data-theme="buddy"] .bottom-nav{
   .bottom-nav .nav-btn span{font-size:16px!important}.bottom-nav .nav-btn b{font-size:12px!important}
   .journey-chapter-card{grid-template-columns:112px minmax(0,1fr)!important;min-width:92vw!important}
   .journey-chapter-art{width:112px!important;min-height:108px!important}
+}
+
+html[data-theme="wa"] main{background:linear-gradient(180deg,rgba(255,250,244,.36),rgba(247,238,226,.20));}
+
+
+/* ===== v1.9 tuning: warmer autumn UI, clearer settings, less awkward hero seal ===== */
+html[data-theme="wa"] .hero{
+  min-height:334px;
+  padding:24px 18px 22px;
+  background-image:
+    linear-gradient(90deg,rgba(248,241,232,.97) 0%,rgba(248,241,232,.90) 33%,rgba(248,241,232,.42) 58%,rgba(248,241,232,.08) 100%),
+    linear-gradient(180deg,rgba(91,63,49,.02),rgba(91,63,49,.18)),
+    url("./nov_hero_main_a.webp?v=130");
+  background-size:cover;
+  background-position:58% center;
+}
+html[data-theme="wa"] .hero:before{
+  content:"";
+  position:absolute;
+  left:-6px;top:-10px;
+  width:152px;height:120px;
+  border:0;
+  border-radius:0;
+  background:url("./wa-leaf-scatter.webp?v=160") left top/contain no-repeat;
+  opacity:.72;
+  transform:rotate(-3deg);
+  pointer-events:none;
+}
+html[data-theme="wa"] .hero:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(212,175,82,.10), transparent 18%),
+    linear-gradient(180deg,rgba(255,255,255,.03),rgba(52,39,34,.04));
+  pointer-events:none;
+}
+html[data-theme="wa"] .buddy-hero-copy{
+  max-width:88%;
+  background:linear-gradient(180deg,rgba(255,250,244,.92),rgba(248,238,225,.88));
+  border:1px solid rgba(209,188,170,.92);
+  box-shadow:0 14px 30px rgba(74,51,40,.10);
+}
+html[data-theme="wa"] .settings-btn{
+  background:rgba(255,250,244,.94);
+  border-color:#CDAE95;
+  color:#7F473B;
+}
+html[data-theme="wa"] .day-strip-wrap{
+  margin:0 -16px 4px;
+  padding:8px 0 4px;
+  background:linear-gradient(180deg,rgba(255,251,246,.86),rgba(248,240,230,.54));
+  border-bottom:1px solid rgba(221,203,186,.72);
+}
+html[data-theme="wa"] .day-btn{
+  min-width:62px;
+  height:72px;
+  border-radius:18px;
+  border:1px solid #DCC8B7;
+  background:linear-gradient(180deg,#FFFDF8,#F7EEDD);
+  color:#7A655C;
+}
+html[data-theme="wa"] .day-btn .weekday{font-size:10px;color:#927566}
+html[data-theme="wa"] .day-btn .date{color:#7A463D}
+html[data-theme="wa"] .day-btn.active{
+  transform:translateY(-2px);
+  background:linear-gradient(180deg,#9F5642,#7E4235);
+  border-color:#7E4235;
+  color:#fff;
+}
+html[data-theme="wa"] .weather-card,
+html[data-theme="wa"] .card,
+html[data-theme="wa"] .summary-card,
+html[data-theme="wa"] .family-meta-card,
+html[data-theme="wa"] .now-next-card,
+html[data-theme="wa"] .autumn-watch{
+  background:linear-gradient(180deg,rgba(255,252,248,.98),rgba(250,242,232,.97));
+  border-color:#E0D0C1;
+  box-shadow:0 10px 24px rgba(84,60,47,.06);
+}
+html[data-theme="wa"] .event{border-left:1px dashed rgba(158,104,71,.38)}
+html[data-theme="wa"] .event-dot{box-shadow:0 0 0 3px #F8F1E8}
+html[data-theme="wa"] .event-card{
+  background:linear-gradient(180deg,#FFFDFC,#FBF4EB);
+  border-left:4px solid #A65A44;
+  border-top:1px solid #E7DACD;
+  border-right:1px solid #E7DACD;
+  border-bottom:1px solid #E7DACD;
+  border-radius:14px;
+}
+html[data-theme="wa"] .travel,
+html[data-theme="wa"] .event-note,
+html[data-theme="wa"] .list-meta,
+html[data-theme="wa"] .weather-desc,
+html[data-theme="wa"] .rain-box{color:#77675F}
+html[data-theme="wa"] .tag,
+html[data-theme="wa"] .info-chip,
+html[data-theme="wa"] .food-status{
+  background:linear-gradient(180deg,#FFF8EE,#F8EDDF);
+  border-color:#D9BFA8;
+  color:#7A433A;
+}
+html[data-theme="wa"] .bottom-nav{
+  background:rgba(251,245,237,.96);
+  border:1px solid rgba(216,196,180,.92);
+  box-shadow:0 14px 28px rgba(77,58,47,.10);
+}
+html[data-theme="wa"] .nav-btn{color:#8C7B72}
+html[data-theme="wa"] .nav-btn.active{
+  background:linear-gradient(180deg,#9A5543,#804538);
+  color:#fff;
 }

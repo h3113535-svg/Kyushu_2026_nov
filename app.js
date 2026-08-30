@@ -1593,18 +1593,16 @@ function buddyPeek(kind="purin"){
   requestAnimationFrame(()=>requestAnimationFrame(()=>layer.classList.add("show")));
   buddyPeek._timer=setTimeout(()=>{layer.classList.remove("show");setTimeout(()=>{layer.className="buddy-peek-layer buddy-only-art";layer.innerHTML=""},480)},2400);
 }
-function dailySceneAsset(index,lang=getSceneLanguage()){
+function dailySceneAsset(index){
   const day=String(index+1).padStart(2,"0");
-  return lang==='ja' ? `./day-scene-v52-${day}.webp?v=550` : `./day-scene-zh-v17-${day}.webp?v=170`;
+  return `./day-scene-zh-v17-${day}.webp?v=170`;
 }
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
   if(!img)return;
-  const lang=getSceneLanguage();
-  const src=dailySceneAsset(state.dayIndex,lang);
+  const src=dailySceneAsset(state.dayIndex);
   if(img.getAttribute("src")!==src) img.src=src;
-  const langLabel=SCENE_LANGS[lang]?.tag||'主題圖';
-  img.alt=`D${state.dayIndex+1} 九州家族紅葉旅${langLabel}`;
+  img.alt=`D${state.dayIndex+1} 九州家族紅葉旅主題圖`;
   if(bar) bar.style.width=`${((state.dayIndex+1)/TRIP.days.length)*100}%`;
 }
 let dayLightboxIndex=0;
@@ -1612,17 +1610,16 @@ function renderDayLightbox(){
   const wrap=$("#dayImageLightbox"),img=$("#dayLightboxImage");if(!wrap||!img||!TRIP?.days?.length)return;
   dayLightboxIndex=Math.max(0,Math.min(TRIP.days.length-1,dayLightboxIndex));
   const d=TRIP.days[dayLightboxIndex];
-  const lang=getSceneLanguage();
-  img.src=dailySceneAsset(dayLightboxIndex,lang);
-  img.alt=`D${dayLightboxIndex+1} ${d.title||"旅程主題圖"}（${SCENE_LANGS[lang]?.label||''}）`;
-  $("#dayLightboxTitle").textContent=`D${dayLightboxIndex+1}｜${d.title||"旅程"}｜${SCENE_LANGS[lang]?.label||''}`;
+  img.src=dailySceneAsset(dayLightboxIndex);
+  img.alt=`D${dayLightboxIndex+1} ${d.title||"旅程主題圖"}`;
+  $("#dayLightboxTitle").textContent=`D${dayLightboxIndex+1}｜${d.title||"旅程"}`;
   $("#dayLightboxCounter").textContent=`${dayLightboxIndex+1} / ${TRIP.days.length}`;
 }
 function openDayLightbox(index=state.dayIndex){
   const wrap=$("#dayImageLightbox");if(!wrap)return;
   dayLightboxIndex=index;renderDayLightbox();wrap.classList.add("show");wrap.setAttribute("aria-hidden","false");document.body.classList.add("modal-open");
 }
-function closeDayLightbox(){const wrap=$("#dayImageLightbox");if(!wrap)return;wrap.classList.remove("show");wrap.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
+function closeDayLightbox(){const wrap=$("#dayImageLightbox");if(!wrap)return;const changed=state&&state.dayIndex!==dayLightboxIndex;if(changed){state.dayIndex=dayLightboxIndex;state.decisionDrafts={};renderDays();renderSchedule()}wrap.classList.remove("show");wrap.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
 function moveDayLightbox(step){dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox()}
 
 
@@ -1678,42 +1675,18 @@ function handleWeatherBuddyTap(){
 function ensureWeatherBuddy(){updateWeatherBuddy(WEATHER_BUDDY_VARIANTS[weatherBuddyIndex].mode);}
 
 const SCENE_LANG_STORAGE_KEY=`${APP_NAMESPACE}:scene-lang`;
-const SCENE_LANGS={
-  zh:{label:"中文",tag:"中文主圖"},
-  ja:{label:"日本語",tag:"日文主圖"}
-};
-function getSceneLanguage(){
-  try{
-    const saved=localStorage.getItem(SCENE_LANG_STORAGE_KEY);
-    return saved==="ja"?"ja":"zh";
-  }catch{return "zh"}
-}
-function applySceneLanguageUI(){
-  const lang=getSceneLanguage();
-  document.documentElement.dataset.sceneLang=lang;
-  $$('[data-scene-lang-choice]').forEach(btn=>{
-    const selected=btn.dataset.sceneLangChoice===lang;
-    btn.classList.toggle('selected',selected);
-    btn.setAttribute('aria-pressed',String(selected));
-  });
-}
-function setSceneLanguage(lang){
-  if(!SCENE_LANGS[lang])return;
-  try{localStorage.setItem(SCENE_LANG_STORAGE_KEY,lang)}catch{}
-  applySceneLanguageUI();
-  renderDailyScene();
-  renderJourneyChapters();
-  if(document.querySelector('#dayImageLightbox.show'))renderDayLightbox();
-  if(TRIP?.days?.[state?.dayIndex??0])renderSchedule();
-}
+const SCENE_LANGS={zh:{label:"中文",tag:"主題圖"}};
+function getSceneLanguage(){return "zh"}
+function applySceneLanguageUI(){try{localStorage.setItem(SCENE_LANG_STORAGE_KEY,'zh')}catch{}}
+function setSceneLanguage(){applySceneLanguageUI();renderDailyScene();renderJourneyChapters();if(document.querySelector('#dayImageLightbox.show'))renderDayLightbox();if(TRIP?.days?.[state?.dayIndex??0])renderSchedule()}
+
 const TRIP_CHAPTERS=[
   {id:'c1',start:0,end:2,kicker:'Chapter 1',range:'D1–D3',title:'旅程開始・福岡與由布院',note:'抵達福岡、城市秋日、前往由布院 Villa',artZh:'./chapter-v18-d1-3.webp?v=180'},
   {id:'c2',start:3,end:5,kicker:'Chapter 2',range:'D4–D6',title:'別府・九重・高千穗・阿蘇',note:'動物園、絕景自駕、峽谷與溫泉夜',artZh:'./chapter-v18-d4-6.webp?v=180'},
   {id:'c3',start:6,end:8,kicker:'Chapter 3',range:'D7–D9',title:'熊本與太宰府・旅程收尾',note:'阿蘇、熊本、秋月太宰府，最後回到福岡',artZh:'./chapter-v18-d7-9.webp?v=180'}
 ];
-function chapterImageAsset(ch,lang=getSceneLanguage()){
-  // 中文使用專屬三日章節圖；日文模式在尚未有日文章節圖時，退回該章第一天的日文主圖，避免語系混用。
-  return lang==='zh' ? ch.artZh : dailySceneAsset(ch.start,'ja');
+function chapterImageAsset(ch){
+  return ch.artZh;
 }
 function chapterForDay(index){
   return TRIP_CHAPTERS.find(ch=>index>=ch.start&&index<=ch.end)||TRIP_CHAPTERS[0];
@@ -1721,8 +1694,7 @@ function chapterForDay(index){
 function renderJourneyChapters(){
   const wrap=$('#journeyChapters'); if(!wrap)return;
   const current=chapterForDay(state?.dayIndex??0);
-  const lang=getSceneLanguage();
-  wrap.innerHTML=`<div class="journey-chapter-head"><span class="eyebrow">CHAPTER</span><b>章節導覽</b><small>三段旅程快速切換</small></div><div class="journey-chapter-row">${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-card ${current.id===ch.id?'active':''}" data-chapter-start="${ch.start}"><img class="journey-chapter-art" src="${chapterImageAsset(ch,lang)}" alt="${ch.range} ${esc(ch.title)}"><span class="journey-chapter-copy"><small>${ch.kicker} · ${ch.range}</small><b>${ch.title}</b><span>${ch.note}</span></span></button>`).join('')}</div>`;
+  wrap.innerHTML=`<div class="journey-chapter-head"><span class="eyebrow">CHAPTER</span><b>章節導覽</b><small>三段旅程快速切換</small></div><div class="journey-chapter-row">${TRIP_CHAPTERS.map(ch=>`<button type="button" class="journey-chapter-card ${current.id===ch.id?'active':''}" data-chapter-start="${ch.start}"><img class="journey-chapter-art" src="${chapterImageAsset(ch)}" alt="${ch.range} ${esc(ch.title)}"><span class="journey-chapter-copy"><small>${ch.kicker} · ${ch.range}</small><b>${ch.title}</b><span>${ch.note}</span></span></button>`).join('')}</div>`;
 }
 const WEATHER_PREVIEW_STORAGE_KEY=`${APP_NAMESPACE}:weather-preview-mode`;
 const WEATHER_PREVIEW_VARIANTS=[
@@ -2491,12 +2463,11 @@ function bindGuideTargets(visibleEvents=[]){
 function renderSchedule(){
   const d=TRIP.days[state.dayIndex];
   const chapter=chapterForDay(state.dayIndex);
-  const sceneLang=getSceneLanguage();
   $("#dayNumber").textContent=`D${state.dayIndex+1}`;
   $("#dayTitle").textContent=d.title;
   $("#daySubtitle").textContent=d.subtitle;
   const meta=$("#dayTitleMeta");
-  if(meta) meta.innerHTML=`<span class="day-meta-pill">${chapter.kicker}</span><span class="day-meta-text">${d.shortDate}</span><span class="day-meta-text">${SCENE_LANGS[sceneLang]?.label||'中文'}主圖</span>`;
+  if(meta) meta.innerHTML=`<span class="day-meta-pill">${chapter.kicker}</span><span class="day-meta-text">${d.shortDate}</span><span class="day-meta-text">今日主圖</span>`;
   renderJourneyChapters();
   renderDayBrief(d);
   renderNowNext(d);
@@ -2917,7 +2888,7 @@ function applyDisplaySettings(){
   const fontSize=getDisplaySetting(FONT_SIZE_KEY,"standard");
   document.documentElement.dataset.theme=theme;
   document.documentElement.dataset.fontSize=fontSize;
-  document.documentElement.dataset.sceneLang=getSceneLanguage();
+  document.documentElement.dataset.sceneLang='zh';
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content",THEME_META[theme]||THEME_META.travel);
   $$("[data-theme-choice]").forEach(b=>{
     const selected=b.dataset.themeChoice===theme;
@@ -3261,12 +3232,22 @@ function formatTripDate(){
   const short=d=>String(d||"").slice(5).replace("-",".");
   return `${short(first)} — ${short(last)}`;
 }
+const HERO_ROUTE_MAP={FUKUOKA:'福岡',HAKATA:'博多',YUFUIN:'由布院',YUFUINN:'由布院',ASO:'阿蘇',KUMAMOTO:'熊本',BEPPU:'別府',TAKACHIHO:'高千穗'};
+function translateHeroRouteLabel(label=''){
+  const raw=String(label||'').trim();
+  if(!raw)return '';
+  const key=raw.toUpperCase().replace(/\s+/g,'');
+  return HERO_ROUTE_MAP[key]||raw;
+}
+function splitHeroRoute(raw=''){
+  return String(raw||'').split(/→|->|→|➝|—|-/).map(x=>x.trim()).filter(Boolean).map(translateHeroRouteLabel);
+}
 function applyPrivateTripMeta(){
   const title=$("#heroPrivateTitle"); if(title) title.textContent=TRIP.heroTitle||TRIP.title||"九州家族紅葉旅";
   const date=$("#heroPrivateDate"); if(date) date.textContent=formatTripDate();
   const route=$("#heroPrivateRoute"); if(route){
-    const raw=TRIP.heroRoute||"FUKUOKA → YUFUIN → ASO → KUMAMOTO";
-    const places=raw.split("→").map(x=>x.trim()).filter(Boolean);
+    const raw=TRIP.heroRoute||"FUKUOKA → YUFUIN → ASO → KUMAMOTO → FUKUOKA";
+    const places=splitHeroRoute(raw);
     route.innerHTML=places.map((x,i)=>`${i?'<i>→</i>':''}<span>${esc(x)}</span>`).join("");
   }
   const season=$("#heroPrivateSeason"); if(season) season.textContent=String(TRIP.season||"2026・晩秋").replace("・"," · ");

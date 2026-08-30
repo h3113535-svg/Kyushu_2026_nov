@@ -14,12 +14,12 @@
     try{
       document.documentElement.dataset.theme=localStorage.getItem("kyushu-nov-2026:displayTheme")||"wa";
       document.documentElement.dataset.fontSize=localStorage.getItem("kyushu-nov-2026:fontSize")||"standard";
-      document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
+      document.documentElement.dataset.sceneLang="zh";
     }catch(e){}
   </script>
-  <link rel="stylesheet" href="./style.css?v=180" />
+  <link rel="stylesheet" href="./style.css?v=190" />
   <title>九州家族紅葉旅</title>
-  <meta name="app-version" content="1.7.0" />
+  <meta name="app-version" content="1.9.0" />
   <link rel="preload" as="image" href="./nov_hero_main_a.webp?v=160" fetchpriority="high">
   <link rel="preload" as="image" href="./day-scene-zh-v17-01.webp?v=170">
 </head>
@@ -37,7 +37,7 @@
   </section>
   <div id="app" hidden>
     <header class="hero theme-hero">
-      <button class="settings-btn" id="settingsBtn" aria-label="顯示設定">Aa</button>
+      <button class="settings-btn" id="settingsBtn" aria-label="開啟設定">設定</button>
       <div class="buddy-hero-v42">
         <img class="buddy-hero-cloud cloud-a buddy-only-art" src="./ui-cloud.webp?v=440" alt="" aria-hidden="true" />
         <img class="buddy-hero-cloud cloud-b buddy-only-art" src="./ui-cloud.webp?v=440" alt="" aria-hidden="true" />
@@ -253,13 +253,6 @@
           </button>
         </div>
       </section>
-            <section class="setting-section">
-        <div class="setting-label"><b>每日主圖語系</b><small>D1–D9 主題圖預設顯示中文，可切換成日文版本，之後會維持同一語系。</small></div>
-        <div class="segmented-control two" role="group" aria-label="每日主圖語系">
-          <button type="button" data-scene-lang-choice="zh">中文</button>
-          <button type="button" data-scene-lang-choice="ja">日本語</button>
-        </div>
-      </section>
       <section class="setting-section account-setting">
         <div class="setting-label"><b>私人帳號</b><small id="accountEmail">—</small></div>
         <button type="button" class="logout-btn" id="logoutBtn">登出這台裝置</button>
@@ -379,7 +372,7 @@
   <div id="toast" class="toast" role="status"></div>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script defer src="./firebase-config.js?v=180"></script>
-  <script defer src="./app.js?v=180"></script>
+  <script defer src="./firebase-config.js?v=190"></script>
+  <script defer src="./app.js?v=190"></script>
 </body>
 </html>
