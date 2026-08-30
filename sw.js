@@ -1,8 +1,8 @@
 const CACHE_PREFIX = "kyushu-nov-";
-const CACHE = "kyushu-nov-v1.9.6";
+const CACHE = "kyushu-nov-v1.9.7";
 const SHELL = [
-  "./","./index.html","./style.css?v=196","./app.js?v=196",
-  "./manifest.json","./firebase-config.js?v=196",
+  "./","./index.html","./style.css?v=197","./app.js?v=197",
+  "./manifest.json","./firebase-config.js?v=197",
   "./icon-192.png","./icon-512.png","./icon-maskable-512.png",
   "./nov_loading_scene.webp?v=160",
   "./nov_hero_main_a.webp?v=160",

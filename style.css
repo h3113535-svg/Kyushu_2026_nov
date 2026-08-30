@@ -4283,3 +4283,64 @@ html[data-theme="wa"] .settings-btn{top:12px!important;right:13px!important;z-in
 @media(max-width:420px){
   .auth-gate.is-busy .auth-loading-art{max-width:248px}
 }
+
+
+/* ===== v1.9.7 Hero repair: restore copy, no lower-left washout ===== */
+html[data-theme="wa"] .hero{
+  min-height:336px!important;
+  padding:22px 18px 18px!important;
+  background-image:
+    radial-gradient(ellipse 58% 48% at 3% 8%, rgba(255,253,249,.68) 0%, rgba(255,253,249,.32) 43%, rgba(255,253,249,0) 76%),
+    url("./nov_hero_main_a.webp?v=160")!important;
+  background-size:cover!important;
+  background-position:59% center!important;
+}
+html[data-theme="wa"] .buddy-hero-v42{
+  min-height:292px!important;
+  display:block!important;
+  position:relative!important;
+}
+html[data-theme="wa"] .buddy-hero-copy{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:absolute!important;
+  top:26px!important;
+  left:4px!important;
+  width:min(84%,430px)!important;
+  max-width:min(84%,430px)!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  text-align:left!important;
+  z-index:5!important;
+}
+html[data-theme="wa"] .buddy-season,
+html[data-theme="wa"] #heroPrivateTitle,
+html[data-theme="wa"] .hero-date,
+html[data-theme="wa"] .hero-route{
+  visibility:visible!important;
+  opacity:1!important;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  color:#49362F!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.82),0 2px 8px rgba(255,250,244,.35)!important;
+}
+html[data-theme="wa"] .buddy-season{color:#A65F4E!important}
+html[data-theme="wa"] .hero-date{color:#705A51!important}
+html[data-theme="wa"] .hero-route{color:#847168!important}
+@media(max-width:420px){
+  html[data-theme="wa"] .hero{
+    min-height:318px!important;
+    padding:18px 14px 16px!important;
+    background-image:
+      radial-gradient(ellipse 68% 46% at 2% 7%, rgba(255,253,249,.70) 0%, rgba(255,253,249,.30) 43%, rgba(255,253,249,0) 74%),
+      url("./nov_hero_main_a.webp?v=160")!important;
+    background-position:61% center!important;
+  }
+  html[data-theme="wa"] .buddy-hero-v42{min-height:282px!important}
+  html[data-theme="wa"] .buddy-hero-copy{top:24px!important;left:2px!important;width:89%!important;max-width:89%!important}
+}
