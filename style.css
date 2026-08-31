@@ -4607,3 +4607,116 @@ html[data-theme="wa"] .hero-route{color:#9A887E!important}
       url("./nov_hero_main_a.webp?v=160")!important;
   }
 }
+
+
+/* ===== v1.9.12 Mobile Hero fit & readability =====
+   Root fix: the source hero is 16:9. Keep the UI container at the same ratio
+   so the artwork is never horizontally cropped on phones. */
+html[data-theme="wa"] .hero{
+  position:relative!important;
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  aspect-ratio:16 / 9!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background-image:
+    radial-gradient(ellipse 46% 46% at 19% 17%, rgba(255,252,246,.15) 0%, rgba(255,252,246,.07) 42%, rgba(255,252,246,0) 72%),
+    url("./nov_hero_main_a.webp?v=160")!important;
+  background-size:100% 100%!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+}
+html[data-theme="wa"] .hero:before,
+html[data-theme="wa"] .hero:after{display:none!important;content:none!important}
+html[data-theme="wa"] .buddy-hero-v42{
+  position:absolute!important;
+  inset:0!important;
+  min-height:0!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+}
+html[data-theme="wa"] .buddy-hero-copy{
+  position:absolute!important;
+  top:10.5%!important;
+  left:4.8%!important;
+  width:70%!important;
+  max-width:70%!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  text-align:left!important;
+  z-index:5!important;
+}
+html[data-theme="wa"] .buddy-season{
+  display:block!important;
+  margin:0 0 4px!important;
+  color:#A96555!important;
+  font-size:clamp(9px,2.65vw,12px)!important;
+  line-height:1.25!important;
+  font-weight:780!important;
+  letter-spacing:.09em!important;
+  white-space:nowrap!important;
+  text-shadow:0 1px 0 rgba(255,252,247,.52)!important;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  margin:0 0 5px!important;
+  color:#69554B!important;
+  font-family:"Noto Serif TC","Source Han Serif TC","Songti TC","PMingLiU",serif!important;
+  font-size:clamp(25px,7.45vw,37px)!important;
+  line-height:1.10!important;
+  font-weight:700!important;
+  letter-spacing:.012em!important;
+  white-space:nowrap!important;
+  text-shadow:0 1px 0 rgba(255,252,247,.58),0 2px 6px rgba(255,249,242,.10)!important;
+}
+html[data-theme="wa"] .hero-date{
+  margin:0 0 5px!important;
+  color:#75645C!important;
+  font-size:clamp(10px,2.85vw,13px)!important;
+  line-height:1.25!important;
+  font-weight:720!important;
+  letter-spacing:.01em!important;
+  white-space:nowrap!important;
+  text-shadow:0 1px 0 rgba(255,252,247,.46)!important;
+}
+html[data-theme="wa"] .hero-route{
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:nowrap!important;
+  gap:3px!important;
+  margin:0!important;
+  color:#746760!important;
+  font-size:clamp(8.2px,2.28vw,10.2px)!important;
+  line-height:1.35!important;
+  font-weight:680!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  text-shadow:0 1px 0 rgba(255,252,247,.50)!important;
+}
+html[data-theme="wa"] .hero-route span,
+html[data-theme="wa"] .hero-route i{white-space:nowrap!important;font-style:normal!important}
+html[data-theme="wa"] .hero-route i{color:#98877E!important}
+html[data-theme="wa"] .settings-btn{
+  top:3.6%!important;
+  right:3.2%!important;
+  width:38px!important;
+  min-width:38px!important;
+  height:38px!important;
+  padding:0!important;
+  z-index:7!important;
+}
+@media(max-width:380px){
+  html[data-theme="wa"] .buddy-hero-copy{top:9.5%!important;left:4.2%!important;width:72%!important;max-width:72%!important}
+  html[data-theme="wa"] #heroPrivateTitle{font-size:clamp(24px,7.25vw,30px)!important}
+  html[data-theme="wa"] .hero-route{font-size:8px!important;gap:2px!important}
+  html[data-theme="wa"] .settings-btn{width:36px!important;min-width:36px!important;height:36px!important}
+}
