@@ -580,3 +580,181 @@ html[data-theme="wa"] .hero{border-radius:0!important}
   .autumn-sort-control{width:100%;padding-bottom:1px}
   .autumn-sort-control button{padding:5px 8px}
 }
+
+
+/* ===== v1.10.4 Travel-book palette + softer full-hero wash =====
+   Palette: cream paper / dusty maple / ginkgo gold / misty sage / warm graphite.
+   The hero fade is uniform across the entire artwork — no local left-side haze. */
+html[data-theme="wa"]{
+  --ivory:#F8F5EE;
+  --paper:#FFFEFA;
+  --paper-2:#FAF7F0;
+  --ink:#545652;
+  --muted:#85877F;
+  --accent:#C88D80;
+  --accent-strong:#A96F64;
+  --accent-soft:#F0DDD8;
+  --orange:#C88D80;
+  --gold:#D7B96E;
+  --line:#E6DFD5;
+  --soft-bg:#F6F2EA;
+  --success:#87998B;
+  --shadow:0 9px 24px rgba(84,88,82,.055);
+  --book-sage:#8E9B90;
+  --book-sage-soft:#E8EDE7;
+  --book-bluegray:#98A5A3;
+  --book-maple:#C88D80;
+  --book-ginkgo:#D7B96E;
+}
+html[data-theme="wa"],html[data-theme="wa"] body{
+  background:#F8F5EE!important;
+}
+html[data-theme="wa"] body{
+  background:
+    radial-gradient(circle at 10% 3%,rgba(215,185,110,.10),transparent 25%),
+    radial-gradient(circle at 92% 7%,rgba(142,155,144,.08),transparent 27%),
+    linear-gradient(180deg,#FBF9F4 0%,#F7F3EC 100%)!important;
+}
+html[data-theme="wa"] #app{background:rgba(255,254,250,.88)!important;box-shadow:0 0 52px rgba(81,87,81,.055)!important}
+
+/* Hero: slightly lighter than v1.10.3 and perfectly uniform. */
+html[data-theme="wa"] .hero{border-radius:0!important}
+html[data-theme="wa"] .hero::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  pointer-events:none!important;
+  background:rgba(255,252,246,.38)!important;
+}
+html[data-theme="wa"] .hero-season{color:#B47669!important;text-shadow:0 1px 0 rgba(255,255,252,.78)!important}
+html[data-theme="wa"] #heroPrivateTitle{color:#5D5F5A!important;text-shadow:0 1px 0 rgba(255,255,252,.82),0 0 15px rgba(255,253,248,.28)!important}
+html[data-theme="wa"] .hero-date{color:#6D716C!important;text-shadow:0 1px 0 rgba(255,255,252,.76)!important}
+html[data-theme="wa"] .hero-route{color:#7D817B!important;text-shadow:0 1px 0 rgba(255,255,252,.76)!important}
+html[data-theme="wa"] .hero-route i{color:#A5A8A0!important}
+
+/* Settings + navigation: remove the old brown cast. */
+html[data-theme="wa"] .settings-btn{
+  background:rgba(255,254,250,.94)!important;
+  border-color:#DDD9CE!important;
+  color:#879488!important;
+  box-shadow:0 5px 14px rgba(83,91,84,.07)!important;
+}
+html[data-theme="wa"] .bottom-nav{
+  background:rgba(255,254,250,.98)!important;
+  border-color:#E3DED4!important;
+  box-shadow:0 -7px 22px rgba(79,86,80,.07)!important;
+}
+html[data-theme="wa"] .bottom-nav .nav-btn{color:#8A8D87!important}
+html[data-theme="wa"] .bottom-nav .nav-btn.active{
+  background:linear-gradient(180deg,#F3E6E1,#EFE1DC)!important;
+  color:#A66E63!important;
+  box-shadow:inset 0 0 0 1px rgba(200,141,128,.13)!important;
+}
+
+/* Day selector: travel-book cream with soft maple + ginkgo, no dark brown blocks. */
+html[data-theme="wa"] .day-strip-wrap{background:rgba(255,254,250,.88)!important;border-color:#E8E1D7!important}
+html[data-theme="wa"] .day-btn{
+  background:#FFFEFA!important;
+  border-color:#E4DED4!important;
+  color:#8A8B85!important;
+}
+html[data-theme="wa"] .day-btn .date{color:#A8796E!important}
+html[data-theme="wa"] .day-btn.active{
+  background:linear-gradient(180deg,#E9C3B8,#E4B7AA)!important;
+  border-color:#DCA99B!important;
+  color:#735E58!important;
+  box-shadow:0 6px 15px rgba(171,125,111,.10)!important;
+}
+html[data-theme="wa"] .day-btn.active .date,
+html[data-theme="wa"] .day-btn.active .weekday,
+html[data-theme="wa"] .day-btn.active .d{color:#735E58!important}
+
+/* Cards: brighter paper, neutral-gray copy, softer borders. */
+html[data-theme="wa"] .weather-card,
+html[data-theme="wa"] .card,
+html[data-theme="wa"] .summary-card,
+html[data-theme="wa"] .family-meta-card,
+html[data-theme="wa"] .now-next-card,
+html[data-theme="wa"] .autumn-watch,
+html[data-theme="wa"] .event-card,
+html[data-theme="wa"] .task-card,
+html[data-theme="wa"] .planned-food-card,
+html[data-theme="wa"] .tool-card,
+html[data-theme="wa"] .official-status-card{
+  background:rgba(255,254,250,.98)!important;
+  border-color:#E6DFD5!important;
+  box-shadow:0 8px 20px rgba(82,88,82,.045)!important;
+}
+html[data-theme="wa"] .travel,
+html[data-theme="wa"] .event-note,
+html[data-theme="wa"] .list-meta,
+html[data-theme="wa"] .weather-desc,
+html[data-theme="wa"] .rain-box{color:#85877F!important}
+
+/* Timeline: muted maple to ginkgo gradient from the illustrated travel booklet. */
+html[data-theme="wa"] .event-card{border-left-color:#CFA092!important}
+html[data-theme="wa"] .timeline:before{background:linear-gradient(180deg,#D3A398,#D8BD79)!important}
+html[data-theme="wa"] .event-dot{background:#C99688!important;box-shadow:0 0 0 3px #FAF7F0!important}
+html[data-theme="wa"] .event-time{color:#A97368!important}
+html[data-theme="wa"] .tag,
+html[data-theme="wa"] .info-chip,
+html[data-theme="wa"] .food-status{
+  background:#FAF5EF!important;
+  border-color:#E2D9CE!important;
+  color:#7D817B!important;
+}
+
+/* Primary controls: dusty maple for actions, misty sage for official/live information. */
+html[data-theme="wa"] .primary-btn,
+html[data-theme="wa"] .icon-btn,
+html[data-theme="wa"] .check-btn.done,
+html[data-theme="wa"] .member-pill.active{
+  background:#C88D80!important;
+  border-color:#C88D80!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+html[data-theme="wa"] .nav-link,
+html[data-theme="wa"] .action-link,
+html[data-theme="wa"] .driving-nav{color:#89978D!important;border-color:#D9E0D9!important;background:#FCFDF9!important}
+html[data-theme="wa"] .official-status-icon{background:#EEF1EC!important}
+html[data-theme="wa"] .official-status-copy b{color:#5B5F5A!important}
+html[data-theme="wa"] .official-status-copy>span{color:#819087!important}
+html[data-theme="wa"] .official-status-copy em{background:#F0F2EE!important;color:#78877E!important}
+html[data-theme="wa"] .official-status-actions a{background:#8D9B91!important;color:#fff!important}
+html[data-theme="wa"] .official-status-actions a.secondary{background:#FFFEFA!important;color:#7F8D84!important;border-color:#D9E0D9!important}
+
+/* Autumn watch + sort controls: neutral paper with maple/ginkgo accents. */
+html[data-theme="wa"] .autumn-scope-toggle,
+html[data-theme="wa"] .autumn-sort-row{background:#F7F4ED!important;border-color:#E4DDD3!important}
+html[data-theme="wa"] .autumn-scope-toggle button,
+html[data-theme="wa"] .autumn-sort-control button{color:#85877F!important}
+html[data-theme="wa"] .autumn-scope-toggle button.active,
+html[data-theme="wa"] .autumn-sort-control button.active{
+  background:#FFFEFA!important;
+  border-color:#E1D8CD!important;
+  color:#A46F64!important;
+  box-shadow:0 2px 7px rgba(84,88,82,.05)!important;
+}
+html[data-theme="wa"] .autumn-source-row a,
+html[data-theme="wa"] .autumn-source-row button{color:#87958B!important;border-bottom-color:#BAC5BC!important}
+html[data-theme="wa"] .autumn-title-line i.autumn-day-badge{color:#7F827D!important;background:#F2F1EB!important;border-color:#DEDDD5!important}
+html[data-theme="wa"] .autumn-personal-note{color:#6F7670!important}
+
+/* Modals / language switch / empty controls. */
+html[data-theme="wa"] .day-lang-toggle{background:#F0EEE8!important;border-color:#DEDBD3!important}
+html[data-theme="wa"] .day-lang-toggle button{color:#85877F!important}
+html[data-theme="wa"] .day-lang-toggle button.active{background:#FFFEFA!important;color:#A56F64!important}
+html[data-theme="wa"] .autumn-editor-sheet{background:#FFFEFA!important;color:#545652!important}
+html[data-theme="wa"] .autumn-editor-baseline{background:#F5F2EB!important;color:#7D807A!important}
+html[data-theme="wa"] .autumn-status-choice-grid button{border-color:#E1DBD1!important;background:#FFFEFA!important;color:#7D807A!important}
+html[data-theme="wa"] .autumn-status-choice-grid button.active{border-color:#D6A89B!important;background:#F4E3DE!important;color:#9E695E!important}
+html[data-theme="wa"] .autumn-note-field textarea{border-color:#E2DDD3!important;background:#FFFEFA!important;color:#595B57!important}
+html[data-theme="wa"] .autumn-note-field textarea:focus{border-color:#B7C1B8!important;box-shadow:0 0 0 3px rgba(142,155,144,.11)!important}
+html[data-theme="wa"] .autumn-modal-sources a{border-color:#DCE1DA!important;background:#FCFDF9!important;color:#829087!important}
+
+/* Status bar / top-page tonal continuity. */
+@media(display-mode:standalone){
+  html[data-theme="wa"] body{background-color:#F8F5EE!important}
+}
