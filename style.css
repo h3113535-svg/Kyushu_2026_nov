@@ -478,9 +478,7 @@ html[data-theme="wa"] .hero::before{
   inset:0!important;
   z-index:1!important;
   pointer-events:none!important;
-  background:
-    linear-gradient(90deg,rgba(252,248,242,.84) 0%,rgba(252,248,242,.78) 18%,rgba(252,248,242,.66) 34%,rgba(252,248,242,.43) 50%,rgba(252,248,242,.20) 63%,rgba(252,248,242,0) 78%),
-    linear-gradient(180deg,rgba(255,251,245,.18) 0%,rgba(255,251,245,.10) 54%,rgba(255,251,245,.05) 100%)!important;
+  background:rgba(252,248,242,.31)!important;
 }
 html[data-theme="wa"] .hero::after{display:none!important;content:none!important}
 html[data-theme="wa"] .hero-stage{
@@ -567,3 +565,18 @@ html[data-theme="wa"] .official-status-card{background:linear-gradient(180deg,rg
 .autumn-modal{width:min(94vw,520px);max-width:520px;border:0;padding:0;background:transparent}.autumn-modal::backdrop{background:rgba(35,28,24,.48);backdrop-filter:blur(5px)}.autumn-editor-sheet{padding:18px;border-radius:22px;background:#fffaf4;border:1px solid rgba(255,255,255,.6);box-shadow:0 24px 70px rgba(48,35,27,.25);color:var(--ink)}.autumn-editor-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.autumn-editor-head h3{margin:2px 0 2px;font-family:var(--nov-serif);font-size:20px}.autumn-editor-head small{color:var(--muted);font-size:10px}.autumn-editor-baseline{margin:13px 0;padding:10px 11px;border-radius:13px;background:#f6eee4;color:#75645a;font-size:10.5px;line-height:1.55}.autumn-status-choice-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.autumn-status-choice-grid button{min-width:0;min-height:61px;padding:7px 4px;border:1px solid #e3d6ca;border-radius:13px;background:#fff;color:#77665d}.autumn-status-choice-grid button span{display:block;font-size:17px;line-height:1.2}.autumn-status-choice-grid button b{display:block;margin-top:3px;font-size:9px;white-space:nowrap}.autumn-status-choice-grid button.active{border-color:#bd806b;background:#f6e5db;color:#914d3e;box-shadow:0 0 0 1px rgba(189,128,107,.15) inset}.autumn-note-field{display:block;margin-top:13px}.autumn-note-field>span{display:block;margin-bottom:6px;font-size:10px;font-weight:850;color:#6e5a50}.autumn-note-field textarea{width:100%;min-height:78px;resize:vertical;border:1px solid #e0d2c5;border-radius:13px;background:#fffdf9;padding:10px 11px;color:#544740;font:inherit;font-size:11px;line-height:1.55;outline:none}.autumn-note-field textarea:focus{border-color:#c89580;box-shadow:0 0 0 3px rgba(200,149,128,.12)}.autumn-modal-updated{margin-top:7px;color:#94847a;font-size:9.5px}.autumn-modal-sources{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.autumn-modal-sources a{display:inline-flex;align-items:center;min-height:34px;padding:7px 9px;border:1px solid #ddcdbf;border-radius:10px;background:#fffdf9;color:#8c5548;text-decoration:none;font-size:9.5px;font-weight:850}.autumn-save-btn{width:100%}
 @media(max-width:560px){.official-status-item{grid-template-columns:38px minmax(0,1fr)}.official-status-icon{width:38px;height:38px}.official-status-actions{grid-column:2;display:flex;flex-wrap:wrap}.official-status-actions a{flex:1;min-width:110px}.autumn-status-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.autumn-status-choice-grid button:nth-child(4),.autumn-status-choice-grid button:nth-child(5){min-height:54px}.autumn-watch-head{gap:8px}.autumn-scope-toggle{flex:0 0 auto}}
 @media(max-width:380px){.autumn-watch-head{flex-direction:column}.autumn-scope-toggle{align-self:flex-start}.autumn-source-row{padding-left:68px}.autumn-modal{width:96vw}.autumn-editor-sheet{padding:15px}}
+
+
+/* ===== v1.10.3 uniform hero fade + Autumn overview sort ===== */
+.autumn-sort-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-2px 0 11px;padding:8px 9px;border:1px solid #eadfd4;border-radius:13px;background:rgba(255,252,247,.72)}
+.autumn-sort-row>span{flex:0 0 auto;color:#806f65;font-size:9.5px;font-weight:850;letter-spacing:.04em}
+.autumn-sort-control{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.autumn-sort-control::-webkit-scrollbar{display:none}
+.autumn-sort-control button{flex:0 0 auto;min-height:29px;padding:5px 9px;border:1px solid transparent;border-radius:9px;background:transparent;color:#8a786d;font-size:9.5px;font-weight:850;white-space:nowrap}
+.autumn-sort-control button.active{background:#fff;border-color:#decfc2;color:#9a5848;box-shadow:0 2px 7px rgba(75,54,42,.06)}
+html[data-theme="wa"] .hero{border-radius:0!important}
+@media(max-width:420px){
+  .autumn-sort-row{align-items:flex-start;flex-direction:column;gap:6px}
+  .autumn-sort-control{width:100%;padding-bottom:1px}
+  .autumn-sort-control button{padding:5px 8px}
+}

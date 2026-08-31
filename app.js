@@ -548,20 +548,35 @@ const AUTUMN_SOURCE_META={
   }
 };
 const OFFICIAL_STATUS_BY_DAY={
-  3:[{
-    id:"beppu-ropeway",icon:"🚡",title:"別府纜車・鶴見岳",label:"本日運行・天氣・視界",
-    url:"https://www.beppu-ropeway.co.jp/en/",hint:"D4 是否上鶴見岳，先看官方首頁的本日運行與視界。若站內打開空白，可直接改用電話確認。",decisionId:"d4-beppu-weather",phone:"0977-22-2278"
-  }],
-  5:[{
-    id:"takachiho-amaterasu",icon:"🚃",title:"高千穗天照鐵道",label:"當日運行資訊",
-    url:"https://amaterasu-railway.jp/index.php",hint:"官方於開園時更新當日資訊；天候可能造成停駛。",phone:"0982-72-3216"
-  }],
-  6:[{
-    id:"aso-crater",icon:"🌋",title:"阿蘇中岳火口",label:"即時火口規制",
-    url:"https://www.aso-volcano.jp/",hint:"D7 是否進火口只看官方即時規制；若關閉直接走博物館備案。",decisionId:"d7-crater"
-  }]
-};
-let autumnWatchScope="day";
+  2:[
+    {id:"jr-kyushu-status",icon:"🚆",title:"JR 九州運行情報",label:"由布院之森・久大本線",url:"https://www.jrkyushu.co.jp/trains/info/",hint:"D3 出發前先確認延誤、停駛與臨時公告。"},
+    {id:"yufuin-no-mori",icon:"🌲",title:"由布院之森",label:"官方時刻・運行日",url:"https://www.jrkyushu.co.jp/english/train/yufuin_no_mori.html",hint:"確認由布院之森班次與當期運行日。"}
+  ],
+  3:[
+    {id:"beppu-ropeway",icon:"🚡",title:"別府纜車・鶴見岳",label:"本日運行・天氣・視界",url:"https://www.beppu-ropeway.co.jp/en/",hint:"D4 是否上鶴見岳，先看官方本日運行與視界；天候不佳就直接走備案。",decisionId:"d4-beppu-weather",phone:"0977-22-2278"},
+    {id:"african-safari",icon:"🦒",title:"九州自然動物公園 Safari",label:"官方營業與公告",url:"https://africansafari.co.jp/",hint:"自駕 Safari Zone 前確認當日營業、臨時公告與園區資訊。",phone:"0978-48-2331"},
+    {id:"umi-jigoku",icon:"♨️",title:"別府 海地獄",label:"官方營業資訊",url:"https://www.umijigoku.co.jp/",hint:"查看海地獄官方營業與臨時活動資訊。",phone:"0977-66-0121"}
+  ],
+  4:[
+    {id:"kokonoe-bridge",icon:"🌉",title:"九重夢大吊橋",label:"營業・惡天候限制",url:"https://www.yumeooturihashi.com/info.html",hint:"D5 Chill 路線使用；強風或惡天候時官方可能限制入場。"}
+  ],
+  5:[
+    {id:"takachiho-amaterasu",icon:"🚃",title:"高千穗天照鐵道",label:"當日運行資訊",url:"https://amaterasu-railway.jp/",hint:"官方最新運行資訊；雨、強風或設備狀況可能造成停駛。",phone:"0982-72-3216"},
+    {id:"takachiho-gorge",icon:"🏞️",title:"高千穗峽・遊步道",label:"通行・交通最新公告",url:"https://www.takachiho-kanko.info/news/",hint:"出發前確認遊步道、道路、接駁與地震／天候相關公告。",phone:"0982-73-1213"}
+  ],
+  6:[
+    {id:"aso-crater",icon:"🌋",title:"阿蘇中岳火口",label:"即時火口規制",url:"https://www.aso-volcano.jp/",hint:"D7 是否進火口只看官方即時規制；若關閉直接走博物館備案。",decisionId:"d7-crater"},
+    {id:"kumamoto-castle",icon:"🏯",title:"熊本城",label:"開園・最新公告",url:"https://castle.kumamoto-guide.jp/news/",hint:"確認開園、設施限制與當日最新公告。",phone:"096-223-5011"}
+  ],
+  7:[
+    {id:"dazaifu",icon:"⛩️",title:"太宰府天滿宮",label:"參拜時間・重要公告",url:"https://www.dazaifutenmangu.or.jp/",hint:"D8 抵達前確認參拜時間、工程與臨時公告。"},
+    {id:"kamado",icon:"🍁",title:"竈門神社",label:"紅葉・夜間點燈公告",url:"https://kamadojinja.or.jp/information/",hint:"D8 重點紅葉站；確認當年色づき、點燈期間與最新公告。",phone:"092-922-4106"}
+  ],
+  8:[
+    {id:"fukuoka-airport",icon:"✈️",title:"福岡機場 國際線",label:"當日出發航班",url:"https://www.fukuoka-airport.jp/pcfs/en/flight/index.php?type=ID",hint:"D9 出發前確認航班時間、登機門與即時狀態。"}
+  ]
+};let autumnWatchScope="day";
+let autumnSortMode=(()=>{try{return localStorage.getItem("kyushu-nov-2026:autumn-sort")||"priority"}catch{return "priority"}})();
 let activeAutumnId="";
 let autumnDraftStatus="unknown";
 function autumnSpotById(id){return (TRIP.autumnSpots||[]).find(x=>x.id===id)}
@@ -582,6 +597,15 @@ function autumnUpdatedText(ts){
   try{return new Intl.DateTimeFormat("zh-TW",{timeZone:TRIP?.timezone||"Asia/Tokyo",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).format(new Date(ts))}catch{return "已更新"}
 }
 function autumnPriorityRank(id){return ({S:0,A:1,"B+":2,B:3}[AUTUMN_PRIORITY[id]]??9)}
+function autumnStatusRank(id){return ({peak:0,coloring:1,unknown:2,past:3,skip:4}[autumnStatusFor(id)]??9)}
+function autumnSortSpots(spots){
+  const arr=[...spots];
+  if(autumnSortMode==="date")return arr.sort((a,b)=>(autumnDaysForSpot(a.id)[0]||99)-(autumnDaysForSpot(b.id)[0]||99)||autumnPriorityRank(a.id)-autumnPriorityRank(b.id));
+  if(autumnSortMode==="status")return arr.sort((a,b)=>autumnStatusRank(a.id)-autumnStatusRank(b.id)||autumnPriorityRank(a.id)-autumnPriorityRank(b.id));
+  if(autumnSortMode==="stale")return arr.sort((a,b)=>(autumnStatusRecord(a.id).updatedAt||0)-(autumnStatusRecord(b.id).updatedAt||0)||autumnPriorityRank(a.id)-autumnPriorityRank(b.id));
+  return arr.sort((a,b)=>autumnPriorityRank(a.id)-autumnPriorityRank(b.id)||(autumnDaysForSpot(a.id)[0]||99)-(autumnDaysForSpot(b.id)[0]||99));
+}
+function autumnSortLabel(){return ({priority:"優先級",date:"旅程日期",status:"目前狀態",stale:"最久未確認"}[autumnSortMode]||"優先級")}
 function autumnSpotVerdict(id){
   const status=autumnStatusFor(id),meta=AUTUMN_STATUS_META[status]||AUTUMN_STATUS_META.unknown;
   if(status==="unknown"&&["S","A"].includes(AUTUMN_PRIORITY[id]))return "優先查情報";
@@ -609,13 +633,13 @@ function renderAutumnWatch(day){
   const box=$("#autumnWatch"); if(!box)return;
   const dayIds=day.autumnIds||[];
   let spots=(autumnWatchScope==="all"?(TRIP.autumnSpots||[]):dayIds.map(autumnSpotById)).filter(Boolean);
-  if(autumnWatchScope==="all")spots=[...spots].sort((a,b)=>autumnPriorityRank(a.id)-autumnPriorityRank(b.id)||(autumnDaysForSpot(a.id)[0]||99)-(autumnDaysForSpot(b.id)[0]||99));
+  if(autumnWatchScope==="all")spots=autumnSortSpots(spots);
   const canOpenAll=(TRIP.autumnSpots||[]).length>0;
   box.hidden=!spots.length&&!canOpenAll;
   if(!spots.length&&!canOpenAll){box.innerHTML="";return}
   const allUnknown=spots.length&&spots.every(s=>autumnStatusFor(s.id)==="unknown");
   const scopeText=autumnWatchScope==="all"?"全旅程":"今天";
-  box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏觀測</b><small>${esc(scopeText)}・${esc(autumnSummary(spots))}</small></div><div class="autumn-scope-toggle"><button type="button" class="${autumnWatchScope==="day"?"active":""}" data-autumn-scope="day">今天</button><button type="button" class="${autumnWatchScope==="all"?"active":""}" data-autumn-scope="all">全旅程</button></div></div>${allUnknown&&autumnWatchScope==="day"?`<div class="autumn-first-use-art"><img src="./nov_empty_autumnwatch.webp?v=160" alt="尚未設定紅葉狀態"></div>`:""}${spots.length?`<div class="autumn-watch-list">${spots.map(s=>{
+  box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏觀測</b><small>${esc(scopeText)}・${esc(autumnSummary(spots))}${autumnWatchScope==="all"?`・依${esc(autumnSortLabel())}`:""}</small></div><div class="autumn-scope-toggle"><button type="button" class="${autumnWatchScope==="day"?"active":""}" data-autumn-scope="day">今天</button><button type="button" class="${autumnWatchScope==="all"?"active":""}" data-autumn-scope="all">全旅程</button></div></div>${autumnWatchScope==="all"?`<div class="autumn-sort-row"><span>總覽排序</span><div class="autumn-sort-control"><button type="button" class="${autumnSortMode==="priority"?"active":""}" data-autumn-sort="priority">優先級</button><button type="button" class="${autumnSortMode==="date"?"active":""}" data-autumn-sort="date">日期</button><button type="button" class="${autumnSortMode==="status"?"active":""}" data-autumn-sort="status">狀態</button><button type="button" class="${autumnSortMode==="stale"?"active":""}" data-autumn-sort="stale">待更新</button></div></div>`:""}${allUnknown&&autumnWatchScope==="day"?`<div class="autumn-first-use-art"><img src="./nov_empty_autumnwatch.webp?v=160" alt="尚未設定紅葉狀態"></div>`:""}${spots.length?`<div class="autumn-watch-list">${spots.map(s=>{
     const rec=autumnStatusRecord(s.id),status=rec.status,meta=AUTUMN_STATUS_META[status]||AUTUMN_STATUS_META.unknown;
     const priority=AUTUMN_PRIORITY[s.id]||"—",days=autumnDaysForSpot(s.id).map(n=>`D${n}`).join("・");
     return `<div class="autumn-watch-item"><button type="button" class="autumn-watch-row status-${esc(status)}" data-autumn-open="${esc(s.id)}"><span class="autumn-state-thumb"><img src="${esc(meta.image)}" alt="${esc(meta.label)}"></span><span class="autumn-copy"><span class="autumn-title-line"><b>${esc(s.label)}</b><i class="priority-${esc(priority.replace('+','p'))}">${esc(priority)}</i>${days?`<i class="autumn-day-badge">${esc(days)}</i>`:""}</span>${s.note?`<small>${esc(s.note)}</small>`:""}${rec.note?`<small class="autumn-personal-note">備註：${esc(rec.note)}</small>`:""}<small class="autumn-updated">最後確認：${esc(autumnUpdatedText(rec.updatedAt))}・${esc(autumnSpotVerdict(s.id))}</small></span><em>${meta.icon} ${esc(meta.label)}</em></button><div class="autumn-source-row">${autumnSourceLinks(s,{compact:true})}<button type="button" data-autumn-open="${esc(s.id)}">更新狀態</button></div></div>`;
@@ -1541,6 +1565,7 @@ function bind(){
     const m=e.target.closest("[data-member]");if(m){state.shoppingMember=m.dataset.member;renderShopping();return}
     const autumnOpen=e.target.closest("[data-autumn-open]");if(autumnOpen){openAutumnEditor(autumnOpen.dataset.autumnOpen);return}
     const autumnScope=e.target.closest("[data-autumn-scope]");if(autumnScope){autumnWatchScope=autumnScope.dataset.autumnScope==="all"?"all":"day";renderAutumnWatch(TRIP.days[state.dayIndex]);return}
+    const autumnSort=e.target.closest("[data-autumn-sort]");if(autumnSort){autumnSortMode=["priority","date","status","stale"].includes(autumnSort.dataset.autumnSort)?autumnSort.dataset.autumnSort:"priority";try{localStorage.setItem("kyushu-nov-2026:autumn-sort",autumnSortMode)}catch{}renderAutumnWatch(TRIP.days[state.dayIndex]);return}
     const autumnChoice=e.target.closest("[data-autumn-status-choice]");if(autumnChoice){autumnDraftStatus=autumnChoice.dataset.autumnStatusChoice;$$("#autumnModal [data-autumn-status-choice]").forEach(btn=>btn.classList.toggle("active",btn===autumnChoice));return}
     const decisionConfirm=e.target.closest("[data-decision-confirm]");if(decisionConfirm){await confirmDecision(decisionConfirm.dataset.decisionConfirm);return}
     const decisionClear=e.target.closest("[data-decision-clear]");if(decisionClear){await clearDecision(decisionClear.dataset.decisionClear);return}
