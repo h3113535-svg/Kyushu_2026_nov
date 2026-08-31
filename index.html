@@ -18,9 +18,9 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=1100" rel="stylesheet"/>
+<link href="./style.css?v=1101" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
-<meta content="1.10.0" name="app-version"/>
+<meta content="1.10.1" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
 </head>
 <body>
@@ -85,6 +85,7 @@
 <section class="now-next-card" hidden="" id="nowNextCard"></section>
 <section class="family-meta-card" hidden="" id="familyMetaCard"></section>
 <section class="driving-card" hidden="" id="drivingCard"></section>
+<section class="official-status-card" hidden="" id="officialStatusArea"></section>
 <section class="autumn-watch" hidden="" id="autumnWatch"></section>
 <div id="decisionArea"></div>
 <section class="timeline" id="timeline"></section>
@@ -242,6 +243,27 @@
 <div class="day-image-lightbox-foot"><span id="dayLightboxCounter">1 / 9</span><small>左右滑動或按箭頭切換</small></div>
 </div>
 </div>
+
+<dialog class="autumn-modal" id="autumnModal">
+<div class="autumn-editor-sheet">
+<div class="autumn-editor-head">
+<div><span class="eyebrow">AUTUMN WATCH</span><h3 id="autumnModalTitle">紅葉觀測</h3><small id="autumnModalMeta"></small></div>
+<button aria-label="關閉" class="close-btn" id="autumnModalClose" type="button">×</button>
+</div>
+<div class="autumn-editor-baseline" id="autumnModalBaseline"></div>
+<div aria-label="紅葉狀態" class="autumn-status-choice-grid" role="group">
+<button data-autumn-status-choice="unknown" type="button"><span>?</span><b>未確認</b></button>
+<button data-autumn-status-choice="coloring" type="button"><span>🍂</span><b>色づき</b></button>
+<button data-autumn-status-choice="peak" type="button"><span>🍁</span><b>見頃</b></button>
+<button data-autumn-status-choice="past" type="button"><span>🍂</span><b>見頃過ぎ</b></button>
+<button data-autumn-status-choice="skip" type="button"><span>—</span><b>不追</b></button>
+</div>
+<label class="autumn-note-field"><span>我的觀測備註</span><textarea id="autumnModalNote" placeholder="例如：官方 11/24 更新見頃、IG 最近照片約 7 成紅…"></textarea></label>
+<div class="autumn-modal-updated" id="autumnModalUpdated">最後確認：尚未確認</div>
+<div class="autumn-modal-sources" id="autumnModalSources"></div>
+<button class="primary-btn autumn-save-btn" id="autumnModalSave" type="button">儲存並標記已確認</button>
+</div>
+</dialog>
 <dialog class="guide-modal" id="guideModal">
 <div class="guide-sheet">
 <div aria-hidden="true" class="guide-drag-handle"></div>
@@ -299,7 +321,7 @@
 <div class="toast" id="toast" role="status"></div>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script defer="" src="./firebase-config.js?v=1100"></script>
-<script defer="" src="./app.js?v=1100"></script>
+<script defer="" src="./firebase-config.js?v=1101"></script>
+<script defer="" src="./app.js?v=1101"></script>
 </body>
 </html>

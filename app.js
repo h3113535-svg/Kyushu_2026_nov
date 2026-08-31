@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.10.0 lean core + offline travel pack */
+/* Kyushu family autumn PWA · November 2026 · v1.10.1 autumn watch + official live shortcuts */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.10.0";
+const APP_VERSION = "1.10.1";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -489,50 +489,172 @@ function renderDrivingCard(day){
 }
 const AUTUMN_STATUS_ORDER=["unknown","coloring","peak","past","skip"];
 const AUTUMN_STATUS_META={
-  unknown:{label:"未確認",icon:"?",image:"./autumn-status-unknown.webp?v=160"},
-  coloring:{label:"色づき始め",icon:"🍂",image:"./autumn-status-coloring.webp?v=160"},
-  peak:{label:"見頃",icon:"🍁",image:"./autumn-status-peak.webp?v=160"},
-  past:{label:"見頃過ぎ",icon:"🍂",image:"./autumn-status-past.webp?v=160"},
-  skip:{label:"不追",icon:"—",image:"./autumn-status-skip.webp?v=160"}
+  unknown:{label:"未確認",icon:"?",image:"./autumn-status-unknown.webp?v=160",verdict:"待確認"},
+  coloring:{label:"色づき始め",icon:"🍂",image:"./autumn-status-coloring.webp?v=160",verdict:"持續追蹤"},
+  peak:{label:"見頃",icon:"🍁",image:"./autumn-status-peak.webp?v=160",verdict:"優先保留"},
+  past:{label:"見頃過ぎ",icon:"🍂",image:"./autumn-status-past.webp?v=160",verdict:"可降級"},
+  skip:{label:"不追",icon:"—",image:"./autumn-status-skip.webp?v=160",verdict:"不追蹤"}
 };
 const AUTUMN_PRIORITY={
   "akizuki-autumn":"S","kamado-autumn":"S","kumamoto-ginkgo":"S",
   "takachiho-autumn":"A","hitome-hakkei":"A","keisekien":"A",
   "yufuin-autumn":"B+","chojabaru":"B+","maizuru-ginkgo":"B"
 };
+const AUTUMN_SOURCE_META={
+  "maizuru-ginkgo":{
+    official:"https://www.midorimachi.jp/maiduru/",
+    officialLabel:"舞鶴公園官方",
+    baseline:"官方園區首頁會更新旬の情報；D2 以銀杏實況為主，暖秋就縮短停留。"
+  },
+  "yufuin-autumn":{
+    official:"https://yufuin.gr.jp/",
+    officialLabel:"YUFUINFO 官方",
+    baseline:"D3–D4 以由布院街景與由布岳秋色為輔，不需要為紅葉硬追行程。"
+  },
+  "hitome-hakkei":{
+    official:"https://nakatsuyaba.com/",
+    officialLabel:"中津耶馬溪官方",
+    baseline:"2025 官方紀錄：一目八景約 11/17 為見頃中心；每年仍以當季更新為準。"
+  },
+  "keisekien":{
+    official:"https://nakatsuyaba.com/",
+    officialLabel:"中津耶馬溪官方",
+    baseline:"2025 官方紀錄：溪石園約 11/20 為見頃中心；D5 只有狀態漂亮才加入。"
+  },
+  "chojabaru":{
+    official:"https://www.town.kokonoe.oita.jp/docs/2025032700023/",
+    officialLabel:"九重町官方",
+    baseline:"長者原以金色草原、芒草與九重連山為主，不只看楓紅。"
+  },
+  "takachiho-autumn":{
+    official:"https://www.takachiho-kanko.info/",
+    officialLabel:"高千穗觀光協會",
+    baseline:"官方 FAQ 的一般紅葉期為 11 月中旬～下旬；D6 正落在主要觀測窗口。"
+  },
+  "kumamoto-ginkgo":{
+    official:"https://www.pref.kumamoto.jp/soshiki/10/215705.html",
+    officialLabel:"熊本縣官方",
+    baseline:"D7 S 級重點；以縣廳銀杏大道黃葉程度與當年點燈公告一起判斷。"
+  },
+  "akizuki-autumn":{
+    official:"https://www.city.asakura.lg.jp/site/kanko/2930.html",
+    officialLabel:"朝倉市紅葉情報",
+    baseline:"官方一般見頃為 11 月下旬～12 月上旬；2025 年 11/28 記錄為見頃。"
+  },
+  "kamado-autumn":{
+    official:"https://kamadojinja.or.jp/information/",
+    officialLabel:"竈門神社官方",
+    baseline:"官方說明例年 11 月中旬開始色づき，下旬～12 月初進入主要見頃。"
+  }
+};
+const OFFICIAL_STATUS_BY_DAY={
+  3:[{
+    id:"beppu-ropeway",icon:"🚡",title:"別府纜車・鶴見岳",label:"本日運行・天氣・視界",
+    url:"https://www.beppu-ropeway.co.jp/",hint:"D4 是否上鶴見岳，先看官方首頁的本日運行與視界。",decisionId:"d4-beppu-weather"
+  }],
+  5:[{
+    id:"takachiho-amaterasu",icon:"🚃",title:"高千穗天照鐵道",label:"當日運行資訊",
+    url:"https://amaterasu-railway.jp/index.php",hint:"官方於開園時更新當日資訊；天候可能造成停駛。",phone:"0982-72-3216"
+  }],
+  6:[{
+    id:"aso-crater",icon:"🌋",title:"阿蘇中岳火口",label:"即時火口規制",
+    url:"https://www.aso-volcano.jp/",hint:"D7 是否進火口只看官方即時規制；若關閉直接走博物館備案。",decisionId:"d7-crater"
+  }]
+};
+let autumnWatchScope="day";
+let activeAutumnId="";
+let autumnDraftStatus="unknown";
 function autumnSpotById(id){return (TRIP.autumnSpots||[]).find(x=>x.id===id)}
+function autumnDaysForSpot(id){
+  const out=[];
+  for(let i=0;i<(TRIP.days||[]).length;i++)if((TRIP.days[i]?.autumnIds||[]).includes(id))out.push(i+1);
+  return out;
+}
 function autumnStatusRecord(id){
   const raw=state.autumnStatus?.[id];
-  if(typeof raw==="string")return {status:raw,updatedAt:0};
-  if(raw&&typeof raw==="object")return {status:raw.status||"unknown",updatedAt:Number(raw.updatedAt||0)};
-  return {status:"unknown",updatedAt:0};
+  if(typeof raw==="string")return {status:raw,updatedAt:0,note:""};
+  if(raw&&typeof raw==="object")return {status:raw.status||"unknown",updatedAt:Number(raw.updatedAt||0),note:String(raw.note||"")};
+  return {status:"unknown",updatedAt:0,note:""};
 }
 function autumnStatusFor(id){return autumnStatusRecord(id).status}
 function autumnUpdatedText(ts){
-  if(!ts)return "尚未手動確認";
-  try{return new Intl.DateTimeFormat("zh-TW",{timeZone:TRIP?.timezone||"Asia/Tokyo",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).format(new Date(ts)).replace("/","/")}catch{return "已更新"}
+  if(!ts)return "尚未確認";
+  try{return new Intl.DateTimeFormat("zh-TW",{timeZone:TRIP?.timezone||"Asia/Tokyo",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).format(new Date(ts))}catch{return "已更新"}
+}
+function autumnPriorityRank(id){return ({S:0,A:1,"B+":2,B:3}[AUTUMN_PRIORITY[id]]??9)}
+function autumnSpotVerdict(id){
+  const status=autumnStatusFor(id),meta=AUTUMN_STATUS_META[status]||AUTUMN_STATUS_META.unknown;
+  if(status==="unknown"&&["S","A"].includes(AUTUMN_PRIORITY[id]))return "優先查情報";
+  return meta.verdict;
+}
+function autumnSourceLinks(spot,{compact=false}={}){
+  const src=AUTUMN_SOURCE_META[spot.id]||{};
+  const links=[];
+  if(src.official)links.push(`<a target="_blank" rel="noopener" href="${esc(src.official)}">官方情報 ↗</a>`);
+  links.push(`<a target="_blank" rel="noopener" href="${googleSearch(`${spot.label} 紅葉 2026`) }">近期情報 ↗</a>`);
+  if(!compact)links.push(`<a target="_blank" rel="noopener" href="${mapSearch(spot.label)}">地圖 / 照片 ↗</a>`);
+  return links.join("");
+}
+function autumnSummary(spots){
+  const counts={peak:0,coloring:0,unknown:0,past:0,skip:0};
+  spots.forEach(s=>{const st=autumnStatusFor(s.id);counts[st]=(counts[st]||0)+1});
+  const bits=[];
+  if(counts.peak)bits.push(`見頃 ${counts.peak}`);
+  if(counts.coloring)bits.push(`色づき ${counts.coloring}`);
+  if(counts.unknown)bits.push(`未確認 ${counts.unknown}`);
+  if(!bits.length)bits.push(`${spots.length} 個景點已整理`);
+  return bits.join("・");
 }
 function renderAutumnWatch(day){
   const box=$("#autumnWatch"); if(!box)return;
-  const ids=day.autumnIds||[];
-  const spots=ids.map(autumnSpotById).filter(Boolean);
-  box.hidden=!spots.length;
-  if(!spots.length){box.innerHTML="";return}
-  const allUnknown=spots.every(s=>autumnStatusFor(s.id)==="unknown");
-  box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏狀態</b></div><small>手動紀錄・查情報後更新</small></div>${allUnknown?`<div class="autumn-first-use-art"><img src="./nov_empty_autumnwatch.webp?v=160" alt="尚未設定紅葉狀態"></div>`:""}<div class="autumn-watch-list">${spots.map(s=>{
+  const dayIds=day.autumnIds||[];
+  let spots=(autumnWatchScope==="all"?(TRIP.autumnSpots||[]):dayIds.map(autumnSpotById)).filter(Boolean);
+  if(autumnWatchScope==="all")spots=[...spots].sort((a,b)=>autumnPriorityRank(a.id)-autumnPriorityRank(b.id)||(autumnDaysForSpot(a.id)[0]||99)-(autumnDaysForSpot(b.id)[0]||99));
+  const canOpenAll=(TRIP.autumnSpots||[]).length>0;
+  box.hidden=!spots.length&&!canOpenAll;
+  if(!spots.length&&!canOpenAll){box.innerHTML="";return}
+  const allUnknown=spots.length&&spots.every(s=>autumnStatusFor(s.id)==="unknown");
+  const scopeText=autumnWatchScope==="all"?"全旅程":"今天";
+  box.innerHTML=`<div class="autumn-watch-head"><div><span class="eyebrow">AUTUMN WATCH</span><b>紅葉・銀杏觀測</b><small>${esc(scopeText)}・${esc(autumnSummary(spots))}</small></div><div class="autumn-scope-toggle"><button type="button" class="${autumnWatchScope==="day"?"active":""}" data-autumn-scope="day">今天</button><button type="button" class="${autumnWatchScope==="all"?"active":""}" data-autumn-scope="all">全旅程</button></div></div>${allUnknown&&autumnWatchScope==="day"?`<div class="autumn-first-use-art"><img src="./nov_empty_autumnwatch.webp?v=160" alt="尚未設定紅葉狀態"></div>`:""}${spots.length?`<div class="autumn-watch-list">${spots.map(s=>{
     const rec=autumnStatusRecord(s.id),status=rec.status,meta=AUTUMN_STATUS_META[status]||AUTUMN_STATUS_META.unknown;
-    const priority=AUTUMN_PRIORITY[s.id]||"—";
-    return `<div class="autumn-watch-item"><button type="button" class="autumn-watch-row status-${esc(status)}" data-autumn-id="${esc(s.id)}"><span class="autumn-state-thumb"><img src="${esc(meta.image)}" alt="${esc(meta.label)}"></span><span class="autumn-copy"><span class="autumn-title-line"><b>${esc(s.label)}</b><i>${esc(priority)}</i></span>${s.note?`<small>${esc(s.note)}</small>`:""}<small class="autumn-updated">最後紀錄：${esc(autumnUpdatedText(rec.updatedAt))}</small></span><em>${meta.icon} ${esc(meta.label)}</em></button><div class="autumn-source-row"><a target="_blank" rel="noopener" href="${mapSearch(s.label)}">最近照片 / 地圖 ↗</a><a target="_blank" rel="noopener" href="${googleSearch(`${s.label} 紅葉 2026`)}">紅葉情報 ↗</a></div></div>`;
-  }).join("")}</div>`;
+    const priority=AUTUMN_PRIORITY[s.id]||"—",days=autumnDaysForSpot(s.id).map(n=>`D${n}`).join("・");
+    return `<div class="autumn-watch-item"><button type="button" class="autumn-watch-row status-${esc(status)}" data-autumn-open="${esc(s.id)}"><span class="autumn-state-thumb"><img src="${esc(meta.image)}" alt="${esc(meta.label)}"></span><span class="autumn-copy"><span class="autumn-title-line"><b>${esc(s.label)}</b><i class="priority-${esc(priority.replace('+','p'))}">${esc(priority)}</i>${days?`<i class="autumn-day-badge">${esc(days)}</i>`:""}</span>${s.note?`<small>${esc(s.note)}</small>`:""}${rec.note?`<small class="autumn-personal-note">備註：${esc(rec.note)}</small>`:""}<small class="autumn-updated">最後確認：${esc(autumnUpdatedText(rec.updatedAt))}・${esc(autumnSpotVerdict(s.id))}</small></span><em>${meta.icon} ${esc(meta.label)}</em></button><div class="autumn-source-row">${autumnSourceLinks(s,{compact:true})}<button type="button" data-autumn-open="${esc(s.id)}">更新狀態</button></div></div>`;
+  }).join("")}</div>`:`<div class="autumn-no-day"><b>今天沒有紅葉觀測點</b><button type="button" data-autumn-scope="all">查看全旅程紅葉雷達</button></div>`}`;
 }
-async function cycleAutumnStatus(id){
-  if(!id)return;
-  const current=autumnStatusFor(id), idx=AUTUMN_STATUS_ORDER.indexOf(current);
-  const next=AUTUMN_STATUS_ORDER[(idx+1+AUTUMN_STATUS_ORDER.length)%AUTUMN_STATUS_ORDER.length];
-  state.autumnStatus={...(state.autumnStatus||{}),[id]:{status:next,updatedAt:Date.now()}};
+function openAutumnEditor(id){
+  const spot=autumnSpotById(id),modal=$("#autumnModal");if(!spot||!modal)return;
+  activeAutumnId=id;
+  const rec=autumnStatusRecord(id);autumnDraftStatus=rec.status;
+  const src=AUTUMN_SOURCE_META[id]||{};
+  $("#autumnModalTitle").textContent=spot.label;
+  $("#autumnModalMeta").textContent=`${AUTUMN_PRIORITY[id]||"—"} 級・${autumnDaysForSpot(id).map(n=>`D${n}`).join(" / ")||"旅程觀測"}`;
+  $("#autumnModalNote").value=rec.note||"";
+  $("#autumnModalUpdated").textContent=`最後確認：${autumnUpdatedText(rec.updatedAt)}`;
+  $("#autumnModalBaseline").textContent=src.baseline||spot.note||"以現場與當季官方情報為準。";
+  $("#autumnModalSources").innerHTML=`${src.official?`<a target="_blank" rel="noopener" href="${esc(src.official)}">↗ ${esc(src.officialLabel||"官方情報")}</a>`:""}<a target="_blank" rel="noopener" href="${googleSearch(`${spot.label} 紅葉 2026`)}">↗ 搜尋 2026 最新情報</a><a target="_blank" rel="noopener" href="${mapSearch(spot.label)}">↗ Google Maps / 最近照片</a>`;
+  $$("#autumnModal [data-autumn-status-choice]").forEach(btn=>btn.classList.toggle("active",btn.dataset.autumnStatusChoice===autumnDraftStatus));
+  modal.showModal();
+}
+function closeAutumnEditor(){const modal=$("#autumnModal");if(modal?.open)modal.close();activeAutumnId=""}
+async function saveAutumnEditor(){
+  if(!activeAutumnId)return;
+  const note=String($("#autumnModalNote")?.value||"").trim();
+  const record={status:autumnDraftStatus||"unknown",note,updatedAt:Date.now()};
+  state.autumnStatus={...(state.autumnStatus||{}),[activeAutumnId]:record};
   saveLocal("autumnStatus",state.autumnStatus);
   renderAutumnWatch(TRIP.days[state.dayIndex]);
-  if(state.cloud){try{await setCloud("autumnStatus",state.autumnStatus)}catch{}}
+  if(state.cloud){try{await updateCloud("autumnStatus",activeAutumnId,record)}catch{toast("已存本機，雲端稍後同步")}}
+  closeAutumnEditor();toast("紅葉狀態已更新");
+}
+function renderOfficialStatus(day){
+  const box=$("#officialStatusArea");if(!box)return;
+  const items=OFFICIAL_STATUS_BY_DAY[state.dayIndex]||[];
+  box.hidden=!items.length;if(!items.length){box.innerHTML="";return}
+  box.innerHTML=`<div class="official-status-head"><div><span class="eyebrow">OFFICIAL LIVE</span><b>官方即時狀態</b></div><small>需網路・以官方頁面為準</small></div><div class="official-status-list">${items.map(x=>{
+    const selected=x.decisionId?selectedDecision(x.decisionId):"";
+    const decisionText=selected?`目前行程已選：${selected==="ropeway"||selected==="open"?"前往":"備案"}`:"尚未做行程選擇";
+    return `<article class="official-status-item"><span class="official-status-icon">${esc(x.icon)}</span><div class="official-status-copy"><b>${esc(x.title)}</b><span>${esc(x.label)}</span><small>${esc(x.hint)}</small>${x.decisionId?`<em>${esc(decisionText)}</em>`:""}</div><div class="official-status-actions"><a target="_blank" rel="noopener" href="${esc(x.url)}">查看官方 ↗</a>${x.phone?`<a class="secondary" href="tel:${esc(x.phone)}">☎ 電話確認</a>`:""}</div></article>`;
+  }).join("")}</div>`;
 }
 
 function renderDayBrief(day){
@@ -973,6 +1095,7 @@ function renderSchedule(){
   renderNowNext(d);
   renderFamilyMeta(d);
   renderDrivingCard(d);
+  renderOfficialStatus(d);
   renderAutumnWatch(d);
   renderDailyScene();
   $("#decisionArea").innerHTML=renderDecisionCards(d);
@@ -1416,7 +1539,9 @@ function bind(){
     const t=e.target.closest("[data-tool]");if(t){switchTool(t.dataset.tool);return}
     const o=e.target.closest("[data-open-modal]");if(o){openModal(o.dataset.openModal);return}
     const m=e.target.closest("[data-member]");if(m){state.shoppingMember=m.dataset.member;renderShopping();return}
-    const autumn=e.target.closest("[data-autumn-id]");if(autumn){await cycleAutumnStatus(autumn.dataset.autumnId);return}
+    const autumnOpen=e.target.closest("[data-autumn-open]");if(autumnOpen){openAutumnEditor(autumnOpen.dataset.autumnOpen);return}
+    const autumnScope=e.target.closest("[data-autumn-scope]");if(autumnScope){autumnWatchScope=autumnScope.dataset.autumnScope==="all"?"all":"day";renderAutumnWatch(TRIP.days[state.dayIndex]);return}
+    const autumnChoice=e.target.closest("[data-autumn-status-choice]");if(autumnChoice){autumnDraftStatus=autumnChoice.dataset.autumnStatusChoice;$$("#autumnModal [data-autumn-status-choice]").forEach(btn=>btn.classList.toggle("active",btn===autumnChoice));return}
     const decisionConfirm=e.target.closest("[data-decision-confirm]");if(decisionConfirm){await confirmDecision(decisionConfirm.dataset.decisionConfirm);return}
     const decisionClear=e.target.closest("[data-decision-clear]");if(decisionClear){await clearDecision(decisionClear.dataset.decisionClear);return}
     const decision=e.target.closest("[data-decision-id]");if(decision){stageDecision(decision.dataset.decisionId,decision.dataset.decisionOption);return}
@@ -1444,6 +1569,10 @@ function bind(){
   });
   $("#guideModal")?.addEventListener("click",e=>{if(e.target===$("#guideModal"))closeGuide()});
   $("#guideModal")?.addEventListener("cancel",e=>{e.preventDefault();closeGuide()});
+  $("#autumnModalClose")?.addEventListener("click",closeAutumnEditor);
+  $("#autumnModalSave")?.addEventListener("click",()=>saveAutumnEditor());
+  $("#autumnModal")?.addEventListener("click",e=>{if(e.target===$("#autumnModal"))closeAutumnEditor()});
+  $("#autumnModal")?.addEventListener("cancel",e=>{e.preventDefault();closeAutumnEditor()});
   $("#foodNearbyOpen")?.addEventListener("click",()=>$("#foodNearbyModal")?.showModal());
   $("#foodNearbyClose")?.addEventListener("click",()=>$("#foodNearbyModal")?.close());
   $("#foodNearbyModal")?.addEventListener("click",e=>{if(e.target===$("#foodNearbyModal"))$("#foodNearbyModal").close()});

@@ -1,5 +1,4 @@
-v1.10.0 更新後，建議從 GitHub repo 刪除以下舊檔，讓 repository 本身也真正減肥：
+若 GitHub repository 仍有以下舊檔，可刪除：
+- test.html
 
-purin-food-ui.png
-
-說明：v1.10.0 程式已完全不引用此檔案。即使暫時沒刪，也不會再被 App 或 Service Worker 預載，因此不影響執行速度；刪掉只是進一步縮小 repo / 備份體積。
+其餘圖片不用刪除。本版不需要重新匯入 Firebase seed。
