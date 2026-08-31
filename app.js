@@ -550,7 +550,7 @@ const AUTUMN_SOURCE_META={
 const OFFICIAL_STATUS_BY_DAY={
   3:[{
     id:"beppu-ropeway",icon:"🚡",title:"別府纜車・鶴見岳",label:"本日運行・天氣・視界",
-    url:"https://www.beppu-ropeway.co.jp/",hint:"D4 是否上鶴見岳，先看官方首頁的本日運行與視界。",decisionId:"d4-beppu-weather"
+    url:"https://www.beppu-ropeway.co.jp/en/",hint:"D4 是否上鶴見岳，先看官方首頁的本日運行與視界。若站內打開空白，可直接改用電話確認。",decisionId:"d4-beppu-weather",phone:"0977-22-2278"
   }],
   5:[{
     id:"takachiho-amaterasu",icon:"🚃",title:"高千穗天照鐵道",label:"當日運行資訊",
@@ -653,7 +653,7 @@ function renderOfficialStatus(day){
   box.innerHTML=`<div class="official-status-head"><div><span class="eyebrow">OFFICIAL LIVE</span><b>官方即時狀態</b></div><small>需網路・以官方頁面為準</small></div><div class="official-status-list">${items.map(x=>{
     const selected=x.decisionId?selectedDecision(x.decisionId):"";
     const decisionText=selected?`目前行程已選：${selected==="ropeway"||selected==="open"?"前往":"備案"}`:"尚未做行程選擇";
-    return `<article class="official-status-item"><span class="official-status-icon">${esc(x.icon)}</span><div class="official-status-copy"><b>${esc(x.title)}</b><span>${esc(x.label)}</span><small>${esc(x.hint)}</small>${x.decisionId?`<em>${esc(decisionText)}</em>`:""}</div><div class="official-status-actions"><a target="_blank" rel="noopener" href="${esc(x.url)}">查看官方 ↗</a>${x.phone?`<a class="secondary" href="tel:${esc(x.phone)}">☎ 電話確認</a>`:""}</div></article>`;
+    return `<article class="official-status-item"><span class="official-status-icon">${esc(x.icon)}</span><div class="official-status-copy"><b>${esc(x.title)}</b><span>${esc(x.label)}</span><small>${esc(x.hint)}</small>${x.decisionId?`<em>${esc(decisionText)}</em>`:""}</div><div class="official-status-actions"><a rel="noopener" href="${esc(x.url)}">查看官方 ↗</a>${x.phone?`<a class="secondary" href="tel:${esc(x.phone)}">☎ 電話確認</a>`:""}</div></article>`;
   }).join("")}</div>`;
 }
 
