@@ -18,9 +18,9 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=1912" rel="stylesheet"/>
+<link href="./style.css?v=1100" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
-<meta content="1.9.12" name="app-version"/>
+<meta content="1.10.0" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
 </head>
 <body>
@@ -38,9 +38,9 @@
 <div hidden="" id="app">
 <header class="hero theme-hero">
 <button aria-label="開啟設定" class="settings-btn" id="settingsBtn" title="顯示設定">⚙︎</button>
-<div class="buddy-hero-v42">
-<div class="hero-copy buddy-hero-copy">
-<span class="buddy-season" id="heroPrivateSeason"></span>
+<div class="hero-stage">
+<div class="hero-copy">
+<span class="hero-season" id="heroPrivateSeason"></span>
 <h1 id="heroPrivateTitle">九州家族紅葉旅</h1>
 <div class="hero-date" id="heroPrivateDate"></div>
 <div class="hero-route" id="heroPrivateRoute"></div>
@@ -77,7 +77,7 @@
 </div>
 <p id="daySubtitle"></p>
 </section>
-<button aria-label="今日旅程主題視覺" class="day-scene-card buddy-reactable nov-day-art" data-buddy-context="day" data-buddy-react="duo" id="daySceneCard" type="button">
+<button aria-label="今日旅程主題視覺" class="day-scene-card nov-day-art" id="daySceneCard" type="button">
 <img alt="今日旅程主題視覺" id="daySceneImage" src="./day-scene-zh-v17-01.webp?v=170"/>
 <span class="day-scene-progress"><i><em id="daySceneProgressBar"></em></i></span>
 </button>
@@ -109,7 +109,7 @@
 <div class="card-title-row food-plan-title"><div><div class="eyebrow">用餐計畫</div><h3>已安排與候選</h3></div></div>
 <div class="planned-food-list" id="plannedFood"></div>
 </div>
-<div class="card buddy-wishlist-card">
+<div class="card">
 
 <div class="card-title-row">
 <div>
@@ -133,7 +133,7 @@
 <button class="tool-card" data-tool="note"><span class="tool-emoji">📝</span><b>記事</b><small>備忘・同步</small></button>
 </div>
 <div class="tool-panel active" id="bookingPanel">
-<div class="panel-heading panel-heading-with-art buddy-panel-head booking-head-v42">
+<div class="panel-heading panel-heading-with-art booking-head-v42">
 <div><span class="eyebrow">待辦與搶票</span><h3>訂位／搶票倒數任務</h3></div>
 
 </div>
@@ -141,9 +141,9 @@
 <div class="list-stack" id="bookingList"></div>
 </div>
 <div class="tool-panel" id="shoppingPanel">
-<div class="panel-heading buddy-panel-head">
+<div class="panel-heading">
 <div><span class="eyebrow">採買</span><h3>購物清單</h3></div>
-<div class="panel-actions-with-art buddy-panel-pair">
+<div class="panel-actions-with-art">
 
 
 
@@ -154,9 +154,9 @@
 <div class="list-stack" id="shoppingList"></div>
 </div>
 <div class="tool-panel" id="expensePanel">
-<div class="panel-heading buddy-panel-head">
+<div class="panel-heading">
 <div><span class="eyebrow">分帳</span><h3>旅費記帳</h3></div>
-<div class="panel-actions-with-art buddy-panel-pair">
+<div class="panel-actions-with-art">
 
 
 
@@ -218,6 +218,15 @@
 <button class="logout-btn" id="logoutBtn" type="button">登出這台裝置</button>
 </section>
 <section class="setting-section sync-setting"><div class="setting-label"><b>資料同步</b><small>Firebase 連線狀態</small></div><div class="sync-status" id="syncPill"><span class="dot"></span><span id="syncText">本機模式</span></div></section>
+<section class="setting-section offline-pack-setting">
+<div class="setting-label"><b>離線旅行包</b><small>D1–D9 中文／日文主圖、Decision、天氣與紅葉圖片一次下載；私人行程資料會保留在這台已授權裝置。</small></div>
+<div class="offline-pack-card">
+<div class="offline-pack-row"><div><strong id="offlinePackStatus">正在檢查離線資料…</strong><small>完整包約 14 MB，共 38 項素材。</small></div><span class="offline-pack-badge">OFFLINE</span></div>
+<div class="offline-pack-progress" aria-hidden="true"><i id="offlinePackProgressBar"></i></div>
+<div class="offline-pack-progress-text" id="offlinePackProgressText"></div>
+<div class="offline-pack-actions"><button class="primary-btn" id="offlinePackDownloadBtn" type="button">下載完整離線包</button><button class="offline-remove-btn" hidden id="offlinePackRemoveBtn" type="button">移除離線包</button></div>
+</div>
+</section>
 <button class="reset-display-btn" id="displayResetBtn" type="button">恢復預設顯示</button>
 </div>
 </dialog>
@@ -290,7 +299,7 @@
 <div class="toast" id="toast" role="status"></div>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script defer="" src="./firebase-config.js?v=1912"></script>
-<script defer="" src="./app.js?v=1912"></script>
+<script defer="" src="./firebase-config.js?v=1100"></script>
+<script defer="" src="./app.js?v=1100"></script>
 </body>
 </html>
