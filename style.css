@@ -758,3 +758,30 @@ html[data-theme="wa"] .autumn-modal-sources a{border-color:#DCE1DA!important;bac
 @media(display-mode:standalone){
   html[data-theme="wa"] body{background-color:#F8F5EE!important}
 }
+
+
+/* ===== v1.10.5 Hero readability tuning =====
+   Keep the softened artwork from v1.10.4, but darken the hero typography
+   so the title, dates, and route remain readable on real devices. */
+html[data-theme="wa"] .hero-season{
+  color:#9E6E62!important;
+  text-shadow:0 1px 0 rgba(255,255,252,.86)!important;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  color:#464B49!important;
+  font-weight:700!important;
+  text-shadow:0 1px 0 rgba(255,255,252,.88)!important;
+}
+html[data-theme="wa"] .hero-date{
+  color:#575C59!important;
+  font-weight:760!important;
+  text-shadow:0 1px 0 rgba(255,255,252,.84)!important;
+}
+html[data-theme="wa"] .hero-route{
+  color:#606562!important;
+  font-weight:720!important;
+  text-shadow:0 1px 0 rgba(255,255,252,.84)!important;
+}
+html[data-theme="wa"] .hero-route i{
+  color:#888D89!important;
+}
