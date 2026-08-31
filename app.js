@@ -1934,7 +1934,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=1106",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=1107",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

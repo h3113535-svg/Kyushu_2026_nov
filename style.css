@@ -812,3 +812,39 @@ html[data-theme="wa"] .hero-route{
 html[data-theme="wa"] .hero-route i{
   color:#727A76!important;
 }
+
+
+/* ===== v1.10.7 Hero readability tuning =====
+   Make the hero copy clearly darker on real devices.
+   No white box, no local white veil, keep full-image fade. */
+html[data-theme="wa"] .hero-season{
+  color:#83564D!important;
+  font-weight:820!important;
+  text-shadow:0 1px 0 rgba(255,252,248,.88)!important;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  color:#2A2F2E!important;
+  font-weight:800!important;
+  letter-spacing:.015em!important;
+  text-shadow:0 1px 0 rgba(255,252,248,.90)!important;
+}
+html[data-theme="wa"] .hero-date{
+  color:#3A4140!important;
+  font-weight:800!important;
+  text-shadow:0 1px 0 rgba(255,252,248,.88)!important;
+}
+html[data-theme="wa"] .hero-route{
+  color:#47504D!important;
+  font-weight:790!important;
+  text-shadow:0 1px 0 rgba(255,252,248,.88)!important;
+}
+html[data-theme="wa"] .hero-route i{
+  color:#66706D!important;
+}
+@media(max-width:430px){
+  html[data-theme="wa"] .hero-route{
+    font-size:9px!important;
+    line-height:1.45!important;
+    gap:3px!important;
+  }
+}
