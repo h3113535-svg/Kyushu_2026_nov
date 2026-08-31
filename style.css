@@ -785,3 +785,30 @@ html[data-theme="wa"] .hero-route{
 html[data-theme="wa"] .hero-route i{
   color:#888D89!important;
 }
+
+
+/* ===== v1.10.6 Hero readability tuning =====
+   Further darken the hero typography for real-device readability.
+   Keep the whole-image fade from v1.10.4 and avoid adding any white panel. */
+html[data-theme="wa"] .hero-season{
+  color:#8E5E54!important;
+  text-shadow:0 1px 0 rgba(255,255,250,.80)!important;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  color:#343B39!important;
+  font-weight:740!important;
+  text-shadow:0 1px 0 rgba(255,255,250,.82)!important;
+}
+html[data-theme="wa"] .hero-date{
+  color:#474E4B!important;
+  font-weight:780!important;
+  text-shadow:0 1px 0 rgba(255,255,250,.78)!important;
+}
+html[data-theme="wa"] .hero-route{
+  color:#525956!important;
+  font-weight:750!important;
+  text-shadow:0 1px 0 rgba(255,255,250,.78)!important;
+}
+html[data-theme="wa"] .hero-route i{
+  color:#727A76!important;
+}
