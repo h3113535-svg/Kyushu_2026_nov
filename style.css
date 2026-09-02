@@ -963,3 +963,61 @@ html[data-theme="wa"] .exchange-tool-card,html[data-theme="wa"] .map-import-card
 html[data-theme="wa"] .exchange-result,html[data-theme="wa"] .map-import-preview{background:#F5F3EC!important;border-color:#DEDDD5!important}
 html[data-theme="wa"] .exchange-result strong,html[data-theme="wa"] .map-import-preview b{color:#555C58!important}
 html[data-theme="wa"] .exchange-reverse-row>div{background:#EEF2ED!important;color:#68766D!important}
+
+
+/* ===== v1.11.1 daily artwork: true landscape fullscreen ===== */
+.day-landscape-btn{
+  width:auto!important;min-width:58px!important;height:30px!important;padding:0 9px!important;
+  border-radius:999px!important;display:inline-flex!important;align-items:center;justify-content:center;gap:4px;
+  background:#EEE6DE!important;border:1px solid #D9CDC1!important;color:#65706B!important;
+  font-size:13px!important;font-weight:900!important;line-height:1!important
+}
+.day-landscape-btn small{font-size:10px;font-weight:900;white-space:nowrap;line-height:1}
+.day-landscape-btn.active{background:#E7EFEA!important;border-color:#BACBC2!important;color:#50685D!important}
+.day-image-lightbox.landscape-view{padding:0!important;background:#111!important}
+.day-image-lightbox.landscape-view .day-image-lightbox-backdrop{background:#111!important;backdrop-filter:none!important}
+.day-image-lightbox.landscape-view .day-image-lightbox-card{
+  width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;
+  border:0!important;border-radius:0!important;background:#111!important;box-shadow:none!important;overflow:hidden!important
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;
+  display:grid!important;place-items:center!important;background:#111!important
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage img{
+  width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;background:#111!important
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-head{
+  position:absolute;z-index:8;top:0;left:0;right:0;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 18px max(12px,env(safe-area-inset-left));
+  background:linear-gradient(180deg,rgba(10,10,10,.78),rgba(10,10,10,.34) 62%,transparent);color:#fff;pointer-events:none
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-head b{color:#fff;text-shadow:0 1px 5px rgba(0,0,0,.75)}
+.day-image-lightbox.landscape-view .day-lightbox-head-actions{pointer-events:auto}
+.day-image-lightbox.landscape-view .day-lang-toggle{background:rgba(25,25,25,.54);border-color:rgba(255,255,255,.25);backdrop-filter:blur(8px)}
+.day-image-lightbox.landscape-view .day-lang-toggle button{color:rgba(255,255,255,.72)}
+.day-image-lightbox.landscape-view .day-lang-toggle button.active{background:rgba(255,255,255,.94);color:#5E5B57}
+.day-image-lightbox.landscape-view #dayLightboxClose,
+.day-image-lightbox.landscape-view .day-landscape-btn{background:rgba(25,25,25,.58)!important;border-color:rgba(255,255,255,.25)!important;color:#fff!important;backdrop-filter:blur(8px)}
+.day-image-lightbox.landscape-view .day-image-lightbox-foot{
+  position:absolute;z-index:8;left:0;right:0;bottom:0;padding:18px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  background:linear-gradient(0deg,rgba(10,10,10,.72),rgba(10,10,10,.25) 64%,transparent);color:#fff;pointer-events:none
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-foot>span{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.day-image-lightbox.landscape-view .day-image-lightbox-foot>small{display:none}
+.day-image-lightbox.landscape-view .day-zoom-controls{pointer-events:auto;justify-self:center}
+.day-image-lightbox.landscape-view .day-zoom-controls button{background:rgba(22,22,22,.58);border-color:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(8px)}
+.day-image-lightbox.landscape-view .day-lightbox-nav{z-index:7;background:rgba(15,15,15,.42)}
+body.day-landscape-open{overflow:hidden!important;background:#111!important}
+/* Fallback for browsers/PWAs that cannot programmatically lock orientation. The viewer itself rotates,
+   so it is still upright after the user physically turns a rotation-locked phone. */
+.day-image-lightbox.landscape-view.force-landscape-fallback .day-image-lightbox-card{
+  position:fixed!important;left:50%!important;top:50%!important;width:100dvh!important;height:100vw!important;
+  transform:translate(-50%,-50%) rotate(90deg)!important;transform-origin:center center!important
+}
+@media (orientation:landscape){
+  .day-image-lightbox.landscape-view .day-image-lightbox-head{padding-top:max(7px,env(safe-area-inset-top))}
+  .day-image-lightbox.landscape-view .day-image-lightbox-foot{padding-bottom:max(7px,env(safe-area-inset-bottom))}
+}
+@media(max-width:420px){
+  .day-landscape-btn{min-width:52px!important;padding:0 7px!important}.day-landscape-btn small{font-size:9.5px}
+}

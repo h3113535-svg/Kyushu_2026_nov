@@ -18,9 +18,9 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=1110" rel="stylesheet"/>
+<link href="./style.css?v=1111" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
-<meta content="1.11.0" name="app-version"/>
+<meta content="1.11.1" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
 </head>
 <body>
@@ -269,13 +269,13 @@ https://maps.app.goo.gl/…"></textarea></label>
 <div aria-hidden="true" class="day-image-lightbox" id="dayImageLightbox">
 <div class="day-image-lightbox-backdrop" data-day-lightbox-close="1"></div>
 <div aria-label="每日旅程圖片檢視" aria-modal="true" class="day-image-lightbox-card" role="dialog">
-<div class="day-image-lightbox-head"><b id="dayLightboxTitle">D1</b><div class="day-lightbox-head-actions"><div aria-label="每日主圖語言" class="day-lang-toggle" role="group"><button data-day-lang="zh" type="button">中</button><button data-day-lang="ja" type="button">日</button></div><button aria-label="關閉" id="dayLightboxClose" type="button">×</button></div></div>
+<div class="day-image-lightbox-head"><b id="dayLightboxTitle">D1</b><div class="day-lightbox-head-actions"><button aria-label="橫向全螢幕" class="day-landscape-btn" id="dayLandscapeBtn" title="橫向全螢幕" type="button"><span aria-hidden="true">↔</span><small id="dayLandscapeLabel">橫向</small></button><div aria-label="每日主圖語言" class="day-lang-toggle" role="group"><button data-day-lang="zh" type="button">中</button><button data-day-lang="ja" type="button">日</button></div><button aria-label="關閉" id="dayLightboxClose" type="button">×</button></div></div>
 <div class="day-image-lightbox-stage">
 <img alt="每日旅程主題圖" id="dayLightboxImage"/>
 <button aria-label="上一天" class="day-lightbox-nav prev" id="dayLightboxPrev" type="button">‹</button>
 <button aria-label="下一天" class="day-lightbox-nav next" id="dayLightboxNext" type="button">›</button>
 </div>
-<div class="day-image-lightbox-foot"><span id="dayLightboxCounter">1 / 9</span><div class="day-zoom-controls" aria-label="圖片縮放"><button aria-label="縮小" id="dayZoomOut" type="button">−</button><button aria-label="重設縮放" id="dayZoomReset" type="button"><span id="dayZoomLabel">100%</span></button><button aria-label="放大" id="dayZoomIn" type="button">＋</button></div><small>雙擊放大・雙指縮放；100% 時左右滑換天</small></div>
+<div class="day-image-lightbox-foot"><span id="dayLightboxCounter">1 / 9</span><div class="day-zoom-controls" aria-label="圖片縮放"><button aria-label="縮小" id="dayZoomOut" type="button">−</button><button aria-label="重設縮放" id="dayZoomReset" type="button"><span id="dayZoomLabel">100%</span></button><button aria-label="放大" id="dayZoomIn" type="button">＋</button></div><small>橫向全螢幕最適合看字；100% 時左右滑換天</small></div>
 </div>
 </div>
 
@@ -356,7 +356,7 @@ https://maps.app.goo.gl/…"></textarea></label>
 <div class="toast" id="toast" role="status"></div>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script defer="" src="./firebase-config.js?v=1110"></script>
-<script defer="" src="./app.js?v=1110"></script>
+<script defer="" src="./firebase-config.js?v=1111"></script>
+<script defer="" src="./app.js?v=1111"></script>
 </body>
 </html>

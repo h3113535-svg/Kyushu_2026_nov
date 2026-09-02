@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.0 tool & readability pass */
+/* Kyushu family autumn PWA · November 2026 · v1.11.1 landscape daily-art viewer */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.0";
+const APP_VERSION = "1.11.1";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -332,6 +332,7 @@ function renderDailyScene(){
 }
 let dayLightboxIndex=0;
 let dayImageZoom=1, dayImagePanX=0, dayImagePanY=0;
+let dayLandscapeActive=false,dayLandscapeNativeFullscreen=false;
 const DAY_IMAGE_ZOOM_MIN=1, DAY_IMAGE_ZOOM_MAX=4;
 function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
 function applyDayImageZoom(){
@@ -362,8 +363,51 @@ function renderDayLightbox(){
 function openDayLightbox(index=state.dayIndex){
   const wrap=$("#dayImageLightbox");if(!wrap)return;
   dayLightboxIndex=index;resetDayImageZoom();renderDayLightbox();wrap.classList.add("show");wrap.setAttribute("aria-hidden","false");document.body.classList.add("modal-open");
+  updateDayLandscapeButton();
 }
-function closeDayLightbox(){const wrap=$("#dayImageLightbox");if(!wrap)return;const changed=state&&state.dayIndex!==dayLightboxIndex;if(changed){state.dayIndex=dayLightboxIndex;state.decisionDrafts={};renderDays();renderSchedule()}wrap.classList.remove("show");wrap.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
+function isDayLandscapeViewport(){return window.matchMedia?.("(orientation: landscape)")?.matches||window.innerWidth>window.innerHeight}
+function updateDayLandscapeButton(){
+  const btn=$("#dayLandscapeBtn"),label=$("#dayLandscapeLabel");if(!btn)return;
+  btn.classList.toggle("active",dayLandscapeActive);
+  btn.setAttribute("aria-pressed",dayLandscapeActive?"true":"false");
+  btn.setAttribute("aria-label",dayLandscapeActive?"退出橫向全螢幕":"橫向全螢幕");
+  btn.title=dayLandscapeActive?"退出橫向全螢幕":"橫向全螢幕";
+  if(label)label.textContent=dayLandscapeActive?"退出":"橫向";
+}
+function syncDayLandscapeFallback(){
+  const wrap=$("#dayImageLightbox");if(!wrap||!dayLandscapeActive)return;
+  // Orientation lock is not available on every iOS/browser build. When the viewport
+  // stays portrait, rotate only this viewer so it still becomes a usable landscape canvas.
+  wrap.classList.toggle("force-landscape-fallback",!isDayLandscapeViewport());
+  applyDayImageZoom();
+}
+async function enterDayLandscape(){
+  const wrap=$("#dayImageLightbox"),card=wrap?.querySelector(".day-image-lightbox-card");if(!wrap||!card)return;
+  dayLandscapeActive=true;dayLandscapeNativeFullscreen=false;resetDayImageZoom();
+  wrap.classList.add("landscape-view");document.body.classList.add("day-landscape-open");updateDayLandscapeButton();
+  try{
+    const request=card.requestFullscreen||card.webkitRequestFullscreen;
+    if(request){
+      try{await request.call(card)}catch{}
+      dayLandscapeNativeFullscreen=!!(document.fullscreenElement||document.webkitFullscreenElement);
+    }
+  }catch{}
+  try{if(screen.orientation?.lock)await screen.orientation.lock("landscape")}catch{}
+  window.setTimeout(syncDayLandscapeFallback,120);
+}
+async function exitDayLandscape({exitFullscreen=true}={}){
+  const wrap=$("#dayImageLightbox");
+  dayLandscapeActive=false;
+  if(wrap)wrap.classList.remove("landscape-view","force-landscape-fallback");
+  document.body.classList.remove("day-landscape-open");
+  try{screen.orientation?.unlock?.()}catch{}
+  if(exitFullscreen&&(document.fullscreenElement||document.webkitFullscreenElement)){
+    try{if(document.exitFullscreen)await document.exitFullscreen();else if(document.webkitExitFullscreen)document.webkitExitFullscreen()}catch{}
+  }
+  dayLandscapeNativeFullscreen=false;resetDayImageZoom();updateDayLandscapeButton();
+}
+function toggleDayLandscape(){return dayLandscapeActive?exitDayLandscape():enterDayLandscape()}
+function closeDayLightbox(){const wrap=$("#dayImageLightbox");if(!wrap)return;if(dayLandscapeActive)exitDayLandscape();const changed=state&&state.dayIndex!==dayLightboxIndex;if(changed){state.dayIndex=dayLightboxIndex;state.decisionDrafts={};renderDays();renderSchedule()}wrap.classList.remove("show");wrap.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
 function moveDayLightbox(step){resetDayImageZoom();dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox()}
 
 
@@ -1652,6 +1696,7 @@ function bind(){
       const x=e.target.closest(`[${attr}]`);if(x){await deleteItem(key,x.getAttribute(attr));render();toast("已刪除");return}
     }
   });
+  $("#dayLandscapeBtn")?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();toggleDayLandscape()});
   $("#dayLightboxClose")?.addEventListener("click",closeDayLightbox);
   $("#dayLightboxPrev")?.addEventListener("click",()=>moveDayLightbox(-1));
   $("#dayLightboxNext")?.addEventListener("click",()=>moveDayLightbox(1));
@@ -1683,6 +1728,13 @@ function bind(){
   $("#dayZoomOut")?.addEventListener("click",()=>setDayImageZoom(dayImageZoom-.5));
   $("#dayZoomIn")?.addEventListener("click",()=>setDayImageZoom(dayImageZoom+.5));
   $("#dayZoomReset")?.addEventListener("click",resetDayImageZoom);
+  window.addEventListener("resize",()=>{if(dayLandscapeActive)syncDayLandscapeFallback();if($("#dayImageLightbox")?.classList.contains("show"))applyDayImageZoom()});
+  const handleDayFullscreenExit=()=>{
+    const fs=document.fullscreenElement||document.webkitFullscreenElement;
+    if(dayLandscapeActive&&dayLandscapeNativeFullscreen&&!fs)exitDayLandscape({exitFullscreen:false});
+  };
+  document.addEventListener("fullscreenchange",handleDayFullscreenExit);
+  document.addEventListener("webkitfullscreenchange",handleDayFullscreenExit);
   $("#guideClose")?.addEventListener("click",()=>closeGuide());
   $("#guideSaveBtn")?.addEventListener("click",saveGuideNote);
   $("#guideNoteArea")?.addEventListener("input",e=>{
