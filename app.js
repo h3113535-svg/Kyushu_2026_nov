@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.10.1 autumn watch + official live shortcuts */
+/* Kyushu family autumn PWA · November 2026 · v1.10.8 latest itinerary sync */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.10.1";
+const APP_VERSION = "1.10.8";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -504,22 +504,22 @@ const AUTUMN_SOURCE_META={
   "maizuru-ginkgo":{
     official:"https://www.midorimachi.jp/maiduru/",
     officialLabel:"舞鶴公園官方",
-    baseline:"官方園區首頁會更新旬の情報；D2 以銀杏實況為主，暖秋就縮短停留。"
+    baseline:"官方園區首頁會更新旬の情報；11/21 晚看銀杏實況：7～10成黃正常去、黃綠各半短逛、明顯偏綠直接跳過。"
   },
   "yufuin-autumn":{
     official:"https://yufuin.gr.jp/",
     officialLabel:"YUFUINFO 官方",
-    baseline:"D3–D4 以由布院街景與由布岳秋色為輔，不需要為紅葉硬追行程。"
+    baseline:"D3–D4 不押滿紅；以Villa、晨霧、由布岳與深秋街景為主，不需要為紅葉硬追。"
   },
   "hitome-hakkei":{
     official:"https://nakatsuyaba.com/",
     officialLabel:"中津耶馬溪官方",
-    baseline:"2025 官方紀錄：一目八景約 11/17 為見頃中心；每年仍以當季更新為準。"
+    baseline:"D5 A/B 第一判斷核心；一目八景達見頃才值得早出發，仍以當季官方更新為準。"
   },
   "keisekien":{
     official:"https://nakatsuyaba.com/",
     officialLabel:"中津耶馬溪官方",
-    baseline:"2025 官方紀錄：溪石園約 11/20 為見頃中心；D5 只有狀態漂亮才加入。"
+    baseline:"D5 第二判斷；只有官方即時狀況也漂亮才加入，否則直接跳過。"
   },
   "chojabaru":{
     official:"https://www.town.kokonoe.oita.jp/docs/2025032700023/",
@@ -534,7 +534,7 @@ const AUTUMN_SOURCE_META={
   "kumamoto-ginkgo":{
     official:"https://www.pref.kumamoto.jp/soshiki/10/215705.html",
     officialLabel:"熊本縣官方",
-    baseline:"D7 S 級重點；以縣廳銀杏大道黃葉程度與當年點燈公告一起判斷。"
+    baseline:"D7 S級重點；還車處理完成後四人一起看，並確認當年黃葉程度與點燈公告。"
   },
   "akizuki-autumn":{
     official:"https://www.city.asakura.lg.jp/site/kanko/2930.html",
@@ -548,17 +548,21 @@ const AUTUMN_SOURCE_META={
   }
 };
 const OFFICIAL_STATUS_BY_DAY={
+  1:[
+    {id:"maizuru-ginkgo-live",icon:"🟡",title:"舞鶴公園 銀杏",label:"旬の情報・園內公告",url:"https://www.midorimachi.jp/maiduru/",hint:"11/21 晚／D2 出發前先看銀杏實況，再選 D2 的正常逛、短逛或直接跳過。",decisionId:"d2-maizuru-ginkgo"}
+  ],
   2:[
     {id:"jr-kyushu-status",icon:"🚆",title:"JR 九州運行情報",label:"由布院之森・久大本線",url:"https://www.jrkyushu.co.jp/trains/info/",hint:"D3 出發前先確認延誤、停駛與臨時公告。"},
-    {id:"yufuin-no-mori",icon:"🌲",title:"由布院之森",label:"官方時刻・運行日",url:"https://www.jrkyushu.co.jp/english/train/yufuin_no_mori.html",hint:"確認由布院之森班次與當期運行日。"}
+    {id:"yufuin-no-mori",icon:"🌲",title:"由布院之森",label:"官方時刻・運行日",url:"https://www.jrkyushu.co.jp/english/train/yufuin_no_mori.html",hint:"確認11/23由布院之森3號是否有運行；3號無班次／未搶到就回1號。"}
   ],
   3:[
-    {id:"beppu-ropeway",icon:"🚡",title:"別府纜車・鶴見岳",label:"本日運行・天氣・視界",url:"https://www.beppu-ropeway.co.jp/en/",hint:"D4 是否上鶴見岳，先看官方本日運行與視界；天候不佳就直接走備案。",decisionId:"d4-beppu-weather",phone:"0977-22-2278"},
+    {id:"beppu-ropeway",icon:"🚡",title:"別府纜車・鶴見岳",label:"本日運行・天氣・視界",url:"https://www.beppu-ropeway.co.jp/en/",hint:"D4 是否上鶴見岳，先看官方本日運行與視界；天候不佳就直接不上山。",decisionId:"d4-beppu-weather",phone:"0977-22-2278"},
     {id:"african-safari",icon:"🦒",title:"九州自然動物公園 Safari",label:"官方營業與公告",url:"https://africansafari.co.jp/",hint:"自駕 Safari Zone 前確認當日營業、臨時公告與園區資訊。",phone:"0978-48-2331"},
     {id:"umi-jigoku",icon:"♨️",title:"別府 海地獄",label:"官方營業資訊",url:"https://www.umijigoku.co.jp/",hint:"查看海地獄官方營業與臨時活動資訊。",phone:"0977-66-0121"}
   ],
   4:[
-    {id:"kokonoe-bridge",icon:"🌉",title:"九重夢大吊橋",label:"營業・惡天候限制",url:"https://www.yumeooturihashi.com/info.html",hint:"D5 Chill 路線使用；強風或惡天候時官方可能限制入場。"}
+    {id:"yabakei-autumn-live",icon:"🍁",title:"一目八景・溪石園",label:"中津耶馬溪紅葉實況",url:"https://nakatsuyaba.com/",hint:"11/24 晚先看一目八景是否見頃；溪石園作第二判斷，再決定 D5 A／B。",decisionId:"d5-autumn-route"},
+    {id:"kokonoe-bridge",icon:"🌉",title:"九重夢大吊橋",label:"營業・惡天候限制",url:"https://www.yumeooturihashi.com/info.html",hint:"只在 D5 Chill 路線使用；強風或惡天候時官方可能限制入場。"}
   ],
   5:[
     {id:"takachiho-amaterasu",icon:"🚃",title:"高千穗天照鐵道",label:"當日運行資訊",url:"https://amaterasu-railway.jp/",hint:"官方最新運行資訊；雨、強風或設備狀況可能造成停駛。",phone:"0982-72-3216"},
@@ -566,11 +570,13 @@ const OFFICIAL_STATUS_BY_DAY={
   ],
   6:[
     {id:"aso-crater",icon:"🌋",title:"阿蘇中岳火口",label:"即時火口規制",url:"https://www.aso-volcano.jp/",hint:"D7 是否進火口只看官方即時規制；若關閉直接走博物館備案。",decisionId:"d7-crater"},
-    {id:"kumamoto-castle",icon:"🏯",title:"熊本城",label:"開園・最新公告",url:"https://castle.kumamoto-guide.jp/news/",hint:"確認開園、設施限制與當日最新公告。",phone:"096-223-5011"}
+    {id:"kumamoto-castle",icon:"🏯",title:"熊本城",label:"開園・最新公告",url:"https://castle.kumamoto-guide.jp/news/",hint:"確認開園、設施限制與當日最新公告。",phone:"096-223-5011"},
+    {id:"kumamoto-ginkgo-live",icon:"🟡",title:"熊本縣廳銀杏大道",label:"官方紅葉・點燈資訊",url:"https://www.pref.kumamoto.jp/soshiki/10/215705.html",hint:"D7 四人一起看；出發前確認黃葉程度與2026是否有點燈。"}
   ],
   7:[
+    {id:"akizuki-autumn-live",icon:"🍁",title:"秋月紅葉",label:"朝倉市紅葉情報",url:"https://www.city.asakura.lg.jp/site/kanko/2930.html",hint:"D8 S級主場；確認秋月當週色況後決定停留節奏。"},
     {id:"dazaifu",icon:"⛩️",title:"太宰府天滿宮",label:"參拜時間・重要公告",url:"https://www.dazaifutenmangu.or.jp/",hint:"D8 抵達前確認參拜時間、工程與臨時公告。"},
-    {id:"kamado",icon:"🍁",title:"竈門神社",label:"紅葉・夜間點燈公告",url:"https://kamadojinja.or.jp/information/",hint:"D8 重點紅葉站；確認當年色づき、點燈期間與最新公告。",phone:"092-922-4106"}
+    {id:"kamado",icon:"🍁",title:"竈門神社",label:"紅葉・夜間點燈公告",url:"https://kamadojinja.or.jp/information/",hint:"D8 S級重點；確認當年色づき、點燈期間與最新公告。",phone:"092-922-4106"}
   ],
   8:[
     {id:"fukuoka-airport",icon:"✈️",title:"福岡機場 國際線",label:"當日出發航班",url:"https://www.fukuoka-airport.jp/pcfs/en/flight/index.php?type=ID",hint:"D9 出發前確認航班時間、登機門與即時狀態。"}
@@ -1934,7 +1940,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=1107",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=1108",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

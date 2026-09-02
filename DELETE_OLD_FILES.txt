@@ -1,4 +1,6 @@
-若 GitHub repository 仍有以下舊檔，可刪除：
-- test.html
+v1.10.8 起完整備份已不再包含舊 Buddy / Purin 資產。
 
-其餘圖片不用刪除。本版不需要重新匯入 Firebase seed。
+若 GitHub repo 仍存在下列舊檔，可安全刪除：
+- purin-food-ui.png
+
+目前程式與 Service Worker 均不再引用此檔。
