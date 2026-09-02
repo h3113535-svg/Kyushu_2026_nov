@@ -1040,3 +1040,58 @@ body.day-landscape-open{overflow:hidden!important;background:#111!important}
   #toolsView .tool-card b{font-size:10.5px!important}
   #toolsView .tool-card small{font-size:8.5px!important}
 }
+
+
+/* ===== v1.11.3 daily artwork: landscape reading mode =====
+   Landscape is now a real fit-width reading canvas for 4:3 itinerary art.
+   At 100%, the artwork uses the full landscape width; users scroll vertically
+   to read the whole page instead of shrinking the entire image with contain. */
+.day-image-lightbox.landscape-view .day-image-lightbox-stage{
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  touch-action:pan-y!important;
+  display:block!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-width:none!important;
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage::-webkit-scrollbar{display:none!important}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-width:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:unset!important;
+  margin:0!important;
+  background:#111!important;
+}
+/* The image itself already contains the day title/copy. Keep fullscreen chrome minimal. */
+.day-image-lightbox.landscape-view .day-image-lightbox-head{
+  justify-content:flex-end!important;
+  left:auto!important;
+  width:auto!important;
+  padding:max(7px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) 8px 8px!important;
+  background:none!important;
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-head>b{display:none!important}
+.day-image-lightbox.landscape-view .day-image-lightbox-foot{display:none!important}
+.day-image-lightbox.landscape-view .day-lightbox-nav{
+  position:fixed!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:32px!important;
+  height:48px!important;
+  opacity:.52!important;
+}
+.day-image-lightbox.landscape-view .day-lightbox-nav.prev{left:max(5px,env(safe-area-inset-left))!important}
+.day-image-lightbox.landscape-view .day-lightbox-nav.next{right:max(5px,env(safe-area-inset-right))!important}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage.is-zoomed{
+  overflow:hidden!important;
+  touch-action:none!important;
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage.is-zoomed img{
+  width:100%!important;
+  height:auto!important;
+}

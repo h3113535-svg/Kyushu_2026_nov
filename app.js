@@ -348,7 +348,8 @@ function applyDayImageZoom(){
   if(label)label.textContent=`${Math.round(dayImageZoom*100)}%`;
 }
 function setDayImageZoom(next){dayImageZoom=clamp(Number(next)||1,DAY_IMAGE_ZOOM_MIN,DAY_IMAGE_ZOOM_MAX);applyDayImageZoom()}
-function resetDayImageZoom(){dayImageZoom=1;dayImagePanX=0;dayImagePanY=0;applyDayImageZoom()}
+function resetDayLightboxScroll(){const stage=$("#dayImageLightbox .day-image-lightbox-stage");if(stage){stage.scrollTop=0;stage.scrollLeft=0}}
+function resetDayImageZoom(){dayImageZoom=1;dayImagePanX=0;dayImagePanY=0;applyDayImageZoom();if(dayLandscapeActive)resetDayLightboxScroll()}
 function renderDayLightbox(){
   const wrap=$("#dayImageLightbox"),img=$("#dayLightboxImage");if(!wrap||!img||!TRIP?.days?.length)return;
   dayLightboxIndex=Math.max(0,Math.min(TRIP.days.length-1,dayLightboxIndex));
@@ -393,7 +394,7 @@ async function enterDayLandscape(){
     }
   }catch{}
   try{if(screen.orientation?.lock)await screen.orientation.lock("landscape")}catch{}
-  window.setTimeout(syncDayLandscapeFallback,120);
+  window.setTimeout(()=>{syncDayLandscapeFallback();resetDayLightboxScroll()},120);
 }
 async function exitDayLandscape({exitFullscreen=true}={}){
   const wrap=$("#dayImageLightbox");
@@ -408,7 +409,7 @@ async function exitDayLandscape({exitFullscreen=true}={}){
 }
 function toggleDayLandscape(){return dayLandscapeActive?exitDayLandscape():enterDayLandscape()}
 function closeDayLightbox(){const wrap=$("#dayImageLightbox");if(!wrap)return;if(dayLandscapeActive)exitDayLandscape();const changed=state&&state.dayIndex!==dayLightboxIndex;if(changed){state.dayIndex=dayLightboxIndex;state.decisionDrafts={};renderDays();renderSchedule()}wrap.classList.remove("show");wrap.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
-function moveDayLightbox(step){resetDayImageZoom();dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox()}
+function moveDayLightbox(step){resetDayImageZoom();dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox();if(dayLandscapeActive)resetDayLightboxScroll()}
 
 
 const SCENE_LANG_STORAGE_KEY=`${APP_NAMESPACE}:scene-lang`;
@@ -2109,7 +2110,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=1109",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=1113",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });
