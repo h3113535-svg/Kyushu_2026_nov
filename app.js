@@ -1724,8 +1724,8 @@ function bind(){
     });
     dayLightboxStage.addEventListener("pointermove",e=>{
       if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,point(e));
-      if(!dayLandscapeActive&&pointers.size>=2&&pinchStart){e.preventDefault();const pts=[...pointers.values()].slice(0,2),dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);setDayImageZoom(pinchStart.zoom*(dist/(pinchStart.distance||1)));return}
-      if(!dayLandscapeActive&&dayImageZoom>1&&panStart&&panStart.id===e.pointerId){e.preventDefault();dayImagePanX=panStart.panX+(e.clientX-panStart.x);dayImagePanY=panStart.panY+(e.clientY-panStart.y);applyDayImageZoom()}
+      if(pointers.size>=2&&pinchStart){e.preventDefault();const pts=[...pointers.values()].slice(0,2),dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);setDayImageZoom(pinchStart.zoom*(dist/(pinchStart.distance||1)));return}
+      if(dayImageZoom>1&&panStart&&panStart.id===e.pointerId){e.preventDefault();dayImagePanX=panStart.panX+(e.clientX-panStart.x);dayImagePanY=panStart.panY+(e.clientY-panStart.y);applyDayImageZoom()}
     },{passive:false});
     const endPointer=e=>{
       const start=swipeStart&&swipeStart.id===e.pointerId?swipeStart:null,cur=point(e);pointers.delete(e.pointerId);
@@ -2106,7 +2106,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=1114",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=1115",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

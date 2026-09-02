@@ -6,10 +6,10 @@ const OWNED_CACHE_PREFIXES = ["kyushu-nov-shell-", "kyushu-nov-runtime-"];
 const SHELL = [
   "./",
   "./index.html",
-  "./style.css?v=1114",
-  "./app.js?v=1114",
+  "./style.css?v=1115",
+  "./app.js?v=1115",
   "./manifest.json",
-  "./firebase-config.js?v=1114",
+  "./firebase-config.js?v=1115",
   "./icon-192.png",
   "./icon-512.png",
   "./icon-maskable-512.png",

@@ -1124,7 +1124,6 @@ body.day-landscape-open{overflow:hidden!important;background:#111!important}
   aspect-ratio:auto!important;
   object-fit:contain!important;
   margin:auto!important;
-  transform:none!important;
   background:#111!important;
 }
 /* Landscape is a single-page reader. Change day only after leaving landscape. */
@@ -1151,5 +1150,31 @@ body.day-landscape-open{overflow:hidden!important;background:#111!important}
   height:auto!important;
   max-width:100%!important;
   max-height:100%!important;
-  transform:none!important;
+}
+
+/* ===== v1.11.5 daily artwork: hide bottom tabs in landscape + allow pinch zoom ===== */
+body.day-landscape-open .bottom-nav{
+  display:none!important;
+}
+body.day-landscape-open,
+body.day-landscape-open #app,
+body.day-landscape-open main{
+  padding-bottom:0!important;
+}
+.day-image-lightbox.landscape-view{
+  z-index:220!important;
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage{
+  touch-action:none!important;
+  overflow:hidden!important;
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage img{
+  transform-origin:center center!important;
+  will-change:transform!important;
+}
+.day-image-lightbox.landscape-view .day-image-lightbox-stage.is-zoomed img{
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:100%!important;
 }
