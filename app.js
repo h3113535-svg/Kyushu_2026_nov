@@ -1,4 +1,4 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.1 landscape daily-art viewer */
+/* Kyushu family autumn PWA · November 2026 · v1.11.2 tools grid, exchange precision, custom bookings */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -131,7 +131,7 @@ const storeKey=k=>`${TRIP?.id||"private-trip"}:${k}`;
 function createState(){
   return {
     dayIndex:0, view:"schedule", tool:"booking", shoppingMember:"全部",
-    foods:loadLocal("foods",[]), shopping:loadLocal("shopping",[]), expenses:loadLocal("expenses",[]), mapPlaces:loadLocal("mapPlaces",[]),
+    foods:loadLocal("foods",[]), shopping:loadLocal("shopping",[]), expenses:loadLocal("expenses",[]), mapPlaces:loadLocal("mapPlaces",[]), bookingItems:loadLocal("bookingItems",[]),
     taskStatus:loadLocal("taskStatus",{}), decisions:loadLocal("decisions",{}), decisionDrafts:{},
     autumnStatus:loadLocal("autumnStatus",{}),
     notes:loadLocal("notes",""),
@@ -1400,15 +1400,16 @@ function countdownText(task){
   if(days>=1)return `還有 ${days} 天 ${remain} 小時`;
   return `還有 ${hours} 小時`;
 }
+function allBookingTasks(){return [...(TRIP.bookingTasks||[]),...(state.bookingItems||[])];}
 async function toggleBookingTask(id){
-  const task=TRIP.bookingTasks.find(t=>t.id===id); if(!task)return;
+  const task=allBookingTasks().find(t=>t.id===id); if(!task)return;
   const wasDone=taskDone(task);
   state.taskStatus[id]=!wasDone;
   saveLocal("taskStatus",state.taskStatus);
   if(state.cloud){try{await setCloud("taskStatus",state.taskStatus)}catch{}}
   renderBookings();
   if(!wasDone){
-    const allDone=TRIP.bookingTasks.every(taskDone);
+    const allDone=allBookingTasks().every(taskDone);
     toast(allDone?"所有訂位／票券任務都完成了":"已標記完成");
   }
 }
@@ -1427,13 +1428,14 @@ function bookingTaskCard(t){
       <div class="task-title">${esc(t.title)}</div>
       <div class="task-detail">${esc(t.detail||"")}</div>
       ${!done?`<div class="task-countdown">${esc(countdownText(t))}</div>`:""}
-      ${t.map?`<a class="mini-action-link" target="_blank" rel="noopener" href="${mapSearch(t.map)}">↗ 位置</a>`:""}
+      <div class="booking-card-actions">${t.map?`<a class="mini-action-link" target="_blank" rel="noopener" href="${mapSearch(t.map)}">↗ 位置</a>`:""}${t.custom?`<button class="mini-btn" data-delete-booking="${esc(t.id)}" type="button">刪除</button>`:""}</div>
     </div>
   </div>`;
 }
 function renderBookings(){
-  const pending=TRIP.bookingTasks.filter(t=>!taskDone(t));
-  const done=TRIP.bookingTasks.filter(taskDone);
+  const tasks=allBookingTasks();
+  const pending=tasks.filter(t=>!taskDone(t));
+  const done=tasks.filter(taskDone);
   $("#bookingList").innerHTML=`
     <section class="task-section">
       <div class="task-section-title"><span>🔥</span><div><b>尚未處理</b><small>${pending.length} 項</small></div></div>
@@ -1505,6 +1507,7 @@ function safeArithmetic(raw){
 }
 function money0(n){return Math.round(Number(n)||0).toLocaleString("zh-TW")}
 function money2(n){return (Math.round((Number(n)||0)*100)/100).toLocaleString("zh-TW",{minimumFractionDigits:0,maximumFractionDigits:2})}
+function formatExchangeRate(n){const v=Number(n);return Number.isFinite(v)?v.toLocaleString("zh-TW",{minimumFractionDigits:0,maximumFractionDigits:6,useGrouping:false}):""}
 function renderExchangeTool(){
   const rateInput=$("#exchangeRateInput"),expr=$("#jpyCalcInput"),result=$("#exchangeResult"),twd=$("#twdCalcInput"),reverse=$("#exchangeReverseResult");
   if(!rateInput||!result)return;
@@ -1513,7 +1516,7 @@ function renderExchangeTool(){
   if(!rate||rate<=0){result.innerHTML='<small>計算結果</small><strong>先輸入匯率</strong><span>例如：1 JPY = 0.215 TWD</span>';if(reverse)reverse.textContent="—";return}
   if(jpy===null)result.innerHTML=`<small>目前匯率</small><strong>¥100 ≈ NT$${money2(100*rate)}</strong><span>輸入日圓金額或算式即可換算</span>`;
   else if(Number.isNaN(jpy))result.innerHTML='<small>計算結果</small><strong>算式格式不正確</strong><span>只支援數字、+ − × ÷、括號</span>';
-  else result.innerHTML=`<small>計算結果</small><strong>¥${money2(jpy)} ≈ NT$${money2(jpy*rate)}</strong><span>1 JPY = ${money2(rate)} TWD</span>`;
+  else result.innerHTML=`<small>計算結果</small><strong>¥${money2(jpy)} ≈ NT$${money2(jpy*rate)}</strong><span>1 JPY = ${formatExchangeRate(rate)} TWD</span>`;
   const twdValue=Number(String(twd?.value||"").replace(/,/g,""));if(reverse)reverse.textContent=twd?.value&&Number.isFinite(twdValue)?`≈ ¥${money0(twdValue/rate)}`:"—";
 }
 function googleMapsUrlFromText(raw){
@@ -1598,6 +1601,14 @@ function openModal(type){
   if(type==="food"){
     title.textContent="新增想吃店家";
     fields.innerHTML=field("店名","name","text","例如：咖啡廳") + field("區域","location","text","例如：天神") + field("備註","note","text","想吃什麼");
+  }else if(type==="booking"){
+    title.textContent="新增訂位／票券";
+    fields.innerHTML=selectField("類型","bookingType",["訂位","票券","交通","現場處理","其他"])+
+      field("名稱","name","text","例如：福岡水炊晚餐")+
+      field("時間／日期","when","text","例如：D8 18:30")+
+      field("處理期限（選填）","deadline","datetime-local","")+
+      field("備註","detail","text","例如：出發前再次確認")+
+      field("地點（選填）","map","text","例如：博多華味鳥");
   }else if(type==="shopping"){
     title.textContent="新增購物";
     fields.innerHTML=field("商品","name","text","例如：On Cloud 7")+
@@ -1618,6 +1629,10 @@ async function handleSubmit(e){
   const base={id:uid(),name:fd.get("name")?.trim()};
   if(type==="food"){
     await cloudAdd("foods",{...base,location:fd.get("location")?.trim(),note:fd.get("note")?.trim(),checked:false}); renderFood();
+  }else if(type==="booking"){
+    const deadlineRaw=fd.get("deadline")||"";
+    await cloudAdd("bookingItems",{...base,type:fd.get("bookingType")||"訂位",title:base.name,when:fd.get("when")?.trim(),deadline:deadlineRaw?new Date(deadlineRaw).toISOString():"",detail:fd.get("detail")?.trim(),map:fd.get("map")?.trim(),defaultDone:false,custom:true});
+    renderBookings();
   }else if(type==="shopping"){
     await cloudAdd("shopping",{...base,owner:fd.get("owner"),amount:Number(fd.get("amount")||0),shop:fd.get("shop")?.trim(),day:fd.get("day")?.trim(),checked:false}); renderShopping();
   }else{
@@ -1692,7 +1707,7 @@ function bind(){
     for(const [attr,key,render] of [["data-check-food","foods",renderFood],["data-check-shopping","shopping",renderShopping]]){
       const x=e.target.closest(`[${attr}]`);if(x){const id=x.getAttribute(attr);const before=state[key].find(i=>i.id===id)?.checked;await toggleItem(key,id);render();if(!before)toast("已完成");return}
     }
-    for(const [attr,key,render] of [["data-delete-food","foods",renderFood],["data-delete-shopping","shopping",renderShopping],["data-delete-expense","expenses",renderExpenses],["data-delete-map-place","mapPlaces",renderMapImports]]){
+    for(const [attr,key,render] of [["data-delete-food","foods",renderFood],["data-delete-shopping","shopping",renderShopping],["data-delete-expense","expenses",renderExpenses],["data-delete-map-place","mapPlaces",renderMapImports],["data-delete-booking","bookingItems",renderBookings]]){
       const x=e.target.closest(`[${attr}]`);if(x){await deleteItem(key,x.getAttribute(attr));render();toast("已刪除");return}
     }
   });
@@ -1853,6 +1868,7 @@ async function connectCloud(){
     ["shopping",v=>{if(v!==null){state.shopping=normalizeCloud(v).map(x=>({...x,owner:normalizeMemberLabel(x.owner)}));saveLocal("shopping",state.shopping);renderShopping()}}],
     ["expenses",v=>{if(v!==null){state.expenses=normalizeCloud(v).map(x=>({...x,payer:normalizeMemberLabel(x.payer),participants:(x.participants||[]).map(normalizeMemberLabel)}));saveLocal("expenses",state.expenses);renderExpenses()}}],
     ["mapPlaces",v=>{if(v!==null){state.mapPlaces=normalizeCloud(v);saveLocal("mapPlaces",state.mapPlaces);renderMapImports()}}],
+    ["bookingItems",v=>{if(v!==null){state.bookingItems=normalizeCloud(v).map(x=>({...x,custom:true,title:x.title||x.name||"未命名訂位"}));saveLocal("bookingItems",state.bookingItems);renderBookings()}}],
     ["taskStatus",v=>{if(v && typeof v==="object"){state.taskStatus=v;saveLocal("taskStatus",v);renderBookings()}}],
     ["decisions",v=>{if(v && typeof v==="object"){state.decisions=v;saveLocal("decisions",v);renderSchedule()}}],
     ["autumnStatus",v=>{if(v && typeof v==="object"){state.autumnStatus=v;saveLocal("autumnStatus",v);renderAutumnWatch(TRIP.days[state.dayIndex])}}],
