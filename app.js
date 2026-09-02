@@ -386,13 +386,9 @@ async function enterDayLandscape(){
   const wrap=$("#dayImageLightbox"),card=wrap?.querySelector(".day-image-lightbox-card");if(!wrap||!card)return;
   dayLandscapeActive=true;dayLandscapeNativeFullscreen=false;resetDayImageZoom();
   wrap.classList.add("landscape-view");document.body.classList.add("day-landscape-open");updateDayLandscapeButton();
-  try{
-    const request=card.requestFullscreen||card.webkitRequestFullscreen;
-    if(request){
-      try{await request.call(card)}catch{}
-      dayLandscapeNativeFullscreen=!!(document.fullscreenElement||document.webkitFullscreenElement);
-    }
-  }catch{}
+  // v1.11.4: do NOT invoke the browser Fullscreen API. Android/Chrome shows a
+  // system-owned "how to exit fullscreen" banner which the web app cannot hide.
+  // The lightbox itself already covers the PWA viewport; orientation lock is best-effort.
   try{if(screen.orientation?.lock)await screen.orientation.lock("landscape")}catch{}
   window.setTimeout(()=>{syncDayLandscapeFallback();resetDayLightboxScroll()},120);
 }
@@ -409,7 +405,7 @@ async function exitDayLandscape({exitFullscreen=true}={}){
 }
 function toggleDayLandscape(){return dayLandscapeActive?exitDayLandscape():enterDayLandscape()}
 function closeDayLightbox(){const wrap=$("#dayImageLightbox");if(!wrap)return;if(dayLandscapeActive)exitDayLandscape();const changed=state&&state.dayIndex!==dayLightboxIndex;if(changed){state.dayIndex=dayLightboxIndex;state.decisionDrafts={};renderDays();renderSchedule()}wrap.classList.remove("show");wrap.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
-function moveDayLightbox(step){resetDayImageZoom();dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox();if(dayLandscapeActive)resetDayLightboxScroll()}
+function moveDayLightbox(step){if(dayLandscapeActive)return;resetDayImageZoom();dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox()}
 
 
 const SCENE_LANG_STORAGE_KEY=`${APP_NAMESPACE}:scene-lang`;
@@ -1728,18 +1724,18 @@ function bind(){
     });
     dayLightboxStage.addEventListener("pointermove",e=>{
       if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,point(e));
-      if(pointers.size>=2&&pinchStart){e.preventDefault();const pts=[...pointers.values()].slice(0,2),dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);setDayImageZoom(pinchStart.zoom*(dist/(pinchStart.distance||1)));return}
-      if(dayImageZoom>1&&panStart&&panStart.id===e.pointerId){e.preventDefault();dayImagePanX=panStart.panX+(e.clientX-panStart.x);dayImagePanY=panStart.panY+(e.clientY-panStart.y);applyDayImageZoom()}
+      if(!dayLandscapeActive&&pointers.size>=2&&pinchStart){e.preventDefault();const pts=[...pointers.values()].slice(0,2),dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);setDayImageZoom(pinchStart.zoom*(dist/(pinchStart.distance||1)));return}
+      if(!dayLandscapeActive&&dayImageZoom>1&&panStart&&panStart.id===e.pointerId){e.preventDefault();dayImagePanX=panStart.panX+(e.clientX-panStart.x);dayImagePanY=panStart.panY+(e.clientY-panStart.y);applyDayImageZoom()}
     },{passive:false});
     const endPointer=e=>{
       const start=swipeStart&&swipeStart.id===e.pointerId?swipeStart:null,cur=point(e);pointers.delete(e.pointerId);
       if(pointers.size<2)pinchStart=null;
-      if(start&&dayImageZoom<=1.001){const dx=cur.x-start.x,dy=cur.y-start.y;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)*1.15)moveDayLightbox(dx<0?1:-1)}
-      if((e.pointerType==="touch"||e.pointerType==="pen")&&start){const dx=cur.x-start.x,dy=cur.y-start.y;if(Math.abs(dx)<12&&Math.abs(dy)<12){const now=Date.now();if(now-lastTap<300){e.preventDefault();setDayImageZoom(dayImageZoom>1?1:2.5);lastTap=0}else lastTap=now}}
+      if(start&&dayImageZoom<=1.001&&!dayLandscapeActive){const dx=cur.x-start.x,dy=cur.y-start.y;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)*1.15)moveDayLightbox(dx<0?1:-1)}
+      if(!dayLandscapeActive&&(e.pointerType==="touch"||e.pointerType==="pen")&&start){const dx=cur.x-start.x,dy=cur.y-start.y;if(Math.abs(dx)<12&&Math.abs(dy)<12){const now=Date.now();if(now-lastTap<300){e.preventDefault();setDayImageZoom(dayImageZoom>1?1:2.5);lastTap=0}else lastTap=now}}
       if(!pointers.size){swipeStart=null;panStart=null}
     };
     dayLightboxStage.addEventListener("pointerup",endPointer);dayLightboxStage.addEventListener("pointercancel",e=>{pointers.delete(e.pointerId);if(!pointers.size){swipeStart=null;panStart=null;pinchStart=null}});
-    dayLightboxStage.addEventListener("dblclick",e=>{if(lastPointerType!=="mouse")return;e.preventDefault();setDayImageZoom(dayImageZoom>1?1:2.5)});
+    dayLightboxStage.addEventListener("dblclick",e=>{if(lastPointerType!=="mouse"||dayLandscapeActive)return;e.preventDefault();setDayImageZoom(dayImageZoom>1?1:2.5)});
   }
   $("#dayZoomOut")?.addEventListener("click",()=>setDayImageZoom(dayImageZoom-.5));
   $("#dayZoomIn")?.addEventListener("click",()=>setDayImageZoom(dayImageZoom+.5));
@@ -2110,7 +2106,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=1113",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=1114",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });
