@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.10.8 latest itinerary sync */
+/* Kyushu family autumn PWA · November 2026 · v1.11.0 tool & readability pass */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.10.8";
+const APP_VERSION = "1.11.0";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -131,7 +131,7 @@ const storeKey=k=>`${TRIP?.id||"private-trip"}:${k}`;
 function createState(){
   return {
     dayIndex:0, view:"schedule", tool:"booking", shoppingMember:"全部",
-    foods:loadLocal("foods",[]), shopping:loadLocal("shopping",[]), expenses:loadLocal("expenses",[]),
+    foods:loadLocal("foods",[]), shopping:loadLocal("shopping",[]), expenses:loadLocal("expenses",[]), mapPlaces:loadLocal("mapPlaces",[]),
     taskStatus:loadLocal("taskStatus",{}), decisions:loadLocal("decisions",{}), decisionDrafts:{},
     autumnStatus:loadLocal("autumnStatus",{}),
     notes:loadLocal("notes",""),
@@ -331,6 +331,23 @@ function renderDailyScene(){
   if(bar) bar.style.width=`${((state.dayIndex+1)/TRIP.days.length)*100}%`;
 }
 let dayLightboxIndex=0;
+let dayImageZoom=1, dayImagePanX=0, dayImagePanY=0;
+const DAY_IMAGE_ZOOM_MIN=1, DAY_IMAGE_ZOOM_MAX=4;
+function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
+function applyDayImageZoom(){
+  const stage=$("#dayImageLightbox .day-image-lightbox-stage"),img=$("#dayLightboxImage"),label=$("#dayZoomLabel");
+  if(!stage||!img)return;
+  if(dayImageZoom<=1.001){dayImageZoom=1;dayImagePanX=0;dayImagePanY=0}
+  const rect=stage.getBoundingClientRect();
+  const maxX=Math.max(0,rect.width*(dayImageZoom-1)/2);
+  const maxY=Math.max(0,rect.height*(dayImageZoom-1)/2);
+  dayImagePanX=clamp(dayImagePanX,-maxX,maxX);dayImagePanY=clamp(dayImagePanY,-maxY,maxY);
+  img.style.transform=`translate3d(${dayImagePanX}px,${dayImagePanY}px,0) scale(${dayImageZoom})`;
+  stage.classList.toggle("is-zoomed",dayImageZoom>1.001);
+  if(label)label.textContent=`${Math.round(dayImageZoom*100)}%`;
+}
+function setDayImageZoom(next){dayImageZoom=clamp(Number(next)||1,DAY_IMAGE_ZOOM_MIN,DAY_IMAGE_ZOOM_MAX);applyDayImageZoom()}
+function resetDayImageZoom(){dayImageZoom=1;dayImagePanX=0;dayImagePanY=0;applyDayImageZoom()}
 function renderDayLightbox(){
   const wrap=$("#dayImageLightbox"),img=$("#dayLightboxImage");if(!wrap||!img||!TRIP?.days?.length)return;
   dayLightboxIndex=Math.max(0,Math.min(TRIP.days.length-1,dayLightboxIndex));
@@ -344,10 +361,10 @@ function renderDayLightbox(){
 }
 function openDayLightbox(index=state.dayIndex){
   const wrap=$("#dayImageLightbox");if(!wrap)return;
-  dayLightboxIndex=index;renderDayLightbox();wrap.classList.add("show");wrap.setAttribute("aria-hidden","false");document.body.classList.add("modal-open");
+  dayLightboxIndex=index;resetDayImageZoom();renderDayLightbox();wrap.classList.add("show");wrap.setAttribute("aria-hidden","false");document.body.classList.add("modal-open");
 }
 function closeDayLightbox(){const wrap=$("#dayImageLightbox");if(!wrap)return;const changed=state&&state.dayIndex!==dayLightboxIndex;if(changed){state.dayIndex=dayLightboxIndex;state.decisionDrafts={};renderDays();renderSchedule()}wrap.classList.remove("show");wrap.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
-function moveDayLightbox(step){dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox()}
+function moveDayLightbox(step){resetDayImageZoom();dayLightboxIndex=(dayLightboxIndex+step+TRIP.days.length)%TRIP.days.length;renderDayLightbox()}
 
 
 const SCENE_LANG_STORAGE_KEY=`${APP_NAMESPACE}:scene-lang`;
@@ -1434,11 +1451,61 @@ function renderExpenses(){
       <div class="list-meta">¥${Number(i.amount).toLocaleString()} · ${esc(i.payer)} 付款 · 分攤：${esc((i.participants||TRIP.members).join("、"))}${i.date?` · ${esc(i.date)}`:""}</div>
       </div><button class="mini-btn" data-delete-expense="${i.id}">刪</button></div></div>`).join(""):`<div class="empty-art-card"><img src="./nov_empty_expense.webp?v=160" alt="目前還沒有花費紀錄"></div>`;
 }
+const EXCHANGE_RATE_STORAGE_KEY=`${APP_NAMESPACE}:manual-exchange-rate`;
+function getManualExchangeRate(){try{const n=Number(localStorage.getItem(EXCHANGE_RATE_STORAGE_KEY)||0);return Number.isFinite(n)&&n>0?n:0}catch{return 0}}
+function saveManualExchangeRate(value){const n=Number(value);try{if(Number.isFinite(n)&&n>0)localStorage.setItem(EXCHANGE_RATE_STORAGE_KEY,String(n));else localStorage.removeItem(EXCHANGE_RATE_STORAGE_KEY)}catch{}return Number.isFinite(n)&&n>0?n:0}
+function safeArithmetic(raw){
+  let s=String(raw||"").trim().replace(/[，,]/g,"").replace(/×/g,"*").replace(/÷/g,"/").replace(/[−–—]/g,"-").replace(/＋/g,"+").replace(/（/g,"(").replace(/）/g,")");
+  if(!s)return null;if(s.length>80||!/^[0-9+\-*/().\s]+$/.test(s))return NaN;
+  try{const value=Function(`"use strict";return (${s})`)();return typeof value==="number"&&Number.isFinite(value)?value:NaN}catch{return NaN}
+}
+function money0(n){return Math.round(Number(n)||0).toLocaleString("zh-TW")}
+function money2(n){return (Math.round((Number(n)||0)*100)/100).toLocaleString("zh-TW",{minimumFractionDigits:0,maximumFractionDigits:2})}
+function renderExchangeTool(){
+  const rateInput=$("#exchangeRateInput"),expr=$("#jpyCalcInput"),result=$("#exchangeResult"),twd=$("#twdCalcInput"),reverse=$("#exchangeReverseResult");
+  if(!rateInput||!result)return;
+  const saved=getManualExchangeRate();if(document.activeElement!==rateInput&&rateInput.value===""&&saved)rateInput.value=String(saved);
+  const rate=Number(rateInput.value||saved||0),jpy=safeArithmetic(expr?.value||"");
+  if(!rate||rate<=0){result.innerHTML='<small>計算結果</small><strong>先輸入匯率</strong><span>例如：1 JPY = 0.215 TWD</span>';if(reverse)reverse.textContent="—";return}
+  if(jpy===null)result.innerHTML=`<small>目前匯率</small><strong>¥100 ≈ NT$${money2(100*rate)}</strong><span>輸入日圓金額或算式即可換算</span>`;
+  else if(Number.isNaN(jpy))result.innerHTML='<small>計算結果</small><strong>算式格式不正確</strong><span>只支援數字、+ − × ÷、括號</span>';
+  else result.innerHTML=`<small>計算結果</small><strong>¥${money2(jpy)} ≈ NT$${money2(jpy*rate)}</strong><span>1 JPY = ${money2(rate)} TWD</span>`;
+  const twdValue=Number(String(twd?.value||"").replace(/,/g,""));if(reverse)reverse.textContent=twd?.value&&Number.isFinite(twdValue)?`≈ ¥${money0(twdValue/rate)}`:"—";
+}
+function googleMapsUrlFromText(raw){
+  const urls=String(raw||"").match(/https?:\/\/[^\s]+/g)||[];
+  for(const token of urls){try{const u=new URL(token.replace(/[)>\]，。]+$/g,""));const h=u.hostname.toLowerCase();if(h==="maps.app.goo.gl"||h==="goo.gl"||h.endsWith("google.com")||h.endsWith("google.co.jp"))return u.toString()}catch{}}
+  return "";
+}
+function mapNameFromUrl(url){
+  if(!url)return "";try{const u=new URL(url);const m=u.pathname.match(/\/maps\/place\/([^/]+)/i);if(m)return decodeURIComponent(m[1].replace(/\+/g," "));const q=u.searchParams.get("query")||u.searchParams.get("q");return q?decodeURIComponent(q.replace(/\+/g," ")):""}catch{return ""}
+}
+function parseGoogleMapsShare(raw){
+  const text=String(raw||"").trim(),url=googleMapsUrlFromText(text);const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);let name="",address="";
+  for(const line of lines){if(/^https?:\/\//i.test(line))continue;if(!name){name=line;continue}if(!address){address=line;break}}
+  if(!name)name=mapNameFromUrl(url);return {name:name.slice(0,120),address:address.slice(0,180),url};
+}
+function previewMapImport(){
+  const raw=$("#mapImportRaw"),name=$("#mapImportName"),box=$("#mapImportPreview");if(!raw||!name||!box)return;
+  const parsed=parseGoogleMapsShare(raw.value);if(parsed.name&&!name.value.trim())name.value=parsed.name;
+  const finalName=name.value.trim()||parsed.name;const url=parsed.url;
+  if(!raw.value.trim()){box.innerHTML='<b>貼上後會先解析名稱與 Google Maps 連結。</b><small>支援 Google Maps 分享文字、完整網址與 maps.app.goo.gl 短網址。</small>';return}
+  box.innerHTML=`<b>${esc(finalName||"尚未取得地點名稱")}</b><small>${url?"✓ 已辨識 Google Maps 連結":"尚未辨識 Google Maps 連結；仍可用名稱建立搜尋入口"}${parsed.address?`・${esc(parsed.address)}`:""}</small>`;
+}
+async function saveMapImport(){
+  const raw=$("#mapImportRaw"),nameEl=$("#mapImportName");if(!raw||!nameEl)return;const parsed=parseGoogleMapsShare(raw.value);const name=nameEl.value.trim()||parsed.name;if(!name){toast("請補上地點名稱");nameEl.focus();return}
+  const obj={id:uid(),name,url:parsed.url||"",address:parsed.address||"",day:$("#mapImportDay")?.value||"",category:$("#mapImportCategory")?.value||"景點",note:$("#mapImportNote")?.value.trim()||"",createdAt:Date.now()};
+  await cloudAdd("mapPlaces",obj);renderMapImports();raw.value="";nameEl.value="";if($("#mapImportNote"))$("#mapImportNote").value="";previewMapImport();toast("已加入地點清單");
+}
+function renderMapImports(){
+  const box=$("#mapImportList");if(!box)return;const items=(state.mapPlaces||[]).slice().sort((a,b)=>{const da=Number(String(a.day||"").replace("D",""))||99,db=Number(String(b.day||"").replace("D",""))||99;return da-db||(b.createdAt||0)-(a.createdAt||0)});
+  box.innerHTML=items.length?items.map(i=>{const href=i.url||mapSearch([i.name,i.address].filter(Boolean).join(" "));return `<div class="list-item map-place-item"><div class="list-main"><div><div class="list-title">${esc(i.name)}</div><div class="list-meta">${esc([i.day,i.category,i.address,i.note].filter(Boolean).join(" · ")||"未指定")}</div></div><div class="list-actions"><a class="mini-btn" target="_blank" rel="noopener" href="${esc(href)}">地圖</a><button class="mini-btn" data-delete-map-place="${esc(i.id)}">刪</button></div></div></div>`}).join(""):'<div class="empty">還沒有匯入地點。從 Google Maps 按「分享」後，把文字或連結貼到上方即可。</div>';
+}
 function renderNotes(){
   const area=$("#notesArea"); if(area)area.value=state.notes||"";
   const empty=$("#notesEmptyState"); if(empty)empty.hidden=!!String(state.notes||"").trim();
 }
-function renderTools(){renderBookings();renderShopping();renderExpenses();renderNotes()}
+function renderTools(){renderBookings();renderAutumnWatch(TRIP.days[state.dayIndex]);renderExchangeTool();renderMapImports();renderShopping();renderExpenses();renderNotes()}
 function renderAll(){applySceneLanguageUI();renderDays();renderSchedule();renderFood();renderTools()}
 
 function switchView(v){
@@ -1449,6 +1516,7 @@ function switchView(v){
 }
 function switchTool(t){
   state.tool=t;
+  if(t==="autumn"){autumnWatchScope="all";renderAutumnWatch(TRIP.days[state.dayIndex]);}
   $$(".tool-card").forEach(x=>x.classList.toggle("active",x.dataset.tool===t));
   $$(".tool-panel").forEach(x=>x.classList.toggle("active",x.id===`${t}Panel`));
 }
@@ -1580,16 +1648,41 @@ function bind(){
     for(const [attr,key,render] of [["data-check-food","foods",renderFood],["data-check-shopping","shopping",renderShopping]]){
       const x=e.target.closest(`[${attr}]`);if(x){const id=x.getAttribute(attr);const before=state[key].find(i=>i.id===id)?.checked;await toggleItem(key,id);render();if(!before)toast("已完成");return}
     }
-    for(const [attr,key,render] of [["data-delete-food","foods",renderFood],["data-delete-shopping","shopping",renderShopping],["data-delete-expense","expenses",renderExpenses]]){
+    for(const [attr,key,render] of [["data-delete-food","foods",renderFood],["data-delete-shopping","shopping",renderShopping],["data-delete-expense","expenses",renderExpenses],["data-delete-map-place","mapPlaces",renderMapImports]]){
       const x=e.target.closest(`[${attr}]`);if(x){await deleteItem(key,x.getAttribute(attr));render();toast("已刪除");return}
     }
   });
-  $("#dayLightboxClose")?.addEventListener("click",closeDayLightbox);  $("#dayLightboxClose")?.addEventListener("click",closeDayLightbox);
+  $("#dayLightboxClose")?.addEventListener("click",closeDayLightbox);
   $("#dayLightboxPrev")?.addEventListener("click",()=>moveDayLightbox(-1));
   $("#dayLightboxNext")?.addEventListener("click",()=>moveDayLightbox(1));
   $("#dayImageLightbox")?.addEventListener("click",e=>{if(e.target.closest?.("[data-day-lightbox-close]"))closeDayLightbox()});
   const dayLightboxStage=$("#dayImageLightbox .day-image-lightbox-stage");
-  if(dayLightboxStage){let lx=0,ly=0,lpid=null;dayLightboxStage.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;lx=e.clientX;ly=e.clientY;lpid=e.pointerId},{passive:true});dayLightboxStage.addEventListener("pointerup",e=>{if(lpid!==e.pointerId)return;const dx=e.clientX-lx,dy=e.clientY-ly;lpid=null;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)*1.15)moveDayLightbox(dx<0?1:-1)},{passive:true});dayLightboxStage.addEventListener("pointercancel",()=>{lpid=null},{passive:true})}
+  if(dayLightboxStage){
+    const pointers=new Map();let swipeStart=null,panStart=null,pinchStart=null,lastTap=0,lastPointerType="mouse";
+    const point=e=>({x:e.clientX,y:e.clientY});
+    dayLightboxStage.addEventListener("pointerdown",e=>{
+      if(e.button!==undefined&&e.button!==0)return;lastPointerType=e.pointerType||"mouse";try{dayLightboxStage.setPointerCapture(e.pointerId)}catch{};pointers.set(e.pointerId,point(e));
+      if(pointers.size===1){swipeStart={...point(e),id:e.pointerId};panStart={...point(e),panX:dayImagePanX,panY:dayImagePanY,id:e.pointerId}}
+      if(pointers.size===2){const pts=[...pointers.values()];pinchStart={distance:Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y),zoom:dayImageZoom};}
+    });
+    dayLightboxStage.addEventListener("pointermove",e=>{
+      if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,point(e));
+      if(pointers.size>=2&&pinchStart){e.preventDefault();const pts=[...pointers.values()].slice(0,2),dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);setDayImageZoom(pinchStart.zoom*(dist/(pinchStart.distance||1)));return}
+      if(dayImageZoom>1&&panStart&&panStart.id===e.pointerId){e.preventDefault();dayImagePanX=panStart.panX+(e.clientX-panStart.x);dayImagePanY=panStart.panY+(e.clientY-panStart.y);applyDayImageZoom()}
+    },{passive:false});
+    const endPointer=e=>{
+      const start=swipeStart&&swipeStart.id===e.pointerId?swipeStart:null,cur=point(e);pointers.delete(e.pointerId);
+      if(pointers.size<2)pinchStart=null;
+      if(start&&dayImageZoom<=1.001){const dx=cur.x-start.x,dy=cur.y-start.y;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)*1.15)moveDayLightbox(dx<0?1:-1)}
+      if((e.pointerType==="touch"||e.pointerType==="pen")&&start){const dx=cur.x-start.x,dy=cur.y-start.y;if(Math.abs(dx)<12&&Math.abs(dy)<12){const now=Date.now();if(now-lastTap<300){e.preventDefault();setDayImageZoom(dayImageZoom>1?1:2.5);lastTap=0}else lastTap=now}}
+      if(!pointers.size){swipeStart=null;panStart=null}
+    };
+    dayLightboxStage.addEventListener("pointerup",endPointer);dayLightboxStage.addEventListener("pointercancel",e=>{pointers.delete(e.pointerId);if(!pointers.size){swipeStart=null;panStart=null;pinchStart=null}});
+    dayLightboxStage.addEventListener("dblclick",e=>{if(lastPointerType!=="mouse")return;e.preventDefault();setDayImageZoom(dayImageZoom>1?1:2.5)});
+  }
+  $("#dayZoomOut")?.addEventListener("click",()=>setDayImageZoom(dayImageZoom-.5));
+  $("#dayZoomIn")?.addEventListener("click",()=>setDayImageZoom(dayImageZoom+.5));
+  $("#dayZoomReset")?.addEventListener("click",resetDayImageZoom);
   $("#guideClose")?.addEventListener("click",()=>closeGuide());
   $("#guideSaveBtn")?.addEventListener("click",saveGuideNote);
   $("#guideNoteArea")?.addEventListener("input",e=>{
@@ -1608,6 +1701,13 @@ function bind(){
   $("#foodNearbyClose")?.addEventListener("click",()=>$("#foodNearbyModal")?.close());
   $("#foodNearbyModal")?.addEventListener("click",e=>{if(e.target===$("#foodNearbyModal"))$("#foodNearbyModal").close()});
 
+  $("#exchangeRateInput")?.addEventListener("input",e=>{saveManualExchangeRate(e.target.value);renderExchangeTool()});
+  $("#jpyCalcInput")?.addEventListener("input",renderExchangeTool);
+  $("#twdCalcInput")?.addEventListener("input",renderExchangeTool);
+  $("#exchangeClearBtn")?.addEventListener("click",()=>{if($("#jpyCalcInput"))$("#jpyCalcInput").value="";if($("#twdCalcInput"))$("#twdCalcInput").value="";renderExchangeTool()});
+  $("#mapImportRaw")?.addEventListener("input",previewMapImport);
+  $("#mapImportName")?.addEventListener("input",previewMapImport);
+  $("#mapImportSaveBtn")?.addEventListener("click",saveMapImport);
   $("#settingsBtn").addEventListener("click",()=>{$("#settingsModal").showModal();applyDisplaySettings();refreshOfflinePackStatus().catch(()=>{})});
   $("#settingsClose").addEventListener("click",()=>$("#settingsModal").close());
   $("#offlinePackDownloadBtn")?.addEventListener("click",()=>downloadOfflinePack());
@@ -1700,6 +1800,7 @@ async function connectCloud(){
     ["foods",v=>{if(v!==null){state.foods=normalizeCloud(v);saveLocal("foods",state.foods);renderFood()}}],
     ["shopping",v=>{if(v!==null){state.shopping=normalizeCloud(v).map(x=>({...x,owner:normalizeMemberLabel(x.owner)}));saveLocal("shopping",state.shopping);renderShopping()}}],
     ["expenses",v=>{if(v!==null){state.expenses=normalizeCloud(v).map(x=>({...x,payer:normalizeMemberLabel(x.payer),participants:(x.participants||[]).map(normalizeMemberLabel)}));saveLocal("expenses",state.expenses);renderExpenses()}}],
+    ["mapPlaces",v=>{if(v!==null){state.mapPlaces=normalizeCloud(v);saveLocal("mapPlaces",state.mapPlaces);renderMapImports()}}],
     ["taskStatus",v=>{if(v && typeof v==="object"){state.taskStatus=v;saveLocal("taskStatus",v);renderBookings()}}],
     ["decisions",v=>{if(v && typeof v==="object"){state.decisions=v;saveLocal("decisions",v);renderSchedule()}}],
     ["autumnStatus",v=>{if(v && typeof v==="object"){state.autumnStatus=v;saveLocal("autumnStatus",v);renderAutumnWatch(TRIP.days[state.dayIndex])}}],

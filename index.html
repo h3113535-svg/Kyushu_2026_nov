@@ -18,9 +18,9 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=1109" rel="stylesheet"/>
+<link href="./style.css?v=1110" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
-<meta content="1.10.9" name="app-version"/>
+<meta content="1.11.0" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
 </head>
 <body>
@@ -86,7 +86,6 @@
 <section class="family-meta-card" hidden="" id="familyMetaCard"></section>
 <section class="driving-card" hidden="" id="drivingCard"></section>
 <section class="official-status-card" hidden="" id="officialStatusArea"></section>
-<section class="autumn-watch" hidden="" id="autumnWatch"></section>
 <div id="decisionArea"></div>
 <section class="timeline" id="timeline"></section>
 <section class="hotel-return-card" hidden="" id="hotelReturnCard"></section>
@@ -129,6 +128,9 @@
 </div>
 <div class="tool-grid" id="toolMenu">
 <button class="tool-card active" data-tool="booking"><span class="tool-emoji">🎫</span><b>訂位票券</b><small>訂位・票券</small></button>
+<button class="tool-card" data-tool="autumn"><span class="tool-emoji">🍁</span><b>紅葉觀測</b><small>紅葉・銀杏</small></button>
+<button class="tool-card" data-tool="exchange"><span class="tool-emoji">¥</span><b>匯率計算</b><small>JPY ↔ TWD</small></button>
+<button class="tool-card" data-tool="mapimport"><span class="tool-emoji">📍</span><b>地點匯入</b><small>Google Maps</small></button>
 <button class="tool-card" data-tool="shopping"><span class="tool-emoji">🛍️</span><b>購物清單</b><small>採買</small></button>
 <button class="tool-card" data-tool="expense"><span class="tool-emoji">💴</span><b>記帳</b><small>支出・分帳</small></button>
 <button class="tool-card" data-tool="note"><span class="tool-emoji">📝</span><b>記事</b><small>備忘・同步</small></button>
@@ -140,6 +142,39 @@
 </div>
 <p class="privacy-note">私人 QR Code、完整訂位編號不要寫進公開 GitHub 原始碼；可放在記事或你自己的受保護雲端連結。</p>
 <div class="list-stack" id="bookingList"></div>
+</div>
+<div class="tool-panel" id="autumnPanel">
+<section class="autumn-watch" id="autumnWatch"></section>
+</div>
+<div class="tool-panel" id="exchangePanel">
+<div class="panel-heading"><div><span class="eyebrow">CURRENCY</span><h3>日圓／台幣匯率計算</h3></div></div>
+<div class="exchange-tool-card">
+<label class="exchange-rate-field"><span>手動匯率</span><div><b>1 JPY =</b><input id="exchangeRateInput" inputmode="decimal" placeholder="例如 0.215" type="text"/><b>TWD</b></div><small>自行輸入你實際換匯或信用卡估算匯率；只儲存在這趟旅程的這台裝置。</small></label>
+<div class="exchange-calc-grid">
+<label><span>日圓算式</span><input id="jpyCalcInput" inputmode="decimal" placeholder="例如 3280 + 880" type="text"/></label>
+<div class="exchange-result" id="exchangeResult"><small>計算結果</small><strong>先輸入匯率</strong><span>支援 + − × ÷ 和括號</span></div>
+</div>
+<div class="exchange-reverse-row"><label><span>台幣反算</span><input id="twdCalcInput" inputmode="decimal" placeholder="例如 1000" type="text"/></label><div id="exchangeReverseResult">—</div></div>
+<button class="secondary-tool-btn" id="exchangeClearBtn" type="button">清除金額</button>
+</div>
+</div>
+<div class="tool-panel" id="mapimportPanel">
+<div class="panel-heading"><div><span class="eyebrow">QUICK IMPORT</span><h3>Google Maps 地點匯入</h3></div></div>
+<div class="map-import-card">
+<label class="map-import-raw"><span>貼上 Google Maps 分享內容</span><textarea id="mapImportRaw" placeholder="可直接貼上 Google Maps 分享文字或網址，例如：
+由布まぶし 心
+https://maps.app.goo.gl/…"></textarea></label>
+<div class="map-import-fields">
+<label><span>地點名稱</span><input id="mapImportName" placeholder="自動抓不到時補名稱" type="text"/></label>
+<label><span>安排日期</span><select id="mapImportDay"><option value="">未指定</option><option>D1</option><option>D2</option><option>D3</option><option>D4</option><option>D5</option><option>D6</option><option>D7</option><option>D8</option><option>D9</option></select></label>
+<label><span>分類</span><select id="mapImportCategory"><option>景點</option><option>餐廳</option><option>購物</option><option>住宿</option><option>其他</option></select></label>
+<label><span>備註</span><input id="mapImportNote" placeholder="例如：雨天備案、看到再決定" type="text"/></label>
+</div>
+<div class="map-import-preview" id="mapImportPreview"><b>貼上後會先解析名稱與 Google Maps 連結。</b><small>短網址本身無法離線讀出店名；若分享內容只有 maps.app.goo.gl 網址，補上名稱即可。</small></div>
+<button class="primary-btn" id="mapImportSaveBtn" type="button">加入地點清單</button>
+</div>
+<div class="map-import-list-head"><b>已匯入地點</b><small>會同步到 Firebase；點「地圖」先看地點頁，再自行選路線。</small></div>
+<div class="list-stack" id="mapImportList"></div>
 </div>
 <div class="tool-panel" id="shoppingPanel">
 <div class="panel-heading">
@@ -240,7 +275,7 @@
 <button aria-label="上一天" class="day-lightbox-nav prev" id="dayLightboxPrev" type="button">‹</button>
 <button aria-label="下一天" class="day-lightbox-nav next" id="dayLightboxNext" type="button">›</button>
 </div>
-<div class="day-image-lightbox-foot"><span id="dayLightboxCounter">1 / 9</span><small>左右滑動或按箭頭切換</small></div>
+<div class="day-image-lightbox-foot"><span id="dayLightboxCounter">1 / 9</span><div class="day-zoom-controls" aria-label="圖片縮放"><button aria-label="縮小" id="dayZoomOut" type="button">−</button><button aria-label="重設縮放" id="dayZoomReset" type="button"><span id="dayZoomLabel">100%</span></button><button aria-label="放大" id="dayZoomIn" type="button">＋</button></div><small>雙擊放大・雙指縮放；100% 時左右滑換天</small></div>
 </div>
 </div>
 
@@ -321,7 +356,7 @@
 <div class="toast" id="toast" role="status"></div>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script defer="" src="./firebase-config.js?v=1108"></script>
-<script defer="" src="./app.js?v=1109"></script>
+<script defer="" src="./firebase-config.js?v=1110"></script>
+<script defer="" src="./app.js?v=1110"></script>
 </body>
 </html>
