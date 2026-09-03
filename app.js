@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.7 PDF attachments for tickets & lodging */
+/* Kyushu family autumn PWA · November 2026 · v1.11.9 Chinese HD PNG reader + D2 Taibaru route sync */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.7";
+const APP_VERSION = "1.11.9";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -20,10 +20,11 @@ let cloudReconnectInFlight = false;
 const GUIDE_DEVICE_ID_KEY = `${APP_NAMESPACE}:guide-device-id`;
 const OFFLINE_PACK_CACHE = "kyushu-nov-offline-pack-v1";
 const OFFLINE_PACK_META_KEY = `${APP_NAMESPACE}:offline-pack-meta`;
-const OFFLINE_PACK_APPROX_MB = 14;
+const OFFLINE_PACK_APPROX_MB = 48;
 const OFFLINE_PACK_ASSETS = [
   ...Array.from({length:9},(_,i)=>`./day-scene-zh-v17-${String(i+1).padStart(2,"0")}.webp?v=170`),
   ...Array.from({length:9},(_,i)=>`./day-scene-v52-${String(i+1).padStart(2,"0")}.webp?v=550`),
+  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=1119`),
   "./nov_decision_d4_ropeway.webp?v=160","./nov_decision_d4_chill.webp?v=160",
   "./nov_decision_d5_autumn.webp?v=160","./nov_decision_d5_chill.webp?v=160",
   "./nov_decision_d7_crater_open.webp?v=160","./nov_decision_d7_museum.webp?v=160",
@@ -441,6 +442,10 @@ function dailySceneAsset(index,lang=getSceneLanguage()){
   const day=String(index+1).padStart(2,"0");
   return lang==='ja' ? `./day-scene-v52-${day}.webp?v=550` : `./day-scene-zh-v17-${day}.webp?v=170`;
 }
+function dailySceneFullAsset(index,lang=getSceneLanguage()){
+  const day=String(index+1).padStart(2,"0");
+  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=1119`;
+}
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
   if(!img)return;
@@ -474,8 +479,11 @@ function renderDayLightbox(){
   dayLightboxIndex=Math.max(0,Math.min(TRIP.days.length-1,dayLightboxIndex));
   const d=TRIP.days[dayLightboxIndex];
   const lang=getSceneLanguage();
-  img.src=dailySceneAsset(dayLightboxIndex,lang);
-  img.alt=`D${dayLightboxIndex+1} ${d.title||"旅程主題圖"}（${lang==='ja'?'日文':'中文'}）`;
+  const fallback=dailySceneAsset(dayLightboxIndex,lang);
+  img.dataset.fallback="0";
+  img.onerror=()=>{if(img.dataset.fallback!=="1"){img.dataset.fallback="1";img.src=fallback;}};
+  img.src=dailySceneFullAsset(dayLightboxIndex,lang);
+  img.alt=`D${dayLightboxIndex+1} ${d.title||"旅程主題圖"}（${lang==='ja'?'日文':'中文'}高清版）`;
   $("#dayLightboxTitle").textContent=`D${dayLightboxIndex+1}｜${d.title||"旅程"}`;
   $$("[data-day-lang]").forEach(btn=>btn.classList.toggle("active",btn.dataset.dayLang===lang));
   $("#dayLightboxCounter").textContent=`${dayLightboxIndex+1} / ${TRIP.days.length}`;
@@ -655,7 +663,7 @@ function renderFamilyMeta(day){
 function renderDrivingCard(day){
   const box=$("#drivingCard");if(!box)return;
   const drive=String(day?.familyMeta?.drive||"").trim();
-  const legs=(day?.events||[]).filter(e=>["🚗","🚐"].includes(e.transport));
+  const legs=(day?.events||[]).filter(e=>eventVisible(e)&&["🚗","🚐"].includes(e.transport));
   const useful=drive&&drive!=="0"&&legs.length;
   box.hidden=!useful;if(!useful){box.innerHTML="";return}
   const mode=legs.some(e=>e.transport==="🚐")?"包車 / 乘車":"自駕";
@@ -674,14 +682,19 @@ const AUTUMN_STATUS_META={
 };
 const AUTUMN_PRIORITY={
   "akizuki-autumn":"S","kamado-autumn":"S","kumamoto-ginkgo":"S",
-  "takachiho-autumn":"A","hitome-hakkei":"A","keisekien":"A",
+  "takachiho-autumn":"A","hitome-hakkei":"A","keisekien":"A","taibaru-ginkgo":"A",
   "yufuin-autumn":"B+","chojabaru":"B+","maizuru-ginkgo":"B"
 };
 const AUTUMN_SOURCE_META={
+  "taibaru-ginkgo":{
+    official:"https://www.crossroadfukuoka.jp/spot/11584",
+    officialLabel:"福岡縣觀光官方・太原銀杏",
+    baseline:"D2 A/B 第一判斷核心。7成黃以上直接走A；5～6成黃但晴天且官方／近期照片已漂亮可考慮；大量綠色就切B。2026實際觀覽期間與色況以官方最新公告為準。"
+  },
   "maizuru-ginkgo":{
     official:"https://www.midorimachi.jp/maiduru/",
     officialLabel:"舞鶴公園官方",
-    baseline:"官方園區首頁會更新旬の情報；11/21 晚看銀杏實況：7～10成黃正常去、黃綠各半短逛、明顯偏綠直接跳過。"
+    baseline:"只在D2市區Chill B方案使用。7成黃以上正常去、黃綠各半短停、明顯偏綠直接跳過。"
   },
   "yufuin-autumn":{
     official:"https://yufuin.gr.jp/",
@@ -726,7 +739,8 @@ const AUTUMN_SOURCE_META={
 };
 const OFFICIAL_STATUS_BY_DAY={
   1:[
-    {id:"maizuru-ginkgo-live",icon:"🟡",title:"舞鶴公園 銀杏",label:"旬の情報・園內公告",url:"https://www.midorimachi.jp/maiduru/",hint:"11/21 晚／D2 出發前先看銀杏實況，再選 D2 的正常逛、短逛或直接跳過。",decisionId:"d2-maizuru-ginkgo"}
+    {id:"taibaru-ginkgo-live",icon:"🟡",title:"太原銀杏森林",label:"福岡縣觀光官方・觀覽／色況資訊",url:"https://www.crossroadfukuoka.jp/spot/11584",hint:"D2 A/B第一判斷：先看2026觀覽公告與近期色況；漂亮才包車走太原→大濠。",decisionId:"d2-ginkgo-route"},
+    {id:"maizuru-ginkgo-live",icon:"🟡",title:"舞鶴公園 銀杏",label:"旬の情報・園內公告",url:"https://www.midorimachi.jp/maiduru/",hint:"只有D2市區Chill B方案才看；7成黃以上正常去、黃綠各半短停、偏綠直接跳過。",decisionId:"d2-maizuru-ginkgo"}
   ],
   2:[
     {id:"jr-kyushu-status",icon:"🚆",title:"JR 九州運行情報",label:"由布院之森・久大本線",url:"https://www.jrkyushu.co.jp/trains/info/",hint:"D3 出發前先確認延誤、停駛與臨時公告。"},
@@ -859,7 +873,9 @@ function renderOfficialStatus(day){
   box.hidden=!items.length;if(!items.length){box.innerHTML="";return}
   box.innerHTML=`<div class="official-status-head"><div><span class="eyebrow">OFFICIAL LIVE</span><b>官方即時狀態</b></div><small>需網路・以官方頁面為準</small></div><div class="official-status-list">${items.map(x=>{
     const selected=x.decisionId?selectedDecision(x.decisionId):"";
-    const decisionText=selected?`目前行程已選：${selected==="ropeway"||selected==="open"?"前往":"備案"}`:"尚未做行程選擇";
+    const decision=x.decisionId?TRIP.decisions.find(d=>d.id===x.decisionId):null;
+    const selectedLabel=decision?.options?.find(o=>o.id===selected)?.label||selected;
+    const decisionText=selected?`目前行程已選：${selectedLabel}`:"尚未做行程選擇";
     return `<article class="official-status-item"><span class="official-status-icon">${esc(x.icon)}</span><div class="official-status-copy"><b>${esc(x.title)}</b><span>${esc(x.label)}</span><small>${esc(x.hint)}</small>${x.decisionId?`<em>${esc(decisionText)}</em>`:""}</div><div class="official-status-actions"><a rel="noopener" href="${esc(x.url)}">查看官方 ↗</a>${x.phone?`<a class="secondary" href="tel:${esc(x.phone)}">☎ 電話確認</a>`:""}</div></article>`;
   }).join("")}</div>`;
 }
@@ -937,11 +953,15 @@ const DECISION_ART={
   }
 };
 function decisionArt(decisionId,optionId){return DECISION_ART[decisionId]?.[optionId]||""}
+function decisionVisible(d){
+  if(!d?.parentDecisionId)return true;
+  return selectedDecision(d.parentDecisionId)===d.parentOptionId;
+}
 function renderDecisionCards(day){
   const ids=day.decisionIds||[];
   if(!ids.length)return "";
   return `<div class="decision-stack">${ids.map(id=>{
-    const d=TRIP.decisions.find(x=>x.id===id); if(!d)return "";
+    const d=TRIP.decisions.find(x=>x.id===id); if(!d||!decisionVisible(d))return "";
     const selected=selectedDecision(id), draft=draftDecision(id);
     const selectedLabel=d.options.find(o=>o.id===selected)?.label||"";
     const draftLabel=d.options.find(o=>o.id===draft)?.label||"";
@@ -968,6 +988,7 @@ function renderDecisionCards(day){
   }).join("")}</div>`;
 }
 function eventVisible(e){
+  if(e.parentDecisionId&&selectedDecision(e.parentDecisionId)!==e.parentOptionId)return false;
   if(!e.decisionId)return true;
   const selected=selectedDecision(e.decisionId);
   return selected ? selected===e.optionId : false;
@@ -2230,7 +2251,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=1117",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=1119",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });
