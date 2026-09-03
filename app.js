@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.2 tools grid, exchange precision, custom bookings */
+/* Kyushu family autumn PWA · November 2026 · v1.11.7 PDF attachments for tickets & lodging */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.1";
+const APP_VERSION = "1.11.7";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -32,6 +32,125 @@ const OFFLINE_PACK_ASSETS = [
   "./nov_empty_autumnwatch.webp?v=160","./nov_empty_expense.webp?v=160","./nov_empty_notes.webp?v=160","./nov_empty_shopping.webp?v=160"
 ];
 let offlinePackBusy = false;
+
+// PDF attachments are intentionally stored in IndexedDB on this device.
+// Ticket / hotel PDFs often contain private reservation details, so they are never
+// committed to GitHub or Realtime Database. They remain available offline in the PWA.
+const PDF_DB_NAME = `${APP_NAMESPACE}-pdf-attachments-v1`;
+const PDF_STORE_NAME = "pdfs";
+const PDF_MAX_BYTES = 30 * 1024 * 1024;
+let pdfAttachmentIndex = new Map();
+let pdfDbPromise = null;
+
+function openPdfDb(){
+  if(pdfDbPromise)return pdfDbPromise;
+  pdfDbPromise=new Promise((resolve,reject)=>{
+    if(!window.indexedDB){reject(new Error("此瀏覽器不支援本機 PDF 附件"));return;}
+    const req=indexedDB.open(PDF_DB_NAME,1);
+    req.onupgradeneeded=()=>{
+      const db=req.result;
+      if(!db.objectStoreNames.contains(PDF_STORE_NAME))db.createObjectStore(PDF_STORE_NAME,{keyPath:"key"});
+    };
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error||new Error("無法開啟 PDF 儲存空間"));
+  });
+  return pdfDbPromise;
+}
+function pdfSizeText(bytes=0){
+  const n=Number(bytes)||0;
+  if(n<1024)return `${n} B`;
+  if(n<1024*1024)return `${(n/1024).toFixed(1)} KB`;
+  return `${(n/1024/1024).toFixed(1)} MB`;
+}
+function bookingPdfKey(task){return `booking:${task?.attachmentKey||task?.id||"unknown"}`}
+function hotelPdfKey(hotel){
+  const basis=`${cleanHotelTitle(hotel?.title||"")}|${hotel?.nav||""}`;
+  return `hotel:${guideHash(basis)}`;
+}
+async function loadPdfAttachmentIndex(){
+  try{
+    const db=await openPdfDb();
+    const rows=await new Promise((resolve,reject)=>{
+      const tx=db.transaction(PDF_STORE_NAME,"readonly");
+      const req=tx.objectStore(PDF_STORE_NAME).getAll();
+      req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error);
+    });
+    pdfAttachmentIndex=new Map(rows.map(r=>[r.key,{name:r.name,size:r.size,updatedAt:r.updatedAt}]));
+  }catch(err){console.warn("PDF attachment index unavailable",err);pdfAttachmentIndex=new Map();}
+}
+async function getPdfAttachment(key){
+  const db=await openPdfDb();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(PDF_STORE_NAME,"readonly");
+    const req=tx.objectStore(PDF_STORE_NAME).get(key);
+    req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);
+  });
+}
+async function savePdfAttachment(key,file,label="PDF附件"){
+  if(!file)return;
+  const isPdf=file.type==="application/pdf"||/\.pdf$/i.test(file.name||"");
+  if(!isPdf)throw new Error("只能附加 PDF 檔案");
+  if(file.size>PDF_MAX_BYTES)throw new Error("PDF 太大，單一附件上限 30 MB");
+  const db=await openPdfDb();
+  const record={key,name:file.name||`${label}.pdf`,type:"application/pdf",size:file.size,updatedAt:Date.now(),blob:file};
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction(PDF_STORE_NAME,"readwrite");
+    tx.objectStore(PDF_STORE_NAME).put(record);
+    tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+  });
+  pdfAttachmentIndex.set(key,{name:record.name,size:record.size,updatedAt:record.updatedAt});
+  try{await navigator.storage?.persist?.()}catch{}
+}
+async function removePdfAttachment(key){
+  const db=await openPdfDb();
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction(PDF_STORE_NAME,"readwrite");
+    tx.objectStore(PDF_STORE_NAME).delete(key);
+    tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+  });
+  pdfAttachmentIndex.delete(key);
+}
+function choosePdfFile(){
+  return new Promise(resolve=>{
+    const input=document.createElement("input");
+    input.type="file";input.accept="application/pdf,.pdf";input.style.display="none";
+    const cleanup=()=>{try{input.remove()}catch{}};
+    input.addEventListener("change",()=>{const file=input.files?.[0]||null;cleanup();resolve(file)},{once:true});
+    document.body.appendChild(input);input.click();
+  });
+}
+async function attachPdf(key,label){
+  try{
+    const file=await choosePdfFile();if(!file)return;
+    await savePdfAttachment(key,file,label);
+    renderBookings();renderHotelReturnCard();
+    toast(`已附加 PDF：${file.name}`);
+  }catch(err){toast(err?.message||"PDF 附件儲存失敗");}
+}
+async function openPdfAttachment(key){
+  // Open a blank window during the user gesture so Android Chrome/PWA will not block it.
+  let viewer=null;try{viewer=window.open("","_blank")}catch{}
+  try{
+    const record=await getPdfAttachment(key);
+    if(!record?.blob)throw new Error("找不到這份 PDF，可能已被系統清除");
+    const url=URL.createObjectURL(record.blob);
+    if(viewer){viewer.location.href=url;viewer.document.title=record.name||"PDF附件";}
+    else{
+      const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();
+    }
+    setTimeout(()=>URL.revokeObjectURL(url),120000);
+  }catch(err){try{viewer?.close()}catch{};toast(err?.message||"PDF 開啟失敗");}
+}
+async function deletePdfAttachment(key){
+  if(!confirm("要移除這份 PDF 附件嗎？"))return;
+  try{await removePdfAttachment(key);renderBookings();renderHotelReturnCard();toast("PDF 附件已移除");}
+  catch(err){toast(err?.message||"移除失敗");}
+}
+function pdfAttachmentControls(key,label){
+  const info=pdfAttachmentIndex.get(key);
+  if(!info)return `<button class="mini-btn pdf-attach-btn" type="button" data-pdf-attach="${esc(key)}" data-pdf-label="${esc(label)}">📎 附件 PDF</button>`;
+  return `<span class="pdf-file-note" title="${esc(info.name)}">📄 ${esc(info.name)} · ${esc(pdfSizeText(info.size))}</span><button class="mini-action-link" type="button" data-pdf-open="${esc(key)}">開啟 PDF</button><button class="mini-btn" type="button" data-pdf-attach="${esc(key)}" data-pdf-label="${esc(label)}">更換</button><button class="mini-btn pdf-remove-btn" type="button" data-pdf-delete="${esc(key)}">移除</button>`;
+}
 
 function pathFor(key){
   return `${ROOT}/${key}`;
@@ -887,7 +1006,8 @@ function renderHotelReturnCard(){
   const label=lastDay?"返台前據點":"今晚住這裡";
   const help=lastDay?"取行李或需要回住宿時，從這裡直接導航。":"一天走完要回飯店時，不用再往上找地址。";
   box.hidden=false;
-  box.innerHTML=`<div class="hotel-return-copy"><span class="eyebrow">${label}</span><h3>${esc(cleanHotelTitle(hotel.title))}</h3><p>${help}</p><a class="hotel-nav-btn" target="_blank" rel="noopener" href="${mapDirections(hotel.nav||hotel.title)}">↗ Google Maps 查看飯店</a></div>`;
+  const pdfKey=hotelPdfKey(hotel);
+  box.innerHTML=`<div class="hotel-return-copy"><span class="eyebrow">${label}</span><h3>${esc(cleanHotelTitle(hotel.title))}</h3><p>${help}</p><div class="hotel-return-actions"><a class="hotel-nav-btn" target="_blank" rel="noopener" href="${mapDirections(hotel.nav||hotel.title)}">↗ Google Maps 查看飯店</a>${pdfAttachmentControls(pdfKey,cleanHotelTitle(hotel.title))}</div><small class="local-pdf-hint">PDF 附件保存在這台裝置，可離線開啟，不會上傳到公開 GitHub。</small></div>`;
 }
 
 
@@ -1417,7 +1537,7 @@ function bookingVisualStatus(t,done){
   return {label:"待處理",cls:"pending"};
 }
 function bookingTaskCard(t){
-  const done=taskDone(t),vs=bookingVisualStatus(t,done);
+  const done=taskDone(t),vs=bookingVisualStatus(t,done),pdfKey=bookingPdfKey(t);
   return `<div class="task-card ${done?"done":""}">
     <button class="task-check" data-task-id="${esc(t.id)}" aria-label="${done?"標記未完成":"標記完成"}">${done?"✓":"○"}</button>
     <div class="task-body">
@@ -1425,7 +1545,7 @@ function bookingTaskCard(t){
       <div class="task-title">${esc(t.title)}</div>
       <div class="task-detail">${esc(t.detail||"")}</div>
       ${!done?`<div class="task-countdown">${esc(countdownText(t))}</div>`:""}
-      <div class="booking-card-actions">${t.map?`<a class="mini-action-link" target="_blank" rel="noopener" href="${mapSearch(t.map)}">↗ 位置</a>`:""}${t.custom?`<button class="mini-btn" data-delete-booking="${esc(t.id)}" type="button">刪除</button>`:""}</div>
+      <div class="booking-card-actions">${t.map?`<a class="mini-action-link" target="_blank" rel="noopener" href="${mapSearch(t.map)}">↗ 位置</a>`:""}${pdfAttachmentControls(pdfKey,t.title||"訂位票券")}${t.custom?`<button class="mini-btn" data-delete-booking="${esc(t.id)}" type="button">刪除</button>`:""}</div>
     </div>
   </div>`;
 }
@@ -1600,7 +1720,7 @@ function openModal(type){
     fields.innerHTML=field("店名","name","text","例如：咖啡廳") + field("區域","location","text","例如：天神") + field("備註","note","text","想吃什麼");
   }else if(type==="booking"){
     title.textContent="新增訂位／票券";
-    fields.innerHTML=selectField("類型","bookingType",["訂位","票券","交通","現場處理","其他"])+
+    fields.innerHTML=selectField("類型","bookingType",["訂位","票券","住宿","交通","現場處理","其他"])+
       field("名稱","name","text","例如：福岡水炊晚餐")+
       field("時間／日期","when","text","例如：D8 18:30")+
       field("處理期限（選填）","deadline","datetime-local","")+
@@ -1628,7 +1748,7 @@ async function handleSubmit(e){
     await cloudAdd("foods",{...base,location:fd.get("location")?.trim(),note:fd.get("note")?.trim(),checked:false}); renderFood();
   }else if(type==="booking"){
     const deadlineRaw=fd.get("deadline")||"";
-    await cloudAdd("bookingItems",{...base,type:fd.get("bookingType")||"訂位",title:base.name,when:fd.get("when")?.trim(),deadline:deadlineRaw?new Date(deadlineRaw).toISOString():"",detail:fd.get("detail")?.trim(),map:fd.get("map")?.trim(),defaultDone:false,custom:true});
+    await cloudAdd("bookingItems",{...base,attachmentKey:base.id,type:fd.get("bookingType")||"訂位",title:base.name,when:fd.get("when")?.trim(),deadline:deadlineRaw?new Date(deadlineRaw).toISOString():"",detail:fd.get("detail")?.trim(),map:fd.get("map")?.trim(),defaultDone:false,custom:true});
     renderBookings();
   }else if(type==="shopping"){
     await cloudAdd("shopping",{...base,owner:fd.get("owner"),amount:Number(fd.get("amount")||0),shop:fd.get("shop")?.trim(),day:fd.get("day")?.trim(),checked:false}); renderShopping();
@@ -1700,6 +1820,9 @@ function bind(){
     const decisionConfirm=e.target.closest("[data-decision-confirm]");if(decisionConfirm){await confirmDecision(decisionConfirm.dataset.decisionConfirm);return}
     const decisionClear=e.target.closest("[data-decision-clear]");if(decisionClear){await clearDecision(decisionClear.dataset.decisionClear);return}
     const decision=e.target.closest("[data-decision-id]");if(decision){stageDecision(decision.dataset.decisionId,decision.dataset.decisionOption);return}
+    const pdfAttach=e.target.closest("[data-pdf-attach]");if(pdfAttach){await attachPdf(pdfAttach.dataset.pdfAttach,pdfAttach.dataset.pdfLabel||"PDF附件");return}
+    const pdfOpen=e.target.closest("[data-pdf-open]");if(pdfOpen){await openPdfAttachment(pdfOpen.dataset.pdfOpen);return}
+    const pdfDelete=e.target.closest("[data-pdf-delete]");if(pdfDelete){await deletePdfAttachment(pdfDelete.dataset.pdfDelete);return}
     const task=e.target.closest("[data-task-id]");if(task){await toggleBookingTask(task.dataset.taskId);return}
     for(const [attr,key,render] of [["data-check-food","foods",renderFood],["data-check-shopping","shopping",renderShopping]]){
       const x=e.target.closest(`[${attr}]`);if(x){const id=x.getAttribute(attr);const before=state[key].find(i=>i.id===id)?.checked;await toggleItem(key,id);render();if(!before)toast("已完成");return}
@@ -2001,6 +2124,7 @@ async function bootTrip(content,user,{offline=false}={}){
   state.dayIndex=initialDay();
   applyPrivateTripMeta();
   applyDisplaySettings();
+  await loadPdfAttachmentIndex();
   bind();
   renderAll();
   if(!window.__kyushuNowNextTimer){
@@ -2106,7 +2230,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=1116",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=1117",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });
