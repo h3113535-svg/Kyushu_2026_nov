@@ -1192,3 +1192,18 @@ body.day-landscape-open main{
   .pdf-file-note{flex:1 1 100%;max-width:100%;font-size:.74rem}
   .booking-card-actions .mini-btn,.booking-card-actions .mini-action-link,.hotel-return-actions .mini-btn,.hotel-return-actions .mini-action-link,.hotel-return-actions .hotel-nav-btn{min-height:38px}
 }
+
+/* ===== v1.11.11 Hero clarity fix =====
+   User-requested change: make hero typography pure black with uniform tone,
+   and reduce the milky wash so the hero artwork reads more clearly on device. */
+html[data-theme="wa"] .hero::before{
+  background:rgba(252,248,242,.16)!important;
+}
+html[data-theme="wa"] .hero-season,
+html[data-theme="wa"] #heroPrivateTitle,
+html[data-theme="wa"] .hero-date,
+html[data-theme="wa"] .hero-route,
+html[data-theme="wa"] .hero-route i{
+  color:#000!important;
+  text-shadow:none!important;
+}
