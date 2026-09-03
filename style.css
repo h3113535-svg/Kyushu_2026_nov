@@ -1207,3 +1207,80 @@ html[data-theme="wa"] .hero-route i{
   color:#000!important;
   text-shadow:none!important;
 }
+
+/* ===== v1.11.12 Hero visual cleanup =====
+   Goal: keep the same hero art, but make it look cleaner and less harsh on device.
+   - retain all-black hero typography
+   - reduce the global milky wash further
+   - add a soft, non-boxy readable area under the copy
+   - slightly rebalance spacing/weights for a neater hero */
+html[data-theme="wa"] .hero::before{
+  background:rgba(252,248,242,.08)!important;
+}
+html[data-theme="wa"] .hero-copy{
+  top:7.8%!important;
+  left:4.2%!important;
+  width:77%!important;
+  max-width:77%!important;
+  padding:10px 12px 12px 10px!important;
+  border-radius:18px!important;
+  background:linear-gradient(90deg,rgba(255,252,248,.70) 0%,rgba(255,252,248,.54) 45%,rgba(255,252,248,.22) 70%,rgba(255,252,248,0) 100%)!important;
+  backdrop-filter:blur(1.5px)!important;
+  -webkit-backdrop-filter:blur(1.5px)!important;
+}
+html[data-theme="wa"] .hero-season,
+html[data-theme="wa"] #heroPrivateTitle,
+html[data-theme="wa"] .hero-date,
+html[data-theme="wa"] .hero-route,
+html[data-theme="wa"] .hero-route i{
+  color:#000!important;
+  text-shadow:none!important;
+}
+html[data-theme="wa"] .hero-season{
+  margin:0 0 6px!important;
+  font-weight:780!important;
+  letter-spacing:.04em!important;
+}
+html[data-theme="wa"] #heroPrivateTitle{
+  margin:0 0 8px!important;
+  font-size:clamp(25px,7.25vw,37px)!important;
+  line-height:1.08!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+}
+html[data-theme="wa"] .hero-date{
+  margin:0 0 6px!important;
+  font-size:clamp(10.2px,2.9vw,13px)!important;
+  line-height:1.28!important;
+  font-weight:760!important;
+}
+html[data-theme="wa"] .hero-route{
+  gap:4px!important;
+  font-size:clamp(8.6px,2.35vw,10.6px)!important;
+  line-height:1.42!important;
+  font-weight:760!important;
+}
+html[data-theme="wa"] .settings-btn{
+  background:rgba(255,255,252,.94)!important;
+  border:1px solid rgba(214,208,199,.92)!important;
+  color:#7c7c76!important;
+  box-shadow:0 6px 16px rgba(60,60,55,.08)!important;
+}
+@media(max-width:430px){
+  html[data-theme="wa"] .hero-copy{
+    top:7.3%!important;
+    left:3.8%!important;
+    width:79%!important;
+    max-width:79%!important;
+    padding:9px 11px 11px 9px!important;
+    border-radius:16px!important;
+    background:linear-gradient(90deg,rgba(255,252,248,.74) 0%,rgba(255,252,248,.58) 48%,rgba(255,252,248,.24) 72%,rgba(255,252,248,0) 100%)!important;
+  }
+  html[data-theme="wa"] #heroPrivateTitle{
+    font-size:clamp(24px,7.05vw,31px)!important;
+  }
+  html[data-theme="wa"] .hero-route{
+    gap:3px!important;
+    font-size:8.8px!important;
+  }
+}
