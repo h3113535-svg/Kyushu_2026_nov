@@ -1402,3 +1402,212 @@ html[data-theme="wa"] .day-title-v46 #dayTitle .day-title-row-secondary{
     font-size:.90em!important;
   }
 }
+
+/* ===== v1.11.16 Travel-book palette refresh =====
+   User feedback: current brown palette feels too heavy / old-fashioned.
+   Refresh the wa theme into a gentler travel-book reading palette:
+   soft paper / subtle kraft-paper mood / lighter cards / calmer accents. */
+html[data-theme="wa"]{
+  --ivory:#F4F0E8!important;
+  --paper:#FBF8F1!important;
+  --ink:#45403A!important;
+  --muted:#7A746E!important;
+  --accent:#8F8173!important;
+  --accent-strong:#6F655B!important;
+  --accent-soft:#E8E0D7!important;
+  --orange:#B39077!important;
+  --gold:#C8B693!important;
+  --line:#E3DDD3!important;
+  --soft-bg:#F3EEE6!important;
+  --success:#7E877A!important;
+  --shadow:0 10px 28px rgba(79,70,60,.055)!important;
+}
+html[data-theme="wa"] body{
+  background:
+    radial-gradient(circle at 12% 0%,rgba(198,180,145,.10),transparent 20%),
+    radial-gradient(circle at 90% 8%,rgba(171,146,126,.08),transparent 22%),
+    linear-gradient(180deg,rgba(251,248,241,.97),rgba(242,236,227,.98)),
+    url("./wa-paper-texture.webp?v=141")!important;
+  background-size:auto,auto,auto,cover!important;
+  background-blend-mode:normal,normal,normal,multiply!important;
+}
+html[data-theme="wa"] #app{
+  background:rgba(251,248,241,.78)!important;
+  box-shadow:0 0 56px rgba(79,69,60,.05)!important;
+}
+
+/* Hero side controls only — keep current hero art/layout, just align the chrome. */
+html[data-theme="wa"] .settings-btn{
+  background:rgba(255,253,249,.96)!important;
+  border:1px solid #DDD6CB!important;
+  color:#7A726A!important;
+  box-shadow:0 5px 14px rgba(70,63,57,.07)!important;
+}
+
+/* Day strip */
+html[data-theme="wa"] .day-strip-wrap{
+  background:transparent!important;
+  border-color:#E6DED3!important;
+}
+html[data-theme="wa"] .day-btn{
+  background:rgba(255,252,247,.92)!important;
+  border-color:#DED8CF!important;
+  color:#8A8179!important;
+  box-shadow:0 4px 12px rgba(78,69,61,.035)!important;
+}
+html[data-theme="wa"] .day-btn .date{color:#9F8674!important}
+html[data-theme="wa"] .day-btn.active{
+  background:linear-gradient(180deg,#E7DACE,#E1D2C6)!important;
+  border-color:#D5C4B5!important;
+  color:#5E5750!important;
+  box-shadow:0 7px 16px rgba(104,92,82,.09)!important;
+}
+html[data-theme="wa"] .day-btn.active .weekday,
+html[data-theme="wa"] .day-btn.active .date,
+html[data-theme="wa"] .day-btn.active .d{color:#5E5750!important}
+
+/* Core cards */
+html[data-theme="wa"] .weather-card,
+html[data-theme="wa"] .card,
+html[data-theme="wa"] .summary-card,
+html[data-theme="wa"] .family-meta-card,
+html[data-theme="wa"] .now-next-card,
+html[data-theme="wa"] .autumn-watch,
+html[data-theme="wa"] .event-card,
+html[data-theme="wa"] .task-card,
+html[data-theme="wa"] .planned-food-card,
+html[data-theme="wa"] .tool-card,
+html[data-theme="wa"] .official-status-card,
+html[data-theme="wa"] .decision-card,
+html[data-theme="wa"] .day-brief,
+html[data-theme="wa"] .list-item,
+html[data-theme="wa"] .notes-area{
+  background:rgba(255,253,249,.96)!important;
+  border-color:#E3DCD2!important;
+  box-shadow:0 8px 20px rgba(80,72,63,.045)!important;
+}
+html[data-theme="wa"] .weather-desc,
+html[data-theme="wa"] .rain-box,
+html[data-theme="wa"] .event-note,
+html[data-theme="wa"] .list-meta,
+html[data-theme="wa"] .task-detail,
+html[data-theme="wa"] .food-nearby p,
+html[data-theme="wa"] .day-brief,
+html[data-theme="wa"] .day-title-v46 #daySubtitle{
+  color:#7A746E!important;
+}
+html[data-theme="wa"] .event-title,
+html[data-theme="wa"] .task-title,
+html[data-theme="wa"] .card h3,
+html[data-theme="wa"] .panel-heading h3,
+html[data-theme="wa"] .section-heading h2,
+html[data-theme="wa"] .day-title-v46 #dayTitle{
+  color:#4A433D!important;
+}
+
+/* Tags / chips */
+html[data-theme="wa"] .tag,
+html[data-theme="wa"] .info-chip,
+html[data-theme="wa"] .food-status,
+html[data-theme="wa"] .member-pill,
+html[data-theme="wa"] .day-meta-text,
+html[data-theme="wa"] .day-lang-toggle,
+html[data-theme="wa"] .task-countdown,
+html[data-theme="wa"] .decision-checks,
+html[data-theme="wa"] .driving-route,
+html[data-theme="wa"] .event-tips,
+html[data-theme="wa"] .rain-plan,
+html[data-theme="wa"] .backup-box{
+  background:#F5F1EA!important;
+  border-color:#E1D8CC!important;
+  color:#776F66!important;
+}
+html[data-theme="wa"] .day-meta-pill{
+  background:#EFE3D8!important;
+  border-color:#E0CFC2!important;
+  color:#9B7E69!important;
+}
+
+/* Accent usage — move from dark brown to calmer travel-book sage/taupe mix */
+html[data-theme="wa"] .primary-btn,
+html[data-theme="wa"] .icon-btn,
+html[data-theme="wa"] .check-btn.done,
+html[data-theme="wa"] .member-pill.active,
+html[data-theme="wa"] .official-status-actions a{
+  background:#7F8A7B!important;
+  border-color:#7F8A7B!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+html[data-theme="wa"] .nav-link,
+html[data-theme="wa"] .action-link,
+html[data-theme="wa"] .mini-action-link,
+html[data-theme="wa"] .driving-nav,
+html[data-theme="wa"] .official-status-actions a.secondary,
+html[data-theme="wa"] .mini-btn{
+  background:#FFFDFA!important;
+  border-color:#DDD6CC!important;
+  color:#746D66!important;
+}
+
+/* Timeline / small accents */
+html[data-theme="wa"] .event-time,
+html[data-theme="wa"] .booking-date,
+html[data-theme="wa"] .day-title span,
+html[data-theme="wa"] .food-day{
+  color:#A88772!important;
+}
+html[data-theme="wa"] .event-dot{
+  background:#B89B86!important;
+  box-shadow:0 0 0 3px #FAF7F0!important;
+}
+html[data-theme="wa"] .timeline:before{
+  background:linear-gradient(180deg,#C5B19D,#D8C7A4)!important;
+}
+
+/* Bottom nav */
+html[data-theme="wa"] .bottom-nav{
+  background:rgba(255,252,248,.96)!important;
+  border-color:#E2DBD0!important;
+  box-shadow:0 12px 30px rgba(70,65,59,.08)!important;
+}
+html[data-theme="wa"] .bottom-nav .nav-btn{color:#8A8178!important}
+html[data-theme="wa"] .bottom-nav .nav-btn.active{
+  background:linear-gradient(180deg,#EEE5DB,#E8DDD2)!important;
+  color:#5F5952!important;
+  box-shadow:inset 0 0 0 1px rgba(176,161,147,.18)!important;
+}
+
+/* Tool cards / inputs / modals */
+html[data-theme="wa"] .tool-card.active,
+html[data-theme="wa"] .member-pill.active,
+html[data-theme="wa"] .decision-option.selected{
+  background:#F1ECE4!important;
+  border-color:#D9D0C4!important;
+}
+html[data-theme="wa"] .modal,
+html[data-theme="wa"] .autumn-editor-sheet{
+  background:#FCF8F1!important;
+  color:#4D4640!important;
+}
+html[data-theme="wa"] .close-btn{
+  background:#EFE8DE!important;
+  color:#726961!important;
+}
+html[data-theme="wa"] .field input,
+html[data-theme="wa"] .field select,
+html[data-theme="wa"] .field textarea,
+html[data-theme="wa"] .notes-area,
+html[data-theme="wa"] .autumn-note-field textarea{
+  background:#FFFDFA!important;
+  border-color:#E1D9CE!important;
+  color:#4D4640!important;
+}
+html[data-theme="wa"] .field input:focus,
+html[data-theme="wa"] .field select:focus,
+html[data-theme="wa"] .field textarea:focus,
+html[data-theme="wa"] .notes-area:focus,
+html[data-theme="wa"] .autumn-note-field textarea:focus{
+  border-color:#BCC4B8!important;
+  box-shadow:0 0 0 3px rgba(127,138,123,.12)!important;
+}
