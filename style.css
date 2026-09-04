@@ -1284,3 +1284,81 @@ html[data-theme="wa"] .settings-btn{
     font-size:8.8px!important;
   }
 }
+
+/* ===== v1.11.14 Daily title typography refresh =====
+   User feedback: the daily heading block looked awkward and mismatched.
+   Keep the same structure, but make the day title feel more like a travel app:
+   cleaner CJK-first serif, warmer ink, better rhythm, less bulky wrapping. */
+html[data-theme="wa"] .day-title.day-title-v46{
+  gap:9px!important;
+  padding:6px 2px 14px!important;
+}
+html[data-theme="wa"] .day-title-v46 .day-title-main{
+  display:block!important;
+}
+html[data-theme="wa"] .day-title-v46 #dayNumber{
+  display:inline-block!important;
+  font-family:var(--nov-serif)!important;
+  color:#BD8E80!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  letter-spacing:.08em!important;
+}
+html[data-theme="wa"] .day-title-v46 #dayTitle{
+  display:block!important;
+  margin:2px 0 0!important;
+  font-family:var(--nov-serif)!important;
+  color:#463D37!important;
+  font-size:clamp(19px,6.05vw,29px)!important;
+  line-height:1.22!important;
+  font-weight:650!important;
+  letter-spacing:.01em!important;
+  text-wrap:balance!important;
+  word-break:keep-all!important;
+  overflow-wrap:anywhere!important;
+}
+html[data-theme="wa"] .day-title-v46 #daySubtitle{
+  margin-top:2px!important;
+  max-width:none!important;
+  color:#7B736C!important;
+  font-size:13px!important;
+  line-height:1.68!important;
+  text-align:left!important;
+}
+html[data-theme="wa"] .day-title-v46 .day-title-meta{
+  gap:8px!important;
+  margin-top:6px!important;
+}
+html[data-theme="wa"] .day-title-v46 .day-meta-pill,
+html[data-theme="wa"] .day-title-v46 .day-meta-text{
+  min-height:30px!important;
+  padding:6px 12px!important;
+  border-radius:999px!important;
+  font-size:11px!important;
+}
+html[data-theme="wa"] .day-title-v46 .day-meta-pill{
+  background:rgba(193,142,122,.12)!important;
+  border-color:rgba(193,142,122,.20)!important;
+  color:#A37162!important;
+}
+html[data-theme="wa"] .day-title-v46 .day-meta-text{
+  background:rgba(255,255,255,.88)!important;
+  border-color:#E7DED3!important;
+  color:#98897F!important;
+}
+@media (max-width:420px){
+  html[data-theme="wa"] .day-title.day-title-v46{
+    gap:8px!important;
+  }
+  html[data-theme="wa"] .day-title-v46 #dayNumber{
+    font-size:13px!important;
+  }
+  html[data-theme="wa"] .day-title-v46 #dayTitle{
+    font-size:clamp(18px,5.8vw,24px)!important;
+    line-height:1.24!important;
+  }
+  html[data-theme="wa"] .day-title-v46 #daySubtitle{
+    font-size:12.5px!important;
+    line-height:1.7!important;
+  }
+}
