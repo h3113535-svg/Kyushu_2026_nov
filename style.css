@@ -1805,3 +1805,31 @@ html[data-font-size="xlarge"] .day-image-lightbox-head b{font-size:17px!importan
 html[data-font-size="xlarge"] .day-image-lightbox-foot span{font-size:15px!important}
 html[data-font-size="xlarge"] .day-image-lightbox-foot small{font-size:13px!important}
 html[data-font-size="xlarge"] .day-lang-toggle button{font-size:16px!important;min-height:44px!important}
+
+/* ===== v1.11.19 Family presentation: concise daily highlights ===== */
+html[data-theme="wa"] .day-brief{
+  padding:14px 16px!important;
+}
+html[data-theme="wa"] .day-brief .brief-title{
+  color:#786F67!important;
+  font-size:10px;
+  letter-spacing:.14em;
+}
+html[data-theme="wa"] .day-brief ul{
+  margin:4px 0 0!important;
+  padding-left:19px!important;
+}
+html[data-theme="wa"] .day-brief li{
+  margin:5px 0!important;
+  line-height:1.68!important;
+}
+html[data-theme="wa"] .day-brief li::marker{
+  color:#A48D79!important;
+}
+html[data-font-size="xlarge"] .day-brief .brief-title{
+  font-size:14px!important;
+}
+html[data-font-size="xlarge"] .day-brief li{
+  font-size:18px!important;
+  line-height:1.72!important;
+}
