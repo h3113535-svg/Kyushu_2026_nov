@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.14 daily title typography refresh */
+/* Kyushu family autumn PWA · November 2026 · v1.11.15 semantic daily-title wrapping */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.14";
+const APP_VERSION = "1.11.15";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -24,7 +24,7 @@ const OFFLINE_PACK_APPROX_MB = 48;
 const OFFLINE_PACK_ASSETS = [
   ...Array.from({length:9},(_,i)=>`./day-scene-zh-v17-${String(i+1).padStart(2,"0")}.webp?v=170`),
   ...Array.from({length:9},(_,i)=>`./day-scene-v52-${String(i+1).padStart(2,"0")}.webp?v=550`),
-  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11114`),
+  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11115`),
   "./nov_decision_d4_ropeway.webp?v=160","./nov_decision_d4_chill.webp?v=160",
   "./nov_decision_d5_autumn.webp?v=160","./nov_decision_d5_chill.webp?v=160",
   "./nov_decision_d7_crater_open.webp?v=160","./nov_decision_d7_museum.webp?v=160",
@@ -444,7 +444,7 @@ function dailySceneAsset(index,lang=getSceneLanguage()){
 }
 function dailySceneFullAsset(index,lang=getSceneLanguage()){
   const day=String(index+1).padStart(2,"0");
-  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11114`;
+  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11115`;
 }
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
@@ -1313,10 +1313,39 @@ function bindGuideTargets(visibleEvents=[]){
   const dayScene=$("#daySceneCard");if(dayScene)bindSafeHold(dayScene,()=>openGuide(buildDayGuide()),{allowInteractiveRoot:true});
 }
 
+function renderDayTitleMarkup(title=""){
+  const raw=String(title||"").trim();
+  if(!raw)return "";
+  // A full-width vertical bar is used as a deliberate editorial divider in the content.
+  // Render those sides as separate title rows instead of leaving the browser to wrap mid-phrase.
+  const majorRows=raw.split("｜").map(s=>s.trim()).filter(Boolean);
+  const unitMarkup=(row)=>{
+    const tokens=row.split(/(\s*→\s*|・|＋|\s*\/\s*)/).filter(Boolean);
+    const units=[];
+    let buffer="";
+    const isSep=(token)=>/^(?:\s*→\s*|・|＋|\s*\/\s*)$/.test(token);
+    tokens.forEach(token=>{
+      if(isSep(token)){
+        const sep=token.includes("→")?" →":token.includes("/")?" /":token;
+        buffer+=sep;
+        if(buffer.trim())units.push(buffer.trim());
+        buffer="";
+      }else{
+        buffer+=token;
+      }
+    });
+    if(buffer.trim())units.push(buffer.trim());
+    return units.map(unit=>`<span class="day-title-unit">${esc(unit)}</span>`).join("");
+  };
+  return majorRows.map((row,i)=>`<span class="day-title-row${i?" day-title-row-secondary":""}">${unitMarkup(row)}</span>`).join("");
+}
+
 function renderSchedule(){
   const d=TRIP.days[state.dayIndex];
   $("#dayNumber").textContent=`D${state.dayIndex+1}`;
-  $("#dayTitle").textContent=d.title;
+  const titleEl=$("#dayTitle");
+  titleEl.setAttribute("aria-label",d.title||"");
+  titleEl.innerHTML=renderDayTitleMarkup(d.title);
   $("#daySubtitle").textContent=d.subtitle;
   const meta=$("#dayTitleMeta");
   if(meta) meta.innerHTML=`<span class="day-meta-pill">D${state.dayIndex+1}</span><span class="day-meta-text">${d.shortDate}</span><span class="day-meta-text">今日主圖</span>`;
@@ -2251,7 +2280,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=11114",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=11115",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

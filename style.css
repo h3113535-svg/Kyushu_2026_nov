@@ -1362,3 +1362,43 @@ html[data-theme="wa"] .day-title-v46 .day-meta-text{
     line-height:1.7!important;
   }
 }
+
+/* ===== v1.11.15 Semantic daily-title wrapping =====
+   Wrap by itinerary phrase instead of arbitrary glyph position.
+   Separators stay with the preceding phrase, so arrows / plus signs / slashes
+   never become ugly orphan characters at the beginning of a new line. */
+html[data-theme="wa"] .day-title-v46 #dayTitle{
+  display:block!important;
+  width:100%!important;
+  text-wrap:initial!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+}
+html[data-theme="wa"] .day-title-v46 #dayTitle .day-title-row{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:baseline!important;
+  column-gap:.28em!important;
+  row-gap:.04em!important;
+  min-width:0!important;
+}
+html[data-theme="wa"] .day-title-v46 #dayTitle .day-title-row + .day-title-row{
+  margin-top:.08em!important;
+}
+html[data-theme="wa"] .day-title-v46 #dayTitle .day-title-unit{
+  display:inline-block!important;
+  white-space:nowrap!important;
+}
+html[data-theme="wa"] .day-title-v46 #dayTitle .day-title-row-secondary{
+  color:#5B514B!important;
+  font-size:.88em!important;
+  font-weight:620!important;
+}
+@media(max-width:420px){
+  html[data-theme="wa"] .day-title-v46 #dayTitle .day-title-row{
+    column-gap:.22em!important;
+  }
+  html[data-theme="wa"] .day-title-v46 #dayTitle .day-title-row-secondary{
+    font-size:.90em!important;
+  }
+}
