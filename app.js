@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.16 travel-book palette refresh */
+/* Kyushu family autumn PWA · November 2026 · v1.11.18 complete max-font coverage */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.16";
+const APP_VERSION = "1.11.18";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -24,7 +24,7 @@ const OFFLINE_PACK_APPROX_MB = 48;
 const OFFLINE_PACK_ASSETS = [
   ...Array.from({length:9},(_,i)=>`./day-scene-zh-v17-${String(i+1).padStart(2,"0")}.webp?v=170`),
   ...Array.from({length:9},(_,i)=>`./day-scene-v52-${String(i+1).padStart(2,"0")}.webp?v=550`),
-  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11116`),
+  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11118`),
   "./nov_decision_d4_ropeway.webp?v=160","./nov_decision_d4_chill.webp?v=160",
   "./nov_decision_d5_autumn.webp?v=160","./nov_decision_d5_chill.webp?v=160",
   "./nov_decision_d7_crater_open.webp?v=160","./nov_decision_d7_museum.webp?v=160",
@@ -33,6 +33,7 @@ const OFFLINE_PACK_ASSETS = [
   "./nov_empty_autumnwatch.webp?v=160","./nov_empty_expense.webp?v=160","./nov_empty_notes.webp?v=160","./nov_empty_shopping.webp?v=160"
 ];
 let offlinePackBusy = false;
+let foodOpenDay = null;
 
 // PDF attachments are intentionally stored in IndexedDB on this device.
 // Ticket / hotel PDFs often contain private reservation details, so they are never
@@ -444,7 +445,7 @@ function dailySceneAsset(index,lang=getSceneLanguage()){
 }
 function dailySceneFullAsset(index,lang=getSceneLanguage()){
   const day=String(index+1).padStart(2,"0");
-  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11116`;
+  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11118`;
 }
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
@@ -1530,18 +1531,60 @@ async function renderWeather(d){
   }finally{card.classList.remove("skeleton")}
 }
 
+function foodDaySummary(items=[]){
+  if(!items.length)return "今天沒有固定餐飲安排";
+  const labels=[];
+  const joined=items.map(i=>`${i.time||""} ${i.title||""} ${i.status||""}`).join(" ");
+  if(/早餐/.test(joined))labels.push("早餐");
+  if(/午餐|中午/.test(joined))labels.push("午餐");
+  if(/點心|麵包|採買|補給/.test(joined))labels.push("點心／採買");
+  if(/晚餐|晚上|自炊|燒肉|水炊|勝烈亭|Buffet/.test(joined))labels.push("晚餐");
+  const dinnerCandidates=items.filter(i=>/候選/.test(i.status||"")&&/晚餐|燒肉|肉一|バクロ|かくら/.test(`${i.time||""} ${i.title||""} ${i.detail||""}`)).length;
+  if(dinnerCandidates>1){
+    const idx=labels.indexOf("晚餐");
+    if(idx>=0)labels[idx]=`晚餐候選 ${dinnerCandidates} 間`;
+    else labels.push(`晚餐候選 ${dinnerCandidates} 間`);
+  }
+  if(!labels.length)return `${items.length} 項餐飲安排`;
+  return labels.join("・");
+}
+function renderFoodPlanCard(i){
+  return `<article class="planned-food-card food-plan-card-v47">
+    <div class="food-plan-meta-row">
+      <span class="food-time-chip">${esc(i.time)}</span>
+      <span class="food-status">${esc(i.status)}</span>
+    </div>
+    <h4>${esc(i.title)}</h4>
+    ${i.detail?`<p class="food-plan-detail">${esc(i.detail)}</p>`:""}
+    ${(i.maps||[]).length?`<div class="food-map-row">${i.maps.map((m,idx)=>`<a class="mini-btn" target="_blank" rel="noopener" href="${mapSearch(m)}">地圖${i.maps.length>1?` ${idx+1}`:""} ↗</a>`).join("")}</div>`:""}
+  </article>`;
+}
 function renderFood(){
-  $("#plannedFood").innerHTML=TRIP.plannedFood.map(i=>`
-    <article class="planned-food-card food-plan-card-v46">
-      <div class="food-plan-meta-row">
-        <span class="food-day-chip">${esc(i.day)}</span>
-        <span class="food-time-chip">${esc(i.time)}</span>
-        <span class="food-status">${esc(i.status)}</span>
+  const foodByDay=new Map();
+  (TRIP.plannedFood||[]).forEach(i=>{
+    const key=String(i.day||"").toUpperCase();
+    if(!foodByDay.has(key))foodByDay.set(key,[]);
+    foodByDay.get(key).push(i);
+  });
+  $("#plannedFood").innerHTML=(TRIP.days||[]).map((day,index)=>{
+    const dayKey=`D${index+1}`;
+    const items=foodByDay.get(dayKey)||[];
+    const open=foodOpenDay===dayKey;
+    return `<section class="food-day-group ${open?"open":""}">
+      <button class="food-day-toggle" type="button" data-food-day="${dayKey}" aria-expanded="${open}">
+        <span class="food-day-number">${dayKey}</span>
+        <span class="food-day-copy">
+          <span class="food-day-date">${esc(day.shortDate||"")} · ${esc(day.location||"")}</span>
+          <b>${esc(foodDaySummary(items))}</b>
+        </span>
+        <span class="food-day-count">${items.length?`${items.length} 項`:"—"}</span>
+        <span class="food-day-chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div class="food-day-panel" ${open?"":"hidden"}>
+        ${items.length?items.map(renderFoodPlanCard).join(""):`<div class="food-day-empty">這天目前沒有固定餐飲安排，保留機動吃法。</div>`}
       </div>
-      <h4>${esc(i.title)}</h4>
-      ${i.detail?`<p class="food-plan-detail">${esc(i.detail)}</p>`:""}
-      ${(i.maps||[]).length?`<div class="food-map-row">${i.maps.map((m,idx)=>`<a class="mini-btn" target="_blank" rel="noopener" href="${mapSearch(m)}">地圖${i.maps.length>1?` ${idx+1}`:""} ↗</a>`).join("")}</div>`:""}
-    </article>`).join("");
+    </section>`;
+  }).join("");
   $("#foodQuick").innerHTML=TRIP.foodQuick.map(f=>`<a target="_blank" rel="noopener" class="food-chip" href="${mapSearch(f.query)}"><span>${f.icon}</span>${esc(f.label)} ↗</a>`).join("");
   $("#foodList").innerHTML=state.foods.length?state.foods.map(i=>`
     <div class="list-item ${i.checked?"checked":""}">
@@ -1859,6 +1902,7 @@ function bind(){
     const fontChoice=e.target.closest("[data-font-choice]");if(fontChoice){setFontSize(fontChoice.dataset.fontChoice);return}
     const dayLangChoice=e.target.closest("[data-day-lang]");if(dayLangChoice){setSceneLanguage(dayLangChoice.dataset.dayLang);return}
     const d=e.target.closest("[data-day]");if(d){state.dayIndex=Number(d.dataset.day);state.decisionDrafts={};renderDays();renderSchedule();return}
+    const foodDay=e.target.closest("[data-food-day]");if(foodDay){const key=foodDay.dataset.foodDay;foodOpenDay=foodOpenDay===key?null:key;renderFood();return}
     const n=e.target.closest("[data-view]");if(n){switchView(n.dataset.view);if(n.dataset.tool)switchTool(n.dataset.tool);return}
     const t=e.target.closest("[data-tool]");if(t){switchTool(t.dataset.tool);return}
     const o=e.target.closest("[data-open-modal]");if(o){openModal(o.dataset.openModal);return}
@@ -2280,7 +2324,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=11116",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=11118",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

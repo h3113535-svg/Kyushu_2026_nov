@@ -18,9 +18,9 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=11116" rel="stylesheet"/>
+<link href="./style.css?v=11118" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
-<meta content="1.11.16" name="app-version"/>
+<meta content="1.11.18" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
 </head>
 <body>
@@ -91,35 +91,30 @@
 <section class="hotel-return-card" hidden="" id="hotelReturnCard"></section>
 </section>
 <section class="view" id="foodView">
-<div class="section-heading section-heading-with-art food-heading-v45">
-<div class="food-heading-copy">
-<span class="eyebrow">美食手帳</span>
-<h2>餐飲安排</h2>
-<div aria-label="美食功能" class="food-heading-tags">
-<span>已訂餐廳</span><span>候選清單</span><span>附近搜尋</span>
+<div class="section-heading food-book-heading">
+<span class="eyebrow">FOOD JOURNAL</span>
+<h2>旅程美食</h2>
+<p>依 D1–D9 整理餐飲安排；點選日期展開當天內容。</p>
 </div>
-</div>
-</div>
-<button class="food-nearby-trigger" id="foodNearbyOpen" type="button">
-
-<span class="food-nearby-trigger-copy"><b>附近找吃的</b><small>咖啡・甜點・拉麵・燒肉…直接開 Google Maps</small></span>
+<button class="food-nearby-trigger food-nearby-trigger-v47" id="foodNearbyOpen" type="button">
+<span class="food-nearby-trigger-icon">⌖</span>
+<span class="food-nearby-trigger-copy"><b>附近找吃的</b><small>咖啡・甜點・拉麵・燒肉…快速開 Google Maps</small></span>
 <em>›</em>
 </button>
-<div class="card">
-<div class="card-title-row food-plan-title"><div><div class="eyebrow">用餐計畫</div><h3>已安排與候選</h3></div></div>
-<div class="planned-food-list" id="plannedFood"></div>
-</div>
-<div class="card">
-
+<section class="food-itinerary-section" aria-label="D1 到 D9 用餐計畫">
+<div class="food-itinerary-head"><span>DAILY FOOD PLAN</span><small>一次展開一天</small></div>
+<div class="food-day-accordion" id="plannedFood"></div>
+</section>
+<section class="food-wishlist-card">
 <div class="card-title-row">
 <div>
-<div class="eyebrow">想吃清單</div>
+<div class="eyebrow">SAVE FOR LATER</div>
 <h3>想吃清單</h3>
 </div>
 <button aria-label="新增美食" class="icon-btn" data-open-modal="food">＋</button>
 </div>
 <div class="list-stack" id="foodList"></div>
-</div>
+</section>
 </section>
 <section class="view" id="toolsView">
 <div class="section-heading tools-heading-v42">
@@ -356,7 +351,7 @@ https://maps.app.goo.gl/…"></textarea></label>
 <div class="toast" id="toast" role="status"></div>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script defer="" src="./firebase-config.js?v=11116"></script>
-<script defer="" src="./app.js?v=11116"></script>
+<script defer="" src="./firebase-config.js?v=11118"></script>
+<script defer="" src="./app.js?v=11118"></script>
 </body>
 </html>
