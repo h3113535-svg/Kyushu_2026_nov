@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.20 owner-only shared deletion */
+/* Kyushu family autumn PWA · November 2026 · v1.11.21 relaxed quick-entry forms */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.20";
+const APP_VERSION = "1.11.21";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -26,7 +26,7 @@ const OFFLINE_PACK_APPROX_MB = 48;
 const OFFLINE_PACK_ASSETS = [
   ...Array.from({length:9},(_,i)=>`./day-scene-zh-v17-${String(i+1).padStart(2,"0")}.webp?v=170`),
   ...Array.from({length:9},(_,i)=>`./day-scene-v52-${String(i+1).padStart(2,"0")}.webp?v=550`),
-  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11120`),
+  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11121`),
   "./nov_decision_d4_ropeway.webp?v=160","./nov_decision_d4_chill.webp?v=160",
   "./nov_decision_d5_autumn.webp?v=160","./nov_decision_d5_chill.webp?v=160",
   "./nov_decision_d7_crater_open.webp?v=160","./nov_decision_d7_museum.webp?v=160",
@@ -460,7 +460,7 @@ function dailySceneAsset(index,lang=getSceneLanguage()){
 }
 function dailySceneFullAsset(index,lang=getSceneLanguage()){
   const day=String(index+1).padStart(2,"0");
-  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11120`;
+  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11121`;
 }
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
@@ -1827,29 +1827,29 @@ function openModal(type){
   modal.dataset.type=type;
   if(type==="food"){
     title.textContent="新增想吃店家";
-    fields.innerHTML=field("店名","name","text","例如：咖啡廳") + field("區域","location","text","例如：天神") + field("備註","note","text","想吃什麼");
+    fields.innerHTML=field("店名","name","text","例如：咖啡廳",true) + field("區域（選填）","location","text","例如：天神") + field("備註（選填）","note","text","想吃什麼");
   }else if(type==="booking"){
     title.textContent="新增訂位／票券";
     fields.innerHTML=selectField("類型","bookingType",["訂位","票券","住宿","交通","現場處理","其他"])+
-      field("名稱","name","text","例如：福岡水炊晚餐")+
-      field("時間／日期","when","text","例如：D8 18:30")+
+      field("名稱","name","text","例如：福岡水炊晚餐",true)+
+      field("時間／日期（選填）","when","text","例如：D8 18:30")+
       field("處理期限（選填）","deadline","datetime-local","")+
-      field("備註","detail","text","例如：出發前再次確認")+
+      field("備註（選填）","detail","text","例如：出發前再次確認")+
       field("地點（選填）","map","text","例如：博多華味鳥");
   }else if(type==="shopping"){
     title.textContent="新增購物";
-    fields.innerHTML=field("商品","name","text","例如：On Cloud 7")+
-      selectField("誰的","owner",TRIP.members)+field("預算（JPY）","amount","number","20000")+
-      field("店家","shop","text","例如：On Fukuoka")+field("預計哪天","day","text","例如：D2");
+    fields.innerHTML=field("商品","name","text","例如：On Cloud 7",true)+
+      selectField("誰的","owner",TRIP.members)+field("預算（JPY，選填）","amount","number","20000")+
+      field("店家（選填）","shop","text","例如：On Fukuoka")+field("預計哪天（選填）","day","text","例如：D2");
   }else{
     title.textContent="新增記帳";
-    fields.innerHTML=field("名稱","name","text","例如：晚餐")+field("金額（JPY）","amount","number","4800")+
-      selectField("付款人","payer",TRIP.members)+field("日期","date","date","")+
+    fields.innerHTML=field("名稱（選填）","name","text","例如：晚餐")+field("金額（JPY）","amount","number","4800",true)+
+      selectField("付款人","payer",TRIP.members)+field("日期（選填）","date","date","")+
       `<div class="field"><label>分攤成員</label><div class="checks">${TRIP.members.map(m=>`<label class="check-label"><input type="checkbox" name="participants" value="${esc(m)}" checked> ${esc(m)}</label>`).join("")}</div></div>`;
   }
   modal.showModal();
 }
-function field(label,name,type,placeholder){return `<div class="field"><label>${label}</label><input required name="${name}" type="${type}" placeholder="${placeholder}"></div>`}
+function field(label,name,type,placeholder,required=false){return `<div class="field"><label>${label}</label><input ${required?"required ":""}name="${name}" type="${type}" placeholder="${placeholder}"></div>`}
 function selectField(label,name,opts){return `<div class="field"><label>${label}</label><select name="${name}">${opts.map(o=>`<option>${esc(o)}</option>`).join("")}</select></div>`}
 async function handleSubmit(e){
   e.preventDefault(); const type=$("#formModal").dataset.type, fd=new FormData(e.currentTarget);
@@ -1863,8 +1863,11 @@ async function handleSubmit(e){
   }else if(type==="shopping"){
     await cloudAdd("shopping",{...base,owner:fd.get("owner"),amount:Number(fd.get("amount")||0),shop:fd.get("shop")?.trim(),day:fd.get("day")?.trim(),checked:false}); renderShopping();
   }else{
+    const amountRaw=String(fd.get("amount")||"").trim();
+    const amount=Number(amountRaw);
+    if(!amountRaw||!Number.isFinite(amount)||amount<=0){toast("請輸入有效金額");e.currentTarget.querySelector('[name="amount"]')?.focus();return}
     const participants=fd.getAll("participants");
-    await cloudAdd("expenses",{...base,amount:Number(fd.get("amount")||0),payer:fd.get("payer"),participants,date:fd.get("date")||japanToday()});renderExpenses();
+    await cloudAdd("expenses",{...base,name:base.name||"未命名支出",amount,payer:fd.get("payer"),participants,date:fd.get("date")||japanToday()});renderExpenses();
   }
   $("#formModal").close();e.currentTarget.reset();toast("已儲存");
 }
@@ -2341,7 +2344,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=11120",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=11121",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });
