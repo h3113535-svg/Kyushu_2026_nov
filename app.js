@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.19 family presentation polish */
+/* Kyushu family autumn PWA · November 2026 · v1.11.20 owner-only shared deletion */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.19";
+const APP_VERSION = "1.11.20";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -13,6 +13,8 @@ let TRIP = null;
 let state = null;
 let currentAuthUser = null;
 let appBound = false;
+const OWNER_EMAIL = String(window.KYUSHU_OWNER_EMAIL || "").trim().toLowerCase();
+const OWNER_UID = String(window.KYUSHU_OWNER_UID || "").trim();
 
 let lastError = "";
 const pollers = new Set();
@@ -24,7 +26,7 @@ const OFFLINE_PACK_APPROX_MB = 48;
 const OFFLINE_PACK_ASSETS = [
   ...Array.from({length:9},(_,i)=>`./day-scene-zh-v17-${String(i+1).padStart(2,"0")}.webp?v=170`),
   ...Array.from({length:9},(_,i)=>`./day-scene-v52-${String(i+1).padStart(2,"0")}.webp?v=550`),
-  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11119`),
+  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11120`),
   "./nov_decision_d4_ropeway.webp?v=160","./nov_decision_d4_chill.webp?v=160",
   "./nov_decision_d5_autumn.webp?v=160","./nov_decision_d5_chill.webp?v=160",
   "./nov_decision_d7_crater_open.webp?v=160","./nov_decision_d7_museum.webp?v=160",
@@ -326,6 +328,19 @@ function toast(message){
   toast._timer=setTimeout(()=>t.classList.remove("show"),1800);
 }
 
+function ownerIdentityConfigured(){return !!(OWNER_EMAIL||OWNER_UID)}
+function isOwnerUser(user=currentAuthUser){
+  const email=String(user?.email||"").trim().toLowerCase();
+  const uid=String(user?.uid||"").trim();
+  return !!((OWNER_UID&&uid===OWNER_UID)||(OWNER_EMAIL&&email===OWNER_EMAIL));
+}
+function ownerDeleteControl(html=""){return isOwnerUser()?html:""}
+function requireOwnerDelete(){
+  if(isOwnerUser())return true;
+  toast(ownerIdentityConfigured()?"只有旅程管理者可以刪除":"尚未設定旅程管理者，刪除功能已停用");
+  return false;
+}
+
 function offlinePackMeta(){
   try{return JSON.parse(localStorage.getItem(OFFLINE_PACK_META_KEY)||"null")}catch{return null}
 }
@@ -445,7 +460,7 @@ function dailySceneAsset(index,lang=getSceneLanguage()){
 }
 function dailySceneFullAsset(index,lang=getSceneLanguage()){
   const day=String(index+1).padStart(2,"0");
-  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11119`;
+  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11120`;
 }
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
@@ -1592,7 +1607,7 @@ function renderFood(){
       <div class="list-actions">
         <a class="mini-btn" target="_blank" href="${mapSearch((i.location||"")+" "+i.name)}">地圖</a>
         <button class="mini-btn check-btn ${i.checked?"done":""}" data-check-food="${i.id}">${i.checked?"✓":"○"}</button>
-        <button class="mini-btn" data-delete-food="${i.id}">刪</button>
+        ${ownerDeleteControl(`<button class="mini-btn" data-delete-food="${i.id}">刪</button>`)}
       </div></div>
     </div>`).join(""):`<div class="empty">還沒有額外想吃清單，右上角 ＋ 可以新增。</div>`;
 }
@@ -1638,7 +1653,7 @@ function bookingTaskCard(t){
       <div class="task-title">${esc(t.title)}</div>
       <div class="task-detail">${esc(t.detail||"")}</div>
       ${!done?`<div class="task-countdown">${esc(countdownText(t))}</div>`:""}
-      <div class="booking-card-actions">${t.map?`<a class="mini-action-link" target="_blank" rel="noopener" href="${mapSearch(t.map)}">↗ 位置</a>`:""}${pdfAttachmentControls(pdfKey,t.title||"訂位票券")}${t.custom?`<button class="mini-btn" data-delete-booking="${esc(t.id)}" type="button">刪除</button>`:""}</div>
+      <div class="booking-card-actions">${t.map?`<a class="mini-action-link" target="_blank" rel="noopener" href="${mapSearch(t.map)}">↗ 位置</a>`:""}${pdfAttachmentControls(pdfKey,t.title||"訂位票券")}${t.custom?ownerDeleteControl(`<button class="mini-btn" data-delete-booking="${esc(t.id)}" type="button">刪除</button>`):""}</div>
     </div>
   </div>`;
 }
@@ -1673,7 +1688,7 @@ function renderShopping(){
         <div class="list-actions">
           ${i.shop?`<a class="mini-btn" target="_blank" href="${mapSearch(i.shop)}">地圖</a>`:""}
           <button class="mini-btn check-btn ${i.checked?"done":""}" data-check-shopping="${i.id}">${i.checked?"✓":"○"}</button>
-          <button class="mini-btn" data-delete-shopping="${i.id}">刪</button>
+          ${ownerDeleteControl(`<button class="mini-btn" data-delete-shopping="${i.id}">刪</button>`)}
         </div>
       </div>
     </div>`).join(""):`<div class="empty-art-card"><img src="./nov_empty_shopping.webp?v=160" alt="目前還沒有購物清單"></div>`;
@@ -1705,7 +1720,7 @@ function renderExpenses(){
   $("#expenseList").innerHTML=state.expenses.length?state.expenses.slice().reverse().map(i=>`
     <div class="list-item"><div class="list-main"><div><div class="list-title">${esc(i.name)}</div>
       <div class="list-meta">¥${Number(i.amount).toLocaleString()} · ${esc(i.payer)} 付款 · 分攤：${esc((i.participants||TRIP.members).join("、"))}${i.date?` · ${esc(i.date)}`:""}</div>
-      </div><button class="mini-btn" data-delete-expense="${i.id}">刪</button></div></div>`).join(""):`<div class="empty-art-card"><img src="./nov_empty_expense.webp?v=160" alt="目前還沒有花費紀錄"></div>`;
+      </div>${ownerDeleteControl(`<button class="mini-btn" data-delete-expense="${i.id}">刪</button>`)}</div></div>`).join(""):`<div class="empty-art-card"><img src="./nov_empty_expense.webp?v=160" alt="目前還沒有花費紀錄"></div>`;
 }
 const EXCHANGE_RATE_STORAGE_KEY=`${APP_NAMESPACE}:manual-exchange-rate`;
 function getManualExchangeRate(){try{const n=Number(localStorage.getItem(EXCHANGE_RATE_STORAGE_KEY)||0);return Number.isFinite(n)&&n>0?n:0}catch{return 0}}
@@ -1756,7 +1771,7 @@ async function saveMapImport(){
 }
 function renderMapImports(){
   const box=$("#mapImportList");if(!box)return;const items=(state.mapPlaces||[]).slice().sort((a,b)=>{const da=Number(String(a.day||"").replace("D",""))||99,db=Number(String(b.day||"").replace("D",""))||99;return da-db||(b.createdAt||0)-(a.createdAt||0)});
-  box.innerHTML=items.length?items.map(i=>{const href=i.url||mapSearch([i.name,i.address].filter(Boolean).join(" "));return `<div class="list-item map-place-item"><div class="list-main"><div><div class="list-title">${esc(i.name)}</div><div class="list-meta">${esc([i.day,i.category,i.address,i.note].filter(Boolean).join(" · ")||"未指定")}</div></div><div class="list-actions"><a class="mini-btn" target="_blank" rel="noopener" href="${esc(href)}">地圖</a><button class="mini-btn" data-delete-map-place="${esc(i.id)}">刪</button></div></div></div>`}).join(""):'<div class="empty">還沒有匯入地點。從 Google Maps 按「分享」後，把文字或連結貼到上方即可。</div>';
+  box.innerHTML=items.length?items.map(i=>{const href=i.url||mapSearch([i.name,i.address].filter(Boolean).join(" "));return `<div class="list-item map-place-item"><div class="list-main"><div><div class="list-title">${esc(i.name)}</div><div class="list-meta">${esc([i.day,i.category,i.address,i.note].filter(Boolean).join(" · ")||"未指定")}</div></div><div class="list-actions"><a class="mini-btn" target="_blank" rel="noopener" href="${esc(href)}">地圖</a>${ownerDeleteControl(`<button class="mini-btn" data-delete-map-place="${esc(i.id)}">刪</button>`)}</div></div></div>`}).join(""):'<div class="empty">還沒有匯入地點。從 Google Maps 按「分享」後，把文字或連結貼到上方即可。</div>';
 }
 function renderNotes(){
   const area=$("#notesArea"); if(area)area.value=state.notes||"";
@@ -1802,8 +1817,10 @@ async function toggleItem(key,id){
   if(state.cloud){try{await updateCloud(key,id,{checked:item.checked})}catch{}}
 }
 async function deleteItem(key,id){
+  if(!requireOwnerDelete())return false;
   state[key]=state[key].filter(x=>x.id!==id);saveLocal(key,state[key]);
   if(state.cloud){try{await removeCloud(key,id)}catch{}}
+  return true;
 }
 function openModal(type){
   const modal=$("#formModal"),fields=$("#modalFields"),title=$("#modalTitle");
@@ -1922,7 +1939,7 @@ function bind(){
       const x=e.target.closest(`[${attr}]`);if(x){const id=x.getAttribute(attr);const before=state[key].find(i=>i.id===id)?.checked;await toggleItem(key,id);render();if(!before)toast("已完成");return}
     }
     for(const [attr,key,render] of [["data-delete-food","foods",renderFood],["data-delete-shopping","shopping",renderShopping],["data-delete-expense","expenses",renderExpenses],["data-delete-map-place","mapPlaces",renderMapImports],["data-delete-booking","bookingItems",renderBookings]]){
-      const x=e.target.closest(`[${attr}]`);if(x){await deleteItem(key,x.getAttribute(attr));render();toast("已刪除");return}
+      const x=e.target.closest(`[${attr}]`);if(x){const deleted=await deleteItem(key,x.getAttribute(attr));if(deleted){render();toast("已刪除")}return}
     }
   });
   $("#dayLandscapeBtn")?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();toggleDayLandscape()});
@@ -2324,7 +2341,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=11119",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=11120",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });
