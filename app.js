@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.21 relaxed quick-entry forms */
+/* Kyushu family autumn PWA · November 2026 · v1.11.22 weekday timezone fix */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.21";
+const APP_VERSION = "1.11.22";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -26,7 +26,7 @@ const OFFLINE_PACK_APPROX_MB = 48;
 const OFFLINE_PACK_ASSETS = [
   ...Array.from({length:9},(_,i)=>`./day-scene-zh-v17-${String(i+1).padStart(2,"0")}.webp?v=170`),
   ...Array.from({length:9},(_,i)=>`./day-scene-v52-${String(i+1).padStart(2,"0")}.webp?v=550`),
-  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11121`),
+  ...Array.from({length:9},(_,i)=>`./day-scene-full-zh-${String(i+1).padStart(2,"0")}.png?v=11122`),
   "./nov_decision_d4_ropeway.webp?v=160","./nov_decision_d4_chill.webp?v=160",
   "./nov_decision_d5_autumn.webp?v=160","./nov_decision_d5_chill.webp?v=160",
   "./nov_decision_d7_crater_open.webp?v=160","./nov_decision_d7_museum.webp?v=160",
@@ -460,7 +460,7 @@ function dailySceneAsset(index,lang=getSceneLanguage()){
 }
 function dailySceneFullAsset(index,lang=getSceneLanguage()){
   const day=String(index+1).padStart(2,"0");
-  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11121`;
+  return lang==='ja' ? dailySceneAsset(index,'ja') : `./day-scene-full-zh-${day}.png?v=11122`;
 }
 function renderDailyScene(){
   const img=$("#daySceneImage"), bar=$("#daySceneProgressBar");
@@ -1013,7 +1013,7 @@ function eventVisible(e){
 function renderDays(){
   $("#dayStrip").innerHTML=TRIP.days.map((d,i)=>`
     <button class="day-btn ${i===state.dayIndex?"active":""}" data-day="${i}">
-      <span class="weekday">週${"日一二三四五六"[new Date(d.date+"T00:00:00+09:00").getDay()]}</span><span class="date">${d.shortDate.slice(3)}</span><span class="d">D${i+1}</span>
+      <span class="weekday">週${"日一二三四五六"[new Date(d.date+"T12:00:00Z").getUTCDay()]}</span><span class="date">${d.shortDate.slice(3)}</span><span class="d">D${i+1}</span>
     </button>`).join("");
   const active=$("#dayStrip .active"); if(active) active.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
 }
@@ -2344,7 +2344,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=11121",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=11122",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

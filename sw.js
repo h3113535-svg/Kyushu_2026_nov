@@ -1,15 +1,15 @@
-const SHELL_CACHE = "kyushu-nov-shell-v1.11.21";
-const RUNTIME_CACHE = "kyushu-nov-runtime-v1.11.21";
+const SHELL_CACHE = "kyushu-nov-shell-v1.11.22";
+const RUNTIME_CACHE = "kyushu-nov-runtime-v1.11.22";
 const OFFLINE_PACK_CACHE = "kyushu-nov-offline-pack-v1";
 const OWNED_CACHE_PREFIXES = ["kyushu-nov-shell-", "kyushu-nov-runtime-"];
 
 const SHELL = [
   "./",
   "./index.html",
-  "./style.css?v=11121",
-  "./app.js?v=11121",
+  "./style.css?v=11122",
+  "./app.js?v=11122",
   "./manifest.json",
-  "./firebase-config.js?v=11121",
+  "./firebase-config.js?v=11122",
   "./icon-192.png",
   "./icon-512.png",
   "./icon-maskable-512.png",
