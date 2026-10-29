@@ -1833,3 +1833,27 @@ html[data-font-size="xlarge"] .day-brief li{
   font-size:18px!important;
   line-height:1.72!important;
 }
+
+/* v1.11.24 — readable itinerary and a unified Notes / Autumn Watch workspace */
+.note-subtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:15px 0 16px}
+.note-subtabs button{min-width:0;min-height:44px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.76);color:var(--muted);padding:9px 6px;font-size:12px;font-weight:800;cursor:pointer}
+.note-subtabs button.active{border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:0 5px 13px rgba(80,55,35,.12)}
+.note-subpane{display:none}.note-subpane.active{display:block}
+.note-intro{font-size:12px;line-height:1.7;color:var(--muted);margin:0 0 13px}
+#noteAutumnPane .autumn-watch{margin:0!important}
+#noteAutumnPane .autumn-watch[hidden]{display:none!important}
+.note-choices-day-label{display:block;font-size:12px;font-weight:800;margin:5px 0 8px}
+.note-choices-day-select{display:block;width:100%;font:inherit;font-size:13px;max-width:100%;background:#fffdf9;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:12px}
+.note-choices-empty{padding:22px 15px;text-align:center;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:15px}
+.note-maintenance{margin:16px 0 4px;border-top:1px solid var(--line);padding-top:12px;color:var(--muted);font-size:11px}
+.note-maintenance summary{cursor:pointer}.note-maintenance button{margin-top:12px}
+.schedule-choices-shortcut{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:1px solid var(--line);background:rgba(255,255,255,.86);color:var(--text);padding:12px 14px;border-radius:15px;text-align:left;margin:6px 0 15px;cursor:pointer}
+.schedule-choices-shortcut span{min-width:0;display:flex;flex-direction:column;gap:4px;font-size:13px}
+.schedule-choices-shortcut b{font-weight:850}.schedule-choices-shortcut small{font-size:11px;color:var(--muted);line-height:1.5}
+.schedule-choices-shortcut em{font-style:normal;color:var(--accent);font-weight:800;font-size:11px;white-space:nowrap}
+.event-more{margin:9px 0 2px;padding:0;border-radius:10px;border:1px solid var(--line);background:rgba(248,244,236,.6)}
+.event-more>summary{list-style:inside;font-size:11px;color:var(--muted);cursor:pointer;font-weight:800;padding:9px 12px}
+.event-more-body{padding:0 12px 10px}.event-more-body .event-note{margin:6px 0}
+.official-status-disclosure{display:block}.official-status-disclosure>summary{padding:12px 14px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:800;list-style:inside}
+.official-status-disclosure .official-status-list{padding:0 11px 11px}
+@media(max-width:360px){.note-subtabs button{font-size:11px;padding:8px 3px}.schedule-choices-shortcut{padding:11px}}

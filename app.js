@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.22 weekday timezone fix */
+/* Kyushu family autumn PWA · November 2026 · v1.11.24 autumn watch in notes / clearer schedule */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.22";
+const APP_VERSION = "1.11.24";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -698,7 +698,7 @@ const AUTUMN_STATUS_META={
 };
 const AUTUMN_PRIORITY={
   "akizuki-autumn":"S","kamado-autumn":"S","kumamoto-ginkgo":"S",
-  "takachiho-autumn":"A","hitome-hakkei":"A","keisekien":"A","taibaru-ginkgo":"A",
+  "takachiho-autumn":"A","hitome-hakkei":"A","keisekien":"A","bussanji-autumn":"B",
   "yufuin-autumn":"B+","chojabaru":"B+","maizuru-ginkgo":"B"
 };
 const AUTUMN_SOURCE_META={
@@ -707,10 +707,15 @@ const AUTUMN_SOURCE_META={
     officialLabel:"福岡縣觀光官方・太原銀杏",
     baseline:"D2 A/B 第一判斷核心。7成黃以上直接走A；5～6成黃但晴天且官方／近期照片已漂亮可考慮；大量綠色就切B。2026實際觀覽期間與色況以官方最新公告為準。"
   },
+  "bussanji-autumn":{
+    official:"https://www.visit-oita.jp/spots/detail/4393",
+    officialLabel:"大分縣觀光官方・佛山寺",
+    baseline:"D3 金鱗湖附近的安靜寺院，茅葺山門與楓葉有特色；11/23 葉況未確認。下午若湯之坪逛得順、長輩還有體力且不延誤15:45 Villa入住，才短停15–20分鐘，否則略過。"
+  },
   "maizuru-ginkgo":{
     official:"https://www.midorimachi.jp/maiduru/",
     officialLabel:"舞鶴公園官方",
-    baseline:"只在D2市區Chill B方案使用。7成黃以上正常去、黃綠各半短停、明顯偏綠直接跳過。"
+    baseline:"D2市區悠閒日與D9清晨自由補拍：7成黃以上正常拍、黃綠各半短停、明顯偏綠直接跳過；不再安排太原銀杏包車。"
   },
   "yufuin-autumn":{
     official:"https://yufuin.gr.jp/",
@@ -788,7 +793,9 @@ const OFFICIAL_STATUS_BY_DAY={
   8:[
     {id:"fukuoka-airport",icon:"✈️",title:"福岡機場 國際線",label:"當日出發航班",url:"https://www.fukuoka-airport.jp/pcfs/en/flight/index.php?type=ID",hint:"D9 出發前確認航班時間、登機門與即時狀態。"}
   ]
-};let autumnWatchScope="day";
+};let autumnWatchScope="all";
+let activeNoteTab="memo";
+let noteChoicesDayIndex=null;
 let autumnSortMode=(()=>{try{return localStorage.getItem("kyushu-nov-2026:autumn-sort")||"priority"}catch{return "priority"}})();
 let activeAutumnId="";
 let autumnDraftStatus="unknown";
@@ -883,24 +890,26 @@ async function saveAutumnEditor(){
   if(state.cloud){try{await updateCloud("autumnStatus",activeAutumnId,record)}catch{toast("已存本機，雲端稍後同步")}}
   closeAutumnEditor();toast("紅葉狀態已更新");
 }
+const FOLIAGE_OFFICIAL_IDS=new Set(["taibaru-ginkgo-live","maizuru-ginkgo-live","yabakei-autumn-live","kumamoto-ginkgo-live","akizuki-autumn-live","kamado"]);
 function renderOfficialStatus(day){
   const box=$("#officialStatusArea");if(!box)return;
-  const items=OFFICIAL_STATUS_BY_DAY[state.dayIndex]||[];
+  // Foliage links live in 記事 → 紅葉觀測; don't duplicate them in the itinerary.
+  const items=(OFFICIAL_STATUS_BY_DAY[state.dayIndex]||[]).filter(x=>!FOLIAGE_OFFICIAL_IDS.has(x.id));
   box.hidden=!items.length;if(!items.length){box.innerHTML="";return}
-  box.innerHTML=`<div class="official-status-head"><div><span class="eyebrow">OFFICIAL LIVE</span><b>官方即時狀態</b></div><small>需網路・以官方頁面為準</small></div><div class="official-status-list">${items.map(x=>{
+  box.innerHTML=`<details class="official-status-disclosure"><summary>官方營運資訊・${items.length} 則（需要時展開）</summary><div class="official-status-list">${items.map(x=>{
     const selected=x.decisionId?selectedDecision(x.decisionId):"";
     const decision=x.decisionId?TRIP.decisions.find(d=>d.id===x.decisionId):null;
     const selectedLabel=decision?.options?.find(o=>o.id===selected)?.label||selected;
     const decisionText=selected?`目前行程已選：${selectedLabel}`:"尚未做行程選擇";
     return `<article class="official-status-item"><span class="official-status-icon">${esc(x.icon)}</span><div class="official-status-copy"><b>${esc(x.title)}</b><span>${esc(x.label)}</span><small>${esc(x.hint)}</small>${x.decisionId?`<em>${esc(decisionText)}</em>`:""}</div><div class="official-status-actions"><a rel="noopener" href="${esc(x.url)}">查看官方 ↗</a>${x.phone?`<a class="secondary" href="tel:${esc(x.phone)}">☎ 電話確認</a>`:""}</div></article>`;
-  }).join("")}</div>`;
+  }).join("")}</div></details>`;
 }
 
 function renderDayBrief(day){
   const box=$("#dayBrief");
   if(!box) return;
   const alertHtml=day.alert?`<div class="day-alert">${esc(day.alert)}</div>`:"";
-  const items=(day.brief||[]).slice(0,3).map(x=>`<li>${esc(x)}</li>`).join("");
+  const items=(day.displayBrief||day.brief||[]).slice(0,3).map(x=>`<li>${esc(x)}</li>`).join("");
   const rainHtml=day.rainPlan?`<div class="rain-plan"><b>☔ 雨天備案</b><span>${esc(day.rainPlan)}</span></div>`:"";
   const hasContent=!!(day.alert||items||day.rainPlan);
   box.innerHTML=hasContent
@@ -915,9 +924,12 @@ function renderEventExtras(e){
   ].filter(Boolean).join("");
   const tips=(e.tips||[]).map(t=>`<li>${esc(t)}</li>`).join("");
   const links=(e.links||[]).map(l=>`<a class="mini-action-link" target="_blank" rel="noopener" href="${esc(l.url)}">↗ ${esc(l.label)}</a>`).join("");
-  return `${chips?`<div class="event-info-row">${chips}</div>`:""}${tips?`<div class="event-tips"><b>提醒</b><ul>${tips}</ul></div>`:""}${e.backup?`<div class="backup-box"><b>備案</b><span>${esc(e.backup)}</span></div>`:""}${links?`<div class="event-link-row">${links}</div>`:""}`;
+  const extras=[];
+  if(e.note)extras.push(`<div class="event-note">${esc(e.note)}</div>`);
+  if(tips)extras.push(`<div class="event-tips"><b>提醒</b><ul>${tips}</ul></div>`);
+  if(e.backup)extras.push(`<div class="backup-box"><b>備案</b><span>${esc(e.backup)}</span></div>`);
+  return `${chips?`<div class="event-info-row">${chips}</div>`:""}${extras.length?`<details class="event-more"><summary>查看提醒・備案</summary><div class="event-more-body">${extras.join("")}</div></details>`:""}${links?`<div class="event-link-row">${links}</div>`:""}`;
 }
-
 
 function selectedDecision(id){
   return state.decisions[id] || "";
@@ -925,13 +937,35 @@ function selectedDecision(id){
 function draftDecision(id){return state.decisionDrafts?.[id]||""}
 function renderDecisionArea(){
   const d=TRIP.days[state.dayIndex];
-  const area=$("#decisionArea");if(area)area.innerHTML=renderDecisionCards(d);
+  const area=$("#decisionArea");if(!area)return;
+  const visible=(d.decisionIds||[]).map(id=>TRIP.decisions.find(x=>x.id===id)).filter(x=>x&&decisionVisible(x));
+  if(!visible.length){area.innerHTML="";return}
+  const confirmed=visible.filter(x=>!!selectedDecision(x.id)).length;
+  area.innerHTML=`<button class="schedule-choices-shortcut" type="button" data-view="tools" data-tool="note" data-note-tab="choices"><span>🧭 <b>今日行程選項</b><small>${visible.length} 項・已確定 ${confirmed} 項；詳細路線與備案集中在記事</small></span><em>查看 ↗</em></button>`;
+}
+function renderNoteChoices(){
+  const box=$("#noteChoicesList"),select=$("#noteChoicesDaySelect");if(!box||!select||!TRIP)return;
+  const index=Math.max(0,Math.min(TRIP.days.length-1,noteChoicesDayIndex??state.dayIndex));
+  if(select.options.length!==TRIP.days.length){
+    select.innerHTML=TRIP.days.map((d,i)=>`<option value="${i}">D${i+1}・${esc(d.shortDate)}｜${esc(d.displaySubtitle||d.title)}</option>`).join("");
+  }
+  select.value=String(index);
+  const day=TRIP.days[index];
+  const cards=renderDecisionCards(day);
+  box.innerHTML=cards||'<div class="note-choices-empty">這天沒有需要另外決定的選項；照主行程走就好。</div>';
+}
+function switchNoteTab(tab){
+  activeNoteTab=["memo","autumn","choices"].includes(tab)?tab:"memo";
+  $$("[data-note-tab]").forEach(el=>{const active=el.dataset.noteTab===activeNoteTab;el.classList.toggle("active",active);el.setAttribute("aria-selected",active?"true":"false")});
+  $$(".note-subpane").forEach(el=>el.classList.toggle("active",el.id===`note${activeNoteTab[0].toUpperCase()+activeNoteTab.slice(1)}Pane`));
+  if(activeNoteTab==="autumn"){autumnWatchScope="all";renderAutumnWatch(TRIP.days[state.dayIndex])}
+  if(activeNoteTab==="choices")renderNoteChoices();
 }
 function stageDecision(id,option){
   state.decisionDrafts=state.decisionDrafts||{};
   if(state.decisionDrafts[id]===option)delete state.decisionDrafts[id];
   else state.decisionDrafts[id]=option;
-  renderDecisionArea();
+  renderDecisionArea();renderNoteChoices();
 }
 async function chooseDecision(id, option){
   if(!option)return;
@@ -939,7 +973,7 @@ async function chooseDecision(id, option){
   if(state.decisionDrafts)delete state.decisionDrafts[id];
   saveLocal("decisions",state.decisions);
   if(state.cloud){try{await setCloud("decisions",state.decisions)}catch{}}
-  renderSchedule();
+  renderSchedule();renderNoteChoices();
   toast("行程選擇已更新");
 }
 async function confirmDecision(id){
@@ -951,7 +985,7 @@ async function clearDecision(id){
   delete state.decisions[id];if(state.decisionDrafts)delete state.decisionDrafts[id];
   saveLocal("decisions",state.decisions);
   if(state.cloud){try{await setCloud("decisions",state.decisions)}catch{}}
-  renderSchedule();
+  renderSchedule();renderNoteChoices();
   if(had)toast("已清除選擇，可以晚點再決定");
 }
 const DECISION_ART={
@@ -1362,7 +1396,7 @@ function renderSchedule(){
   const titleEl=$("#dayTitle");
   titleEl.setAttribute("aria-label",d.title||"");
   titleEl.innerHTML=renderDayTitleMarkup(d.title);
-  $("#daySubtitle").textContent=d.subtitle;
+  $("#daySubtitle").textContent=d.displaySubtitle||d.subtitle;
   const meta=$("#dayTitleMeta");
   if(meta) meta.innerHTML=`<span class="day-meta-pill">D${state.dayIndex+1}</span><span class="day-meta-text">${d.shortDate}</span><span class="day-meta-text">今日主圖</span>`;
   renderDayBrief(d);
@@ -1372,7 +1406,7 @@ function renderSchedule(){
   renderOfficialStatus(d);
   renderAutumnWatch(d);
   renderDailyScene();
-  $("#decisionArea").innerHTML=renderDecisionCards(d);
+  renderDecisionArea();
   const visibleEvents=d.events.filter(eventVisible);
   $("#timeline").innerHTML=visibleEvents.map((e,i)=>`
     <article class="event">
@@ -1382,7 +1416,6 @@ function renderSchedule(){
         <div class="event-top"><h3 class="event-title">${esc(e.title)}</h3><span class="tag">${esc(e.category||"行程")}</span></div>
         <div class="event-time">${esc(e.time)}</div>
         ${renderEventExtras(e)}
-        ${e.note?`<div class="event-note">${esc(e.note)}</div>`:""}
         ${e.noNav?"":`<div class="event-footer"><a class="nav-link" target="_blank" rel="noopener" href="${mapNav(e.nav||e.title,weatherMode(e))}">↗ Google Maps 查看</a></div>`}
       </div>
     </article>`).join("");
@@ -1777,7 +1810,7 @@ function renderNotes(){
   const area=$("#notesArea"); if(area)area.value=state.notes||"";
   const empty=$("#notesEmptyState"); if(empty)empty.hidden=!!String(state.notes||"").trim();
 }
-function renderTools(){renderBookings();renderAutumnWatch(TRIP.days[state.dayIndex]);renderExchangeTool();renderMapImports();renderShopping();renderExpenses();renderNotes()}
+function renderTools(){renderBookings();renderAutumnWatch(TRIP.days[state.dayIndex]);renderExchangeTool();renderMapImports();renderShopping();renderExpenses();renderNotes();renderNoteChoices();switchNoteTab(activeNoteTab)}
 function renderAll(){applySceneLanguageUI();renderDays();renderSchedule();renderFood();renderTools()}
 
 function switchView(v){
@@ -1787,8 +1820,8 @@ function switchView(v){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function switchTool(t){
+  if(t==="autumn"){t="note";switchNoteTab("autumn");}
   state.tool=t;
-  if(t==="autumn"){autumnWatchScope="all";renderAutumnWatch(TRIP.days[state.dayIndex]);}
   $$(".tool-card").forEach(x=>x.classList.toggle("active",x.dataset.tool===t));
   $$(".tool-panel").forEach(x=>x.classList.toggle("active",x.id===`${t}Panel`));
 }
@@ -1798,11 +1831,14 @@ function localUpsert(key,obj){
   saveLocal(key,arr);
 }
 async function cloudAdd(key,obj){
+  // Keep the same record identifier locally and in RTDB; POST would generate
+  // another Firebase key and break subsequent PATCH / DELETE by local id.
   localUpsert(key,obj);
   if(state.cloud){
     try{
+      if(!obj?.id || !/^[A-Za-z0-9_-]+$/.test(String(obj.id)))throw new Error("新增資料 ID 無效");
       const {id,...cloudValue}=obj;
-      await addCloud(key,cloudValue);
+      await request(`${pathFor(key)}/${id}`, {method:"PUT",body:JSON.stringify(cloudValue)});
       $("#syncText").textContent="雲端已同步";
     }catch(e){
       $("#syncPill").classList.remove("cloud");
@@ -1923,8 +1959,17 @@ function bind(){
     const dayLangChoice=e.target.closest("[data-day-lang]");if(dayLangChoice){setSceneLanguage(dayLangChoice.dataset.dayLang);return}
     const d=e.target.closest("[data-day]");if(d){state.dayIndex=Number(d.dataset.day);state.decisionDrafts={};renderDays();renderSchedule();return}
     const foodDay=e.target.closest("[data-food-day]");if(foodDay){const key=foodDay.dataset.foodDay;foodOpenDay=foodOpenDay===key?null:key;renderFood();return}
-    const n=e.target.closest("[data-view]");if(n){switchView(n.dataset.view);if(n.dataset.tool)switchTool(n.dataset.tool);return}
+    const n=e.target.closest("[data-view]");if(n){
+      if(n.dataset.noteTab==="choices")noteChoicesDayIndex=state.dayIndex;
+      switchView(n.dataset.view);if(n.dataset.tool)switchTool(n.dataset.tool);
+      if(n.dataset.noteTab)switchNoteTab(n.dataset.noteTab);
+      return;
+    }
     const t=e.target.closest("[data-tool]");if(t){switchTool(t.dataset.tool);return}
+    const noteTab=e.target.closest("[data-note-tab]");if(noteTab){
+      if(noteTab.dataset.noteTab==="choices")noteChoicesDayIndex=state.dayIndex;
+      switchNoteTab(noteTab.dataset.noteTab);return;
+    }
     const o=e.target.closest("[data-open-modal]");if(o){openModal(o.dataset.openModal);return}
     const m=e.target.closest("[data-member]");if(m){state.shoppingMember=m.dataset.member;renderShopping();return}
     const autumnOpen=e.target.closest("[data-autumn-open]");if(autumnOpen){openAutumnEditor(autumnOpen.dataset.autumnOpen);return}
@@ -2041,6 +2086,9 @@ function bind(){
       $("#noteStatus").textContent=`⚠ Firebase 測試失敗：${err.message}`;
       toast(`Firebase：${err.message}`);
     }
+  });
+  $("#noteChoicesDaySelect")?.addEventListener("change",e=>{
+    noteChoicesDayIndex=Number(e.target.value);renderNoteChoices();
   });
   $("#notesArea").addEventListener("input",e=>{
     state.notes=e.target.value;saveLocal("notes",state.notes);const noteEmpty=$("#notesEmptyState");if(noteEmpty)noteEmpty.hidden=!!String(state.notes||"").trim();$("#noteStatus").textContent="本機已儲存";
@@ -2344,7 +2392,7 @@ startPrivateAuth();
 if("serviceWorker" in navigator){
   window.addEventListener("load", async()=>{
     try{
-      const reg = await navigator.serviceWorker.register("./sw.js?v=11122",{updateViaCache:"none"});
+      const reg = await navigator.serviceWorker.register("./sw.js?v=11124",{updateViaCache:"none"});
       await reg.update();
     }catch(e){console.warn("Service Worker update failed",e)}
   });

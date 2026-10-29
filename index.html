@@ -18,9 +18,9 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=11122" rel="stylesheet"/>
+<link href="./style.css?v=11124" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
-<meta content="1.11.22" name="app-version"/>
+<meta content="1.11.24" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
 </head>
 <body>
@@ -123,12 +123,12 @@
 </div>
 <div class="tool-grid" id="toolMenu">
 <button class="tool-card active" data-tool="booking"><span class="tool-emoji">🎫</span><b>訂位票券</b><small>訂位・票券</small></button>
-<button class="tool-card" data-tool="autumn"><span class="tool-emoji">🍁</span><b>紅葉觀測</b><small>紅葉・銀杏</small></button>
+
 <button class="tool-card" data-tool="exchange"><span class="tool-emoji">¥</span><b>匯率計算</b><small>JPY ↔ TWD</small></button>
 <button class="tool-card" data-tool="mapimport"><span class="tool-emoji">📍</span><b>地點匯入</b><small>Google Maps</small></button>
 <button class="tool-card" data-tool="shopping"><span class="tool-emoji">🛍️</span><b>購物清單</b><small>採買</small></button>
 <button class="tool-card" data-tool="expense"><span class="tool-emoji">💴</span><b>記帳</b><small>支出・分帳</small></button>
-<button class="tool-card" data-tool="note"><span class="tool-emoji">📝</span><b>記事</b><small>備忘・同步</small></button>
+<button class="tool-card" data-tool="note"><span class="tool-emoji">📝</span><b>記事</b><small>備忘・紅葉・選項</small></button>
 </div>
 <div class="tool-panel active" id="bookingPanel">
 <div class="panel-heading panel-heading-with-art booking-head-v42">
@@ -138,9 +138,7 @@
 <p class="privacy-note">私人 QR Code、完整訂位編號不要寫進公開 GitHub 原始碼；可放在記事或你自己的受保護雲端連結。</p>
 <div class="list-stack" id="bookingList"></div>
 </div>
-<div class="tool-panel" id="autumnPanel">
-<section class="autumn-watch" id="autumnWatch"></section>
-</div>
+
 <div class="tool-panel" id="exchangePanel">
 <div class="panel-heading"><div><span class="eyebrow">CURRENCY</span><h3>日圓／台幣匯率計算</h3></div></div>
 <div class="exchange-tool-card">
@@ -198,11 +196,29 @@ https://maps.app.goo.gl/…"></textarea></label>
 <div class="list-stack" id="expenseList"></div>
 </div>
 <div class="tool-panel" id="notePanel">
-<div class="panel-heading"><div><span class="eyebrow">旅行備忘</span><h3>旅行記事</h3></div></div>
-<div class="empty-art-card note-empty-art" hidden="" id="notesEmptyState"><img alt="目前還沒有任何記事" src="./nov_empty_notes.webp?v=160"/></div>
-<textarea class="notes-area" id="notesArea" placeholder="行前提醒、臨時備註、想買的東西…"></textarea>
-<button class="primary-btn" id="firebaseTestBtn" style="margin-top:10px" type="button">測試 Firebase 連線</button>
-<div class="save-status" id="noteStatus">輸入後自動儲存</div>
+  <div class="panel-heading"><div><span class="eyebrow">JOURNEY NOTES</span><h3>旅行記事</h3></div></div>
+  <nav class="note-subtabs" aria-label="記事分類">
+    <button type="button" class="active" data-note-tab="memo" aria-selected="true">📝 備忘</button>
+    <button type="button" data-note-tab="autumn" aria-selected="false">🍁 紅葉觀測</button>
+    <button type="button" data-note-tab="choices" aria-selected="false">🧭 行程選項</button>
+  </nav>
+  <div class="note-subpane active" id="noteMemoPane">
+    <p class="note-intro">旅行備忘會自動儲存並同步，不與紅葉觀測狀態混用。</p>
+    <div class="empty-art-card note-empty-art" hidden id="notesEmptyState"><img alt="目前還沒有任何記事" src="./nov_empty_notes.webp?v=160"/></div>
+    <textarea class="notes-area" id="notesArea" placeholder="行前提醒、臨時備註、想買的東西…"></textarea>
+    <div class="save-status" id="noteStatus">輸入後自動儲存</div>
+    <details class="note-maintenance"><summary>進階：Firebase 連線測試</summary><button class="primary-btn" id="firebaseTestBtn" type="button">測試 Firebase 連線</button></details>
+  </div>
+  <div class="note-subpane" id="noteAutumnPane">
+    <p class="note-intro">銀杏、紅葉的預測與實況集中在這裡；可切換今天或全旅程、更新狀態、查看官方來源。</p>
+    <section class="autumn-watch" id="autumnWatch"></section>
+  </div>
+  <div class="note-subpane" id="noteChoicesPane">
+    <p class="note-intro">非必要的路線／天氣／餐廳選項移到這裡，行程頁只保留主線。選擇後仍會同步 Firebase。</p>
+    <label class="note-choices-day-label" for="noteChoicesDaySelect">查看哪一天的選項</label>
+    <select id="noteChoicesDaySelect" class="note-choices-day-select" aria-label="選擇日期"></select>
+    <div id="noteChoicesList"></div>
+  </div>
 </div>
 </section>
 </main>
@@ -351,7 +367,7 @@ https://maps.app.goo.gl/…"></textarea></label>
 <div class="toast" id="toast" role="status"></div>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script defer="" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script defer="" src="./firebase-config.js?v=11122"></script>
-<script defer="" src="./app.js?v=11122"></script>
+<script defer="" src="./firebase-config.js?v=11124"></script>
+<script defer="" src="./app.js?v=11124"></script>
 </body>
 </html>
