@@ -1,7 +1,8 @@
-九州家族旅 App v1.11.24 / R10
+九州家族旅 App v1.11.25（從 v1.11.24 更新）
 
-UPDATE_ONLY: 把 5 個靜態檔覆蓋到 GitHub Pages 專案根目錄。
-FULL_BACKUP: 靜態網站完整備份。僅 App 公開部署原始碼，不包含私人 Firebase 行程 Seed。
-R10 FIREBASE CONTENT: 僅匯入 trips/kyushu-nov-2026/content，請先備份該節點。
-詳見 Kyushu_2026_nov_v1.11.24_R10_CHANGES.md。
-更新套件尚未在線上部署／登入 Firebase，使用者需自行上傳或在已授權的部署流程中操作。
+本次僅移除每日行程中重複的「FAMILY DAY／今天怎麼走」卡片，保留時間軸與所有既有行程資訊。
+
+UPDATE_ONLY：覆蓋 GitHub Pages 根目錄的 app.js、index.html、style.css、sw.js、manifest.json。
+FULL_BACKUP：公開靜態資產完整備份（不含私人 Firebase JSON）。
+Firebase R10 不變，不需重新匯入。
+見 V1.11.25_CHANGES.md。
