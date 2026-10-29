@@ -1857,3 +1857,6 @@ html[data-font-size="xlarge"] .day-brief li{
 .official-status-disclosure{display:block}.official-status-disclosure>summary{padding:12px 14px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:800;list-style:inside}
 .official-status-disclosure .official-status-list{padding:0 11px 11px}
 @media(max-width:360px){.note-subtabs button{font-size:11px;padding:8px 3px}.schedule-choices-shortcut{padding:11px}}
+
+/* Family Day display-only hotfix: no changes to auth, scripts or PWA caching. */
+#familyMetaCard { display: none !important; }

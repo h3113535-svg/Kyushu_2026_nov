@@ -1,9 +1,9 @@
-/* Kyushu family autumn PWA · November 2026 · v1.11.25 hide redundant Family Day card / focus on timeline */
+/* Kyushu family autumn PWA · November 2026 · v1.11.24 autumn watch in notes / clearer schedule */
 
 const FIREBASE_CONFIG = window.KYUSHU_FIREBASE_CONFIG || {};
 const DATABASE_URL = FIREBASE_CONFIG.databaseURL || "https://kyushu2026-9b6b9-default-rtdb.asia-southeast1.firebasedatabase.app";
 const APP_NAMESPACE = "kyushu-nov-2026";
-const APP_VERSION = "1.11.25";
+const APP_VERSION = "1.11.24";
 const ROOT = window.KYUSHU_PRIVATE_PATH || "trips/kyushu-nov-2026";
 const OFFICIAL_TRIP_START = "2026-11-21";
 const OFFICIAL_TRIP_END = "2026-11-29";
@@ -616,6 +616,13 @@ function weatherMode(event){
   return "driving";
 }
 
+function intensityText(value){
+  if(typeof value==="number"){
+    const n=Math.max(0,Math.min(5,Math.round(value)));
+    return `${"★".repeat(n)}${"☆".repeat(5-n)}`;
+  }
+  return value?String(value):"";
+}
 function japanClockMinutes(){
   const parts=new Intl.DateTimeFormat("en-GB",{
     timeZone:TRIP?.timezone||"Asia/Tokyo",
@@ -655,6 +662,19 @@ function renderNowNext(day){
   const mins=Math.max(0,next._mins-now);
   box.innerHTML=`<div class="now-next-head"><div><span class="eyebrow">NEXT UP</span><b>下一站</b></div><em>${esc(formatCountdown(mins))}</em></div>
     <div class="now-next-main"><strong>${esc(next.time)}</strong><div><b>${esc(next.title)}</b>${next.travel?`<small>${esc(next.transport||"→")} ${esc(next.travel)}</small>`:""}</div></div>`;
+}
+function renderFamilyMeta(day){
+  const box=$("#familyMetaCard"); if(!box)return;
+  const m=day.familyMeta||{};
+  const rows=[
+    m.drive?{icon:"🚗",label:"今日駕駛",value:m.drive}:null,
+    m.intensity?{icon:"👟",label:"行程強度",value:intensityText(m.intensity)}:null,
+    m.shopping?{icon:"🛒",label:"今日採買",value:m.shopping}:null,
+    m.dinner?{icon:"🍳",label:"今晚",value:m.dinner}:null,
+    m.elderNote?{icon:"👨‍👩‍👦",label:"家族提醒",value:m.elderNote,wide:true}:null
+  ].filter(Boolean);
+  box.hidden=!rows.length;
+  box.innerHTML=rows.length?`<div class="family-meta-head"><span class="eyebrow">FAMILY DAY</span><b>今天怎麼走</b></div><div class="family-meta-grid">${rows.map(r=>`<div class="family-meta-item ${r.wide?"wide":""}"><span>${r.icon}</span><div><small>${esc(r.label)}</small><b>${esc(r.value)}</b></div></div>`).join("")}</div>`:"";
 }
 function renderDrivingCard(day){
   const box=$("#drivingCard");if(!box)return;
@@ -1381,6 +1401,7 @@ function renderSchedule(){
   if(meta) meta.innerHTML=`<span class="day-meta-pill">D${state.dayIndex+1}</span><span class="day-meta-text">${d.shortDate}</span><span class="day-meta-text">今日主圖</span>`;
   renderDayBrief(d);
   renderNowNext(d);
+  renderFamilyMeta(d);
   renderDrivingCard(d);
   renderOfficialStatus(d);
   renderAutumnWatch(d);
