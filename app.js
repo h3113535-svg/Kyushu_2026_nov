@@ -917,6 +917,39 @@ function renderDayBrief(day){
     : "";
   box.classList.toggle("empty-brief",!hasContent);
 }
+// UX-only: R12 Firebase Content supplies exact navigation stops per compact event.
+// Older R11 data still works through its source events and primary nav.
+function mapStopsForEvent(day,event){
+  if(Array.isArray(event.mapStops)&&event.mapStops.length){
+    return event.mapStops.filter(x=>x&&x.query&&x.label);
+  }
+  const sources=day?.timelineSourceEvents||[];
+  const seen=new Set(),result=[];
+  const entries=Array.isArray(event.sourceEventIndices)?event.sourceEventIndices.map(i=>sources[i]):[];
+  for(const item of entries){
+    if(!item?.nav||item.noNav)continue;
+    const key=String(item.nav).toLowerCase().replace(/\s+/g,"");
+    if(seen.has(key))continue;seen.add(key);
+    const label=String(item.title||item.nav).replace(/^.*?｜/,"").replace(/【.*?】/g,"").slice(0,32).trim();
+    result.push({label,query:item.nav,kind:"primary"});
+  }
+  if(!result.length&&event.nav&&!event.noNav)result.push({label:event.title,query:event.nav,kind:"primary"});
+  return result;
+}
+function renderEventMapLinks(day,event){
+  const stops=mapStopsForEvent(day,event);
+  if(!stops.length)return "";
+  if(stops.length===1){
+    const st=stops[0];
+    return `<div class="event-map-single"><a class="map-open-link" target="_blank" rel="noopener" href="${esc(mapSearch(st.query))}" aria-label="Google 地圖搜尋：${esc(st.label)}">📍 開啟 Google 地圖 <span aria-hidden="true">↗</span></a></div>`;
+  }
+  const optionCount=stops.filter(s=>s.kind==="option").length;
+  const caption=optionCount?`・含 ${optionCount} 間／項候選`:'';
+  return `<details class="event-map-multi" data-no-guide-hold="1"><summary><span aria-hidden="true">📍</span> 這段有 ${stops.length} 個地點可導航${caption}<span class="event-map-chevron" aria-hidden="true">⌄</span></summary><div class="event-map-list">${stops.map(st=>{
+    const mark=st.kind==="conditional"?"選配":st.kind==="option"?"候選":st.kind==="logistics"?"交通／採買":"景點";
+    return `<a target="_blank" rel="noopener" href="${esc(mapSearch(st.query))}" aria-label="Google 地圖搜尋：${esc(st.label)}"><span class="event-map-label">${esc(st.label)}</span><span class="event-map-kind">${mark}</span><span aria-hidden="true">↗</span></a>`;
+  }).join("")}</div></details>`;
+}
 function renderEventExtras(e){
   const chips=[
     e.status?`<span class="info-chip">${esc(e.status)}</span>`:"",
@@ -1416,7 +1449,7 @@ function renderSchedule(){
         <div class="event-top"><h3 class="event-title">${esc(e.title)}</h3><span class="tag">${esc(e.category||"行程")}</span></div>
         <div class="event-time">${esc(e.time)}</div>
         ${renderEventExtras(e)}
-        ${e.noNav?"":`<div class="event-footer"><a class="nav-link" target="_blank" rel="noopener" href="${mapNav(e.nav||e.title,weatherMode(e))}">↗ Google Maps 查看</a></div>`}
+        ${renderEventMapLinks(d,e)}
       </div>
     </article>`).join("");
   renderHotelReturnCard();
@@ -1923,6 +1956,7 @@ function applyDisplaySettings(){
   document.documentElement.dataset.theme=theme;
   document.documentElement.dataset.fontSize=fontSize;
   document.documentElement.dataset.sceneLang=getSceneLanguage();
+  const sizeButton=document.getElementById("quickFontSize");if(sizeButton){const word={standard:"標準",large:"大字",xlarge:"特大"}[fontSize]||"標準";sizeButton.textContent=`Aa ${word}`;sizeButton.setAttribute("aria-label",`目前${word}，按一下切換字級`);}
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content",THEME_META[theme]||THEME_META.travel);
   $$("[data-theme-choice]").forEach(b=>{
     const selected=b.dataset.themeChoice===theme;
@@ -1956,6 +1990,7 @@ function bind(){
     const dayArt=e.target.closest("#daySceneCard");if(dayArt){openDayLightbox(state.dayIndex);return;}
     const themeChoice=e.target.closest("[data-theme-choice]");if(themeChoice){setDisplayTheme(themeChoice.dataset.themeChoice);return}
     const fontChoice=e.target.closest("[data-font-choice]");if(fontChoice){setFontSize(fontChoice.dataset.fontChoice);return}
+    const quickFont=e.target.closest("#quickFontSize");if(quickFont){const current=document.documentElement.dataset.fontSize||"standard";setFontSize(current==="standard"?"large":current==="large"?"xlarge":"standard");return;}
     const dayLangChoice=e.target.closest("[data-day-lang]");if(dayLangChoice){setSceneLanguage(dayLangChoice.dataset.dayLang);return}
     const d=e.target.closest("[data-day]");if(d){state.dayIndex=Number(d.dataset.day);state.decisionDrafts={};renderDays();renderSchedule();return}
     const foodDay=e.target.closest("[data-food-day]");if(foodDay){const key=foodDay.dataset.foodDay;foodOpenDay=foodOpenDay===key?null:key;renderFood();return}
