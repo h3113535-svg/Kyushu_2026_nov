@@ -1984,3 +1984,153 @@ html[data-font-size="xlarge"] #scheduleView .day-title-v46 #dayTitle{
   html[data-font-size="large"] #scheduleView .event-map-multi>summary{font-size:15.5px!important}
   html[data-font-size="xlarge"] #scheduleView .event-map-multi>summary{font-size:17px!important}
 }
+
+
+/* ===== R12.2 B | Photo-cover layout only =====
+ * Keep auth, Firebase and PWA behavior unchanged.
+ * One quiet panoramic illustration; all trip metadata below it on a warm-paper surface.
+ */
+html[data-theme] .hero{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:0!important;
+  aspect-ratio:1.95 / 1!important;
+  overflow:hidden!important;
+  border-radius:0!important;
+  border:0!important;
+  background-position:center 52%!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  isolation:isolate!important;
+}
+html[data-theme="wa"] .hero,html[data-theme="travel"] .hero{
+  background-image:url("./nov_hero_main_a.webp?v=160")!important;
+}
+html[data-theme="sea"] .hero{
+  background-image:url("./nov_hero_main_b.webp?v=130")!important;
+}
+html[data-theme] .hero::before,
+html[data-theme] .hero::after{display:none!important;content:none!important;background:none!important}
+html[data-theme] .hero-stage{display:none!important}
+html[data-theme] .hero .settings-btn{
+  position:absolute!important;
+  top:12px!important;
+  right:12px!important;
+  left:auto!important;
+  bottom:auto!important;
+  z-index:7!important;
+  display:grid!important;
+  place-items:center!important;
+  min-width:42px!important;
+  width:42px!important;
+  height:42px!important;
+  padding:0!important;
+  border:1px solid rgba(212,202,189,.75)!important;
+  border-radius:50%!important;
+  background:rgba(255,252,247,.90)!important;
+  color:#695b50!important;
+  box-shadow:0 2px 9px rgba(60,48,36,.09)!important;
+  backdrop-filter:none!important;
+}
+html[data-theme] .hero-meta{
+  position:relative;
+  padding:19px 21px 17px;
+  border-bottom:1px solid #ece3da;
+  background:#fffcf8;
+  color:#4c4038;
+}
+html[data-theme] .hero-meta .hero-copy{
+  position:static!important;
+  display:block!important;
+  inset:auto!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  transform:none!important;
+}
+html[data-theme] .hero-meta .hero-season{
+  display:block!important;
+  margin:0 0 6px!important;
+  color:#a18a79!important;
+  font-family:"Noto Serif TC","Noto Serif CJK TC","PingFang TC",serif!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  line-height:1.4!important;
+  letter-spacing:.16em!important;
+  white-space:normal!important;
+  text-shadow:none!important;
+}
+html[data-theme] .hero-meta #heroPrivateTitle{
+  display:block!important;
+  margin:0 0 8px!important;
+  color:#4c4038!important;
+  font-family:"Noto Serif TC","Noto Serif CJK TC","PingFang TC",serif!important;
+  font-size:25px!important;
+  font-weight:600!important;
+  line-height:1.36!important;
+  letter-spacing:.035em!important;
+  overflow-wrap:anywhere!important;
+  white-space:normal!important;
+  text-shadow:none!important;
+}
+html[data-theme] .hero-meta .hero-date{
+  display:block!important;
+  margin:0 0 9px!important;
+  color:#76695e!important;
+  font-size:12px!important;
+  font-weight:500!important;
+  line-height:1.5!important;
+  letter-spacing:.045em!important;
+  white-space:normal!important;
+  text-shadow:none!important;
+}
+html[data-theme] .hero-meta .hero-route{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:4px 7px!important;
+  width:100%!important;
+  margin:0!important;
+  color:#837569!important;
+  font-size:11.5px!important;
+  line-height:1.55!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
+  white-space:normal!important;
+  text-shadow:none!important;
+}
+html[data-theme] .hero-meta .hero-route span{white-space:nowrap!important}
+html[data-theme] .hero-meta .hero-route i{
+  color:#b59b85!important;
+  font-style:normal!important;
+  white-space:nowrap!important;
+  text-shadow:none!important;
+}
+html[data-font-size="large"] .hero-meta #heroPrivateTitle{font-size:28px!important}
+html[data-font-size="large"] .hero-meta .hero-date{font-size:14px!important}
+html[data-font-size="large"] .hero-meta .hero-route{font-size:13px!important}
+html[data-font-size="xlarge"] .hero-meta #heroPrivateTitle{font-size:31px!important}
+html[data-font-size="xlarge"] .hero-meta .hero-season{font-size:12px!important}
+html[data-font-size="xlarge"] .hero-meta .hero-date{font-size:16px!important}
+html[data-font-size="xlarge"] .hero-meta .hero-route{font-size:15px!important}
+@media(max-width:370px){
+  html[data-theme] .hero-meta{padding:17px 17px 15px}
+  html[data-theme] .hero-meta #heroPrivateTitle{font-size:23px!important}
+  html[data-font-size="large"] .hero-meta #heroPrivateTitle{font-size:26px!important}
+  html[data-font-size="xlarge"] .hero-meta #heroPrivateTitle{font-size:29px!important}
+}

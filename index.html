@@ -18,7 +18,7 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=11124-ux20261030-soft121" rel="stylesheet"/>
+<link href="./style.css?v=11124-ux-heroB-20261030-soft121" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
 <meta content="1.11.24" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
@@ -36,17 +36,18 @@
 </div>
 </section>
 <div hidden="" id="app">
-<header class="hero theme-hero">
+<header class="hero theme-hero" aria-label="九州秋日旅程封面">
 <button aria-label="開啟設定" class="settings-btn" id="settingsBtn" title="顯示設定">⚙︎</button>
-<div class="hero-stage">
+<div class="hero-stage" aria-hidden="true"></div>
+</header>
+<section class="hero-meta" aria-label="旅程資訊">
 <div class="hero-copy">
 <span class="hero-season" id="heroPrivateSeason"></span>
 <h1 id="heroPrivateTitle">九州家族紅葉旅</h1>
 <div class="hero-date" id="heroPrivateDate"></div>
 <div class="hero-route" id="heroPrivateRoute"></div>
 </div>
-</div>
-</header>
+</section>
 
 <main>
 <section class="view active" id="scheduleView">
