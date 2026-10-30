@@ -2134,3 +2134,47 @@ html[data-font-size="xlarge"] .hero-meta .hero-route{font-size:15px!important}
   html[data-font-size="large"] .hero-meta #heroPrivateTitle{font-size:26px!important}
   html[data-font-size="xlarge"] .hero-meta #heroPrivateTitle{font-size:29px!important}
 }
+
+
+/* R12.3 — 九天行程圖快捷入口：不觸碰登入/時間軸/地圖邏輯 */
+.trip-overview-entry{
+  display:flex;align-items:center;gap:13px;box-sizing:border-box;
+  width:calc(100% - 32px);margin:17px 16px 11px;padding:10px 12px;
+  border:1px solid #e7ded3;border-radius:16px;
+  background:#fffcf8;color:#4f443c;text-align:left;
+  box-shadow:0 3px 12px rgba(84,64,47,.045);
+  cursor:pointer;min-height:84px;
+  font-family:inherit;
+}
+.trip-overview-entry:active{transform:scale(.995);background:#faf5ee}
+.trip-overview-entry:focus-visible,.trip-overview-close:focus-visible,.trip-overview-foot :focus-visible{outline:3px solid #c99e78;outline-offset:2px}
+.trip-overview-thumb{display:block;flex:none;width:51px;height:64px;object-fit:cover;object-position:top;border-radius:8px;border:1px solid #e7ddd1;background:#f0e8dd}
+.trip-overview-copy{flex:1;display:flex;flex-direction:column;align-items:flex-start;min-width:0;gap:4px}
+.trip-overview-copy strong{font-size:16.5px;font-weight:620;line-height:1.4;letter-spacing:.015em;color:#4e4137}
+.trip-overview-copy small{font-size:12.5px;line-height:1.48;font-weight:400;color:#83766a}
+.trip-overview-cta{display:grid;flex:none;place-items:center;width:30px;height:30px;border:1px solid #e3d7ca;border-radius:50%;font-size:17px;color:#8a6751;background:#fbf6f1}
+html[data-font-size="large"] .trip-overview-copy strong{font-size:18px}
+html[data-font-size="large"] .trip-overview-copy small{font-size:14px}
+html[data-font-size="xlarge"] .trip-overview-copy strong{font-size:20px}
+html[data-font-size="xlarge"] .trip-overview-copy small{font-size:15.5px}
+html[data-font-size="xlarge"] .trip-overview-entry{min-height:94px}
+.trip-overview-dialog{position:fixed;inset:0;width:100%;height:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;box-sizing:border-box;border:0;background:#f8f5ef;color:#453c34;overflow:hidden}
+.trip-overview-dialog::backdrop{background:rgba(37,28,24,.63)}
+.trip-overview-sheet{height:100%;display:flex;flex-direction:column;min-height:0}
+.trip-overview-head{display:flex;align-items:center;justify-content:space-between;flex:none;gap:12px;padding:calc(13px + env(safe-area-inset-top)) 16px 11px;background:#fffcf8;border-bottom:1px solid #e8e0d6}
+.trip-overview-kicker{font-size:10px;letter-spacing:.12em;color:#967c66}
+.trip-overview-head h2{font-size:19px;line-height:1.35;margin:2px 0 0;font-weight:620;letter-spacing:.02em;color:#49392e}
+.trip-overview-close{display:grid;place-items:center;flex:none;min-width:46px;min-height:46px;border:1px solid #e4d8cb;border-radius:50%;background:#fffaf4;color:#725e50;font-size:27px;line-height:1;cursor:pointer}
+.trip-overview-stage{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;padding:12px 0 20px;text-align:center;background:#f3ede5}
+.trip-overview-stage img{display:block;height:auto;max-width:none;margin:0 auto;border-radius:4px;box-shadow:0 5px 24px rgba(75,54,40,.11);user-select:none;-webkit-user-drag:none}
+.trip-overview-foot{display:flex;flex:none;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px 5px;background:#fffcf8;border-top:1px solid #e8e0d6}
+.trip-overview-zoom,.trip-overview-exports{display:flex;align-items:center;gap:5px;flex:none}
+.trip-overview-foot button,.trip-overview-foot a{box-sizing:border-box;display:grid;place-items:center;min-height:44px;padding:0 10px;border:1px solid #e3d8cb;border-radius:10px;background:#fffdf9;color:#635145;text-decoration:none;font-size:13.5px;font-weight:560;font-family:inherit;cursor:pointer}
+.trip-overview-zoom button:first-child,.trip-overview-zoom button:last-child{min-width:37px;font-size:22px}
+.trip-overview-zoom button:nth-child(2){min-width:59px;font-size:12px}
+.trip-overview-exports button,.trip-overview-exports a{padding:0 12px}
+.trip-overview-exports a{background:#76604e;border-color:#76604e;color:white}
+.trip-overview-hint{flex:none;text-align:center;padding:5px 12px calc(8px + env(safe-area-inset-bottom));font-size:11.5px;color:#8b7b6d;background:#fffcf8;margin:0;line-height:1.35}
+@media (max-width:374px){.trip-overview-exports button,.trip-overview-exports a{font-size:12px;padding:0 8px}.trip-overview-zoom button:nth-child(2){min-width:50px}.trip-overview-foot{padding-inline:6px}}
+@media (min-width:700px){.trip-overview-dialog{width:min(740px,96vw);height:min(95dvh,1080px);inset:0;margin:auto;border-radius:18px;box-shadow:0 18px 70px #21191455}.trip-overview-entry{max-width:740px;margin-inline:auto}.trip-overview-stage{padding:20px 0}}
+@media (prefers-reduced-motion:reduce){.trip-overview-entry{transition:none}}
