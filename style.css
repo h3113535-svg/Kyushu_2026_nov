@@ -2316,3 +2316,69 @@ html[data-font-size="xlarge"] #scheduleView .schedule-section-lead strong {font-
 @media(prefers-reduced-motion: reduce){
   html[data-theme] #scheduleView .trip-overview-entry{transition:none}
 }
+
+
+/* R12.4.1 corrective patch — calm B-cover transition, accurate weather label.
+   Scoped styles only; no JS, auth, Firebase, SW, or itinerary changes. */
+html[data-theme] .hero {
+  /* Keep full landscape visible; fade only the last 24px into the page. */
+  border-radius:0!important;
+}
+html[data-theme] .hero::after {
+  content:""!important;
+  position:absolute!important;
+  display:block!important;
+  inset:auto 0 0!important;
+  height:25px!important;
+  width:100%!important;
+  border:0!important;
+  border-radius:0!important;
+  background:linear-gradient(to bottom, rgba(251,248,242,0), #fbf8f2)!important;
+  pointer-events:none!important;
+  z-index:3!important;
+}
+html[data-theme] .hero-meta {
+  margin-top:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding:13px 21px 12px!important;
+  background:#fbf8f2!important;
+}
+html[data-theme] .hero-meta #heroPrivateTitle {
+  letter-spacing:.015em!important;
+  font-weight:530!important;
+}
+html[data-theme] .hero-meta .hero-season {margin-bottom:4px!important}
+html[data-theme] .hero-meta .hero-date {margin-bottom:5px!important}
+html[data-theme] #scheduleView {
+  background:linear-gradient(180deg,#fbf8f2 0%,#fbf8f2 330px,transparent 620px)!important;
+}
+html[data-theme] #scheduleView .trip-overview-entry {
+  padding-block:9px!important;
+  min-height:58px!important;
+  margin:0 0 2px!important;
+  border-top-color:rgba(181,158,137,.17)!important;
+  border-bottom-color:rgba(181,158,137,.17)!important;
+}
+html[data-theme] #scheduleView .day-strip {padding-block:4px 5px!important}
+html[data-theme] #scheduleView .day-strip-wrap {margin-bottom:0!important}
+html[data-theme] #scheduleView .schedule-section-lead {margin:4px 1px 6px!important}
+html[data-theme] #scheduleView .schedule-section-lead strong {
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  letter-spacing:.035em!important;
+}
+html[data-theme] #scheduleView .schedule-section-lead small {font-size:12px!important}
+/* Before the 16-day forecast window, show a brief compact preview.
+   The 'not a real forecast' indication remains visible. Real forecasts remain full. */
+html[data-theme] #scheduleView .weather-card.weather-no-forecast {padding:11px 14px 12px!important;margin-bottom:12px!important}
+html[data-theme] #scheduleView .weather-card.weather-no-forecast .weather-temp {display:none!important}
+html[data-theme] #scheduleView .weather-card.weather-no-forecast .rain-box {display:none!important}
+html[data-theme] #scheduleView .weather-card.weather-no-forecast .weather-mode-hint {margin-top:9px!important;font-size:11px!important;line-height:1.4!important}
+html[data-theme] #scheduleView .weather-card.weather-no-forecast .weather-main {min-height:66px!important}
+html[data-theme] #scheduleView .weather-card.weather-no-forecast .weather-icon {transform:scale(.85);transform-origin:center right}
+html[data-font-size="large"] #scheduleView .schedule-section-lead strong {font-size:16px!important}
+html[data-font-size="xlarge"] #scheduleView .schedule-section-lead strong {font-size:18px!important}
+@media(max-width:370px){html[data-theme] .hero-meta{padding-inline:17px!important}}
