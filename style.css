@@ -2583,3 +2583,29 @@ html[data-font-size="xlarge"][data-theme="wa"] #scheduleView .schedule-section-l
 html[data-theme="wa"] .hero-paper-wave{display:block;}
 /* Remove the extra floating preview caption so it cannot overlap the image. */
 html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast::after{content:none!important;display:none!important;}
+
+
+/* R12.5.1 | Clean image-to-typography transition: remove the decorative wave.
+ * Tiny bottom-of-hero fade; no curved SVG, no overlap, no extra cards.
+ * CSS only. R12.5 map/overview/timeline/auth functionality is preserved.
+ */
+html[data-theme="wa"] .hero-paper-wave {display:none!important;}
+html[data-theme="wa"] .hero {
+  border-radius:0!important;
+}
+html[data-theme="wa"] .hero::after {
+  display:block!important;
+  content:""!important;
+  position:absolute!important;
+  inset:auto 0 0!important;
+  height:21px!important;
+  width:100%!important;
+  background:linear-gradient(to bottom,rgba(251,248,242,0) 0%,rgba(251,248,242,.35) 50%,#fbf8f2 100%)!important;
+  pointer-events:none!important;
+  z-index:2!important;
+}
+html[data-theme="wa"] .hero-meta {
+  margin-top:0!important;
+  padding-top:11px!important;
+  isolation:auto!important;
+}
