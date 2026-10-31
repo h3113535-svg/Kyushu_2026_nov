@@ -2382,3 +2382,204 @@ html[data-theme] #scheduleView .weather-card.weather-no-forecast .weather-icon {
 html[data-font-size="large"] #scheduleView .schedule-section-lead strong {font-size:16px!important}
 html[data-font-size="xlarge"] #scheduleView .schedule-section-lead strong {font-size:18px!important}
 @media(max-width:370px){html[data-theme] .hero-meta{padding-inline:17px!important}}
+
+
+/* ===== R12.5 | Faithful implementation of the APPROVED right-hand UI =====
+   Actual HTML/CSS — no generated replacement screenshot, no auth/JS/Firebase changes.
+   Works with R12.4.1 base. Keep WA theme close to the family's approved design.
+*/
+html[data-theme="wa"] #app { background:#fbf8f2!important; }
+html[data-theme="wa"] .hero {
+  height:clamp(247px,68vw,320px)!important;
+  aspect-ratio:auto!important;
+  background-size:cover!important;
+  background-position:center 53%!important;
+  overflow:hidden!important;
+}
+html[data-theme="wa"] .hero::after { display:none!important; content:none!important; }
+html[data-theme="wa"] .hero .settings-btn {
+  top:14px!important;right:14px!important;
+  width:47px!important;height:47px!important;
+  border:1px solid rgba(219,202,181,.75)!important;
+  background:rgba(255,251,244,.94)!important;
+}
+html[data-theme="wa"] .hero-meta {
+  z-index:3!important;
+  position:relative!important;
+  margin-top:-27px!important;
+  padding:15px 23px 13px!important;
+  background:#fbf8f2!important;
+  color:#47382f!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  isolation:isolate!important;
+}
+html[data-theme="wa"] .hero-paper-wave {
+  position:absolute;display:block;
+  width:100%;height:64px;left:0;top:-49px;
+  color:#fbf8f2;pointer-events:none;z-index:-1;
+}
+html[data-theme="wa"] .hero-meta .hero-copy {position:relative!important;z-index:2!important}
+html[data-theme="wa"] .hero-meta .hero-season {
+  font-family:"Noto Serif TC","Noto Serif CJK TC","PingFang TC",serif!important;
+  font-weight:500!important;letter-spacing:.12em!important;
+  font-size:11px!important;color:#97806f!important;
+  margin:0 0 5px!important;
+}
+html[data-theme="wa"] .hero-meta #heroPrivateTitle {
+  font-family:"Noto Serif TC","Noto Serif CJK TC","PingFang TC",serif!important;
+  font-size:clamp(25px,6.9vw,32px)!important;
+  font-weight:550!important;line-height:1.35!important;
+  margin:0 0 6px!important;color:#4d332c!important;
+  letter-spacing:.02em!important;
+}
+html[data-theme="wa"] .hero-meta .hero-date {
+  font-family:"Noto Serif TC","Noto Serif CJK TC","PingFang TC",serif!important;
+  font-size:14px!important;letter-spacing:.085em!important;
+  color:#a36b59!important;margin:0 0 7px!important;
+}
+html[data-theme="wa"] .hero-meta .hero-route {
+  color:#7c6b60!important;font-size:12px!important;letter-spacing:.012em!important;
+  line-height:1.6!important;gap:4px 7px!important;
+}
+html[data-theme="wa"] .hero-meta .hero-route::before {
+  content:"⌖";font-family:Georgia,serif;font-size:19px;
+  color:#b4765b;margin-right:3px;line-height:1;
+}
+html[data-theme="wa"] #scheduleView {
+  background:#fbf8f2!important;
+}
+html[data-theme="wa"] #scheduleView .trip-overview-entry {
+  display:flex!important;
+  width:100%!important;min-height:66px!important;
+  margin:0 0 8px!important;padding:9px 12px!important;
+  gap:11px!important;
+  border:1px solid #e8d9c9!important;
+  border-radius:16px!important;
+  background:rgba(255,253,248,.79)!important;
+  box-shadow:0 3px 14px rgba(77,55,41,.035)!important;
+}
+html[data-theme="wa"] #scheduleView .trip-overview-map-icon {
+  width:43px!important;height:43px!important;flex:0 0 43px!important;
+  background:linear-gradient(145deg,#f4e8d9,#fbf3e8)!important;
+  border-radius:13px!important;
+}
+html[data-theme="wa"] #scheduleView .trip-overview-copy strong {
+  font-size:16px!important;font-weight:620!important;line-height:1.43!important;
+  color:#59453b!important;
+}
+html[data-theme="wa"] #scheduleView .trip-overview-copy small {
+  font-size:12.5px!important;color:#87786b!important;line-height:1.45!important;
+}
+html[data-theme="wa"] #scheduleView .trip-overview-cta {
+  width:32px!important;height:32px!important;flex:0 0 32px!important;
+  border:1px solid #e7dbcd!important;background:#fcf7ef!important;
+  font-size:24px!important;color:#a7795d!important;
+}
+html[data-theme="wa"] #scheduleView .day-strip-wrap {
+  margin:0 -16px 2px!important;padding:0!important;
+  background:transparent!important;border:0!important;
+}
+html[data-theme="wa"] #scheduleView .day-strip {
+  padding:5px 16px 10px!important;gap:8px!important;
+}
+html[data-theme="wa"] #scheduleView .day-btn {
+  min-width:62px!important;height:78px!important;
+  background:#fffcf7!important;border:1px solid #e6d9cd!important;
+  border-radius:17px!important;transform:none!important;
+}
+html[data-theme="wa"] #scheduleView .day-btn.active {
+  background:#b7715d!important;border-color:#b7715d!important;
+  box-shadow:0 4px 12px rgba(149,85,66,.14)!important;
+  color:#fff!important;
+}
+html[data-theme="wa"] #scheduleView .day-btn.active .weekday,
+html[data-theme="wa"] #scheduleView .day-btn.active .date,
+html[data-theme="wa"] #scheduleView .day-btn.active .d {color:#fff!important;opacity:1!important;}
+html[data-theme="wa"] #scheduleView .schedule-section-lead {
+  display:flex!important;min-height:37px!important;
+  align-items:center!important;gap:7px!important;margin:1px 1px 8px!important;
+  border:0!important;
+}
+html[data-theme="wa"] #scheduleView .schedule-section-lead strong {
+  font-family:"Noto Serif TC","Noto Serif CJK TC","PingFang TC",serif!important;
+  font-size:19px!important;font-weight:590!important;color:#584139!important;
+  line-height:1.3!important;
+}
+html[data-theme="wa"] #scheduleView .schedule-section-lead .schedule-leaf {
+  font-size:17px!important;color:#b46e54!important;
+}
+html[data-theme="wa"] #scheduleView .schedule-section-lead::after {
+  content:"";height:1px;flex:1;min-width:10px;
+  background:linear-gradient(90deg,#eadfd2,transparent);
+}
+html[data-theme="wa"] #scheduleView .schedule-jump {
+  order:3;white-space:nowrap;flex:0 0 auto;
+  font-size:12px;font-weight:600;color:#a26750;
+  text-decoration:none;min-height:37px;display:flex;gap:4px;align-items:center;
+}
+html[data-theme="wa"] #scheduleView .schedule-jump:focus-visible {
+  outline:2px solid #bd866a;outline-offset:2px;border-radius:6px;
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast {
+  padding:12px!important;
+  min-height:103px!important;
+  margin-bottom:13px!important;
+  background:#fffdfa!important;
+  border-radius:17px!important;
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast .weather-main {
+  display:flex!important;flex-direction:row-reverse!important;
+  justify-content:flex-end!important;align-items:center!important;
+  gap:13px!important;min-height:82px!important;
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast .weather-main > div:first-child {
+  min-width:0;flex:1;
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast .weather-icon.has-wa-weather-art {
+  flex:0 0 94px!important;width:94px!important;height:82px!important;
+  transform:none!important;box-shadow:none!important;
+  border-radius:13px!important;
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast .eyebrow {
+  color:#6e5e52!important;letter-spacing:.04em!important;
+  font-size:12.5px!important;font-weight:650!important;opacity:1!important;
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast .weather-desc {
+  font-size:12px!important;line-height:1.5!important;
+  margin-top:8px!important;color:#82756c!important;
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast .weather-mode-hint {
+  display:none!important; /* duplicate preview detail; remains in DOM for accessibility/state */
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast .weather-main::after {
+  display:none!important; /* don't float 'tap to preview' under the thumbnail */
+}
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast::after {
+  content:"點一下切換預覽";
+  display:block;position:absolute;left:20px;bottom:3px;
+  font-size:10px;color:#9b8c7d;letter-spacing:0;
+}
+html[data-font-size="large"][data-theme="wa"] .hero-meta #heroPrivateTitle {font-size:31px!important}
+html[data-font-size="xlarge"][data-theme="wa"] .hero-meta #heroPrivateTitle {font-size:34px!important}
+html[data-font-size="large"][data-theme="wa"] #scheduleView .trip-overview-copy strong {font-size:18px!important}
+html[data-font-size="xlarge"][data-theme="wa"] #scheduleView .trip-overview-copy strong {font-size:20px!important}
+html[data-font-size="large"][data-theme="wa"] #scheduleView .schedule-section-lead strong {font-size:20px!important}
+html[data-font-size="xlarge"][data-theme="wa"] #scheduleView .schedule-section-lead strong {font-size:22px!important}
+@media(max-width:370px){
+  html[data-theme="wa"] .hero{height:246px!important}
+  html[data-theme="wa"] .hero-meta{padding-inline:18px!important}
+  html[data-theme="wa"] .hero-meta #heroPrivateTitle{font-size:25px!important}
+  html[data-theme="wa"] #scheduleView .day-btn{min-width:59px!important}
+  html[data-theme="wa"] #scheduleView .trip-overview-entry{padding-inline:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-theme="wa"] #scheduleView .trip-overview-entry{transition:none!important}
+}
+
+/* R12.5 safety: the curved SVG is only used by the approved WA cover. */
+.hero-paper-wave{display:none;}
+html[data-theme="wa"] .hero-paper-wave{display:block;}
+/* Remove the extra floating preview caption so it cannot overlap the image. */
+html[data-theme="wa"] #scheduleView .weather-card.weather-no-forecast::after{content:none!important;display:none!important;}

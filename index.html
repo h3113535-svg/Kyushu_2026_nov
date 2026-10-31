@@ -18,7 +18,7 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=r1241-hero-weather-fix-20261031" rel="stylesheet"/>
+<link href="./style.css?v=r125-match-approved-ui-20261031" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
 <meta content="1.11.24" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
@@ -41,6 +41,7 @@
 <div class="hero-stage" aria-hidden="true"></div>
 </header>
 <section class="hero-meta" aria-label="旅程資訊">
+<svg class="hero-paper-wave" viewBox="0 0 430 78" preserveAspectRatio="none" aria-hidden="true"><path d="M0 13 C52 -2 85 9 135 23 C192 42 250 44 306 36 C360 28 394 35 430 42 L430 78 L0 78 Z" fill="currentColor"/></svg>
 <div class="hero-copy">
 <span class="hero-season" id="heroPrivateSeason"></span>
 <h1 id="heroPrivateTitle">九州家族紅葉旅</h1>
@@ -60,7 +61,7 @@
 <div class="day-strip-wrap">
 <div aria-label="旅行日期" class="day-strip" id="dayStrip"></div>
 </div>
-<div class="schedule-section-lead" aria-label="天氣預報"><span class="schedule-leaf" aria-hidden="true">☀</span><strong>天氣預報</strong><small>依日期顯示</small></div>
+<div class="schedule-section-lead" aria-label="今日行程"><span class="schedule-leaf" aria-hidden="true">✦</span><strong>今日行程</strong><a class="schedule-jump" href="#timeline">查看完整行程 <span aria-hidden="true">›</span></a></div>
 <section class="weather-card skeleton" id="weatherCard">
 <div class="weather-main">
 <div>
