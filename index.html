@@ -18,7 +18,7 @@
       document.documentElement.dataset.sceneLang=localStorage.getItem("kyushu-nov-2026:scene-lang")||"zh";
     }catch(e){}
   </script>
-<link href="./style.css?v=r123-overview-20261030" rel="stylesheet"/>
+<link href="./style.css?v=r124-home-integrated-20261031" rel="stylesheet"/>
 <title>九州家族紅葉旅</title>
 <meta content="1.11.24" name="app-version"/>
 <link as="image" fetchpriority="high" href="./nov_loading_scene.webp?v=160" rel="preload"/>
@@ -53,13 +53,14 @@
 <section class="view active" id="scheduleView">
 <!-- Home shortcut: accessible nine-day trip overview (no Firebase dependency) -->
 <button id="tripOverviewOpen" class="trip-overview-entry" type="button" aria-haspopup="dialog" aria-controls="tripOverviewDialog" aria-label="開啟九天行程總覽圖片">
-  <img class="trip-overview-thumb" src="./kyushu-family-overview-thumb.webp?v=r123" alt="" width="52" height="68" loading="eager" decoding="async" />
+  <span class="trip-overview-map-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12.5 17 8l14 4.5L43 8v27.5L31 40l-14-4.5L5 40V12.5Z" fill="#F4E7D4" stroke="#B7A48D" stroke-width="1.5" stroke-linejoin="round"/><path d="M17 8v27.5M31 12.5V40" stroke="#C8B9A4" stroke-width="1.5"/><path d="M24 8c-5.1 0-9 4-9 9 0 5.7 9 15 9 15s9-9.3 9-15c0-5-3.9-9-9-9Z" fill="#A97159" stroke="#915B48" stroke-width="1.5"/><circle cx="24" cy="17" r="3.5" fill="#FFF9EF"/></svg></span>
   <span class="trip-overview-copy"><strong>九天行程總覽</strong><small>一張圖，快速看每天去哪裡</small></span>
-  <span class="trip-overview-cta" aria-hidden="true">↗</span>
+  <span class="trip-overview-cta" aria-hidden="true">›</span>
 </button>
 <div class="day-strip-wrap">
 <div aria-label="旅行日期" class="day-strip" id="dayStrip"></div>
 </div>
+<div class="schedule-section-lead" aria-label="當日資訊"><span class="schedule-leaf" aria-hidden="true">✦</span><strong>當日資訊</strong><small>點選日期查看</small></div>
 <section class="weather-card skeleton" id="weatherCard">
 <div class="weather-main">
 <div>

@@ -2178,3 +2178,141 @@ html[data-font-size="xlarge"] .trip-overview-entry{min-height:94px}
 @media (max-width:374px){.trip-overview-exports button,.trip-overview-exports a{font-size:12px;padding:0 8px}.trip-overview-zoom button:nth-child(2){min-width:50px}.trip-overview-foot{padding-inline:6px}}
 @media (min-width:700px){.trip-overview-dialog{width:min(740px,96vw);height:min(95dvh,1080px);inset:0;margin:auto;border-radius:18px;box-shadow:0 18px 70px #21191455}.trip-overview-entry{max-width:740px;margin-inline:auto}.trip-overview-stage{padding:20px 0}}
 @media (prefers-reduced-motion:reduce){.trip-overview-entry{transition:none}}
+
+
+/* ===== R12.4 2026-10-31 | Actual homepage integration patch =====
+   Styling/markup only. Auth, Firebase, app.js, trip-overview.js, SW untouched.
+   Unifies scenic cover, itinerary header, overview shortcut and dates.
+*/
+html[data-theme] .hero-meta {
+  z-index: 2;
+  position: relative;
+  margin-top: -18px;
+  padding: 24px 22px 13px;
+  border: 0;
+  border-radius: 26px 26px 0 0;
+  background: linear-gradient(180deg,#fcf9f3 0%,#f9f5ed 100%);
+  box-shadow: 0 -7px 18px rgba(72,54,40,.035);
+}
+html[data-theme] .hero-meta .hero-copy {max-width:100%!important}
+html[data-theme] .hero-meta .hero-season {
+  color:#947f6d!important;
+  font-size:11px!important;
+  letter-spacing:.10em!important;
+  margin-bottom:5px!important;
+}
+html[data-theme] .hero-meta #heroPrivateTitle {
+  color:#4f4035!important;
+  letter-spacing:.025em!important;
+  font-weight:560!important;
+  margin-bottom:6px!important;
+}
+html[data-theme] .hero-meta .hero-date {margin-bottom:6px!important;color:#8b6556!important}
+html[data-theme] .hero-meta .hero-route {line-height:1.65!important;color:#766b60!important}
+html[data-theme] main {padding-top:0}
+html[data-theme] main>.view:not(#scheduleView) {padding-top:16px}
+html[data-theme] #scheduleView {
+  background:linear-gradient(180deg,#f9f5ed 0%,rgba(250,247,241,.8) 390px,transparent 650px);
+}
+html[data-theme] #scheduleView .trip-overview-entry {
+  width:100%;
+  min-height:62px;
+  margin:0 0 4px;
+  padding:10px 3px;
+  gap:11px;
+  border:0;
+  border-top:1px solid rgba(181,158,137,.25);
+  border-bottom:1px solid rgba(181,158,137,.24);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+html[data-theme] #scheduleView .trip-overview-entry:hover {background:rgba(255,252,247,.42)}
+html[data-theme] #scheduleView .trip-overview-entry:active {background:rgba(239,230,216,.65)}
+html[data-theme] #scheduleView .trip-overview-map-icon {
+  display:grid;
+  place-items:center;
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:#f5eee3;
+}
+html[data-theme] #scheduleView .trip-overview-copy {gap:2px}
+html[data-theme] #scheduleView .trip-overview-copy strong {
+  font-size:15.5px;
+  line-height:1.4;
+  font-weight:620;
+  color:#514338;
+}
+html[data-theme] #scheduleView .trip-overview-copy small {
+  font-size:12px;
+  line-height:1.45;
+  color:#87786c;
+}
+html[data-theme] #scheduleView .trip-overview-cta {
+  width:35px;
+  height:35px;
+  flex:0 0 35px;
+  border:1px solid #e4d8c9;
+  background:#faf4ec;
+  color:#9a725c;
+  font-size:27px;
+  font-weight:300;
+  line-height:1;
+}
+html[data-theme] #scheduleView .day-strip-wrap {
+  margin:0 -16px 2px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html[data-theme] #scheduleView .day-strip {
+  padding:5px 16px 9px;
+  gap:8px;
+}
+html[data-theme] #scheduleView .day-btn {
+  min-width:61px;
+  height:72px;
+  border-radius:17px;
+  box-shadow:0 2px 6px rgba(77,61,48,.025)!important;
+}
+html[data-theme] #scheduleView .day-btn.active {
+  box-shadow:0 5px 10px rgba(77,61,48,.075)!important;
+}
+html[data-theme] #scheduleView .schedule-section-lead {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:34px;
+  margin:0 1px 6px;
+  color:#59483b;
+}
+html[data-theme] #scheduleView .schedule-section-lead strong {
+  font-family:"Noto Serif TC","Noto Serif CJK TC","PingFang TC",serif;
+  font-size:17px;
+  font-weight:600;
+  letter-spacing:.04em;
+}
+html[data-theme] #scheduleView .schedule-leaf {font-size:16px;color:#b67f62}
+html[data-theme] #scheduleView .schedule-section-lead small {margin-left:auto;font-size:11px;line-height:1.5;color:#968679}
+html[data-theme] #scheduleView .weather-card {
+  margin-top:0!important;
+  box-shadow:0 4px 13px rgba(77,61,48,.035)!important;
+}
+html[data-font-size="large"] #scheduleView .trip-overview-copy strong {font-size:17.5px}
+html[data-font-size="large"] #scheduleView .trip-overview-copy small {font-size:13.5px}
+html[data-font-size="large"] #scheduleView .schedule-section-lead strong {font-size:19px}
+html[data-font-size="xlarge"] #scheduleView .trip-overview-copy strong {font-size:19.5px}
+html[data-font-size="xlarge"] #scheduleView .trip-overview-copy small {font-size:15px}
+html[data-font-size="xlarge"] #scheduleView .trip-overview-entry {min-height:76px}
+html[data-font-size="xlarge"] #scheduleView .schedule-section-lead strong {font-size:21px}
+@media(max-width:370px){
+  html[data-theme] .hero-meta {padding:21px 17px 12px}
+  html[data-theme] #scheduleView .trip-overview-copy small{font-size:11.5px}
+  html[data-theme] #scheduleView .day-btn{min-width:57px}
+}
+@media(prefers-reduced-motion: reduce){
+  html[data-theme] #scheduleView .trip-overview-entry{transition:none}
+}
