@@ -941,15 +941,22 @@ function renderEventMapLinks(day,event){
   if(!stops.length)return "";
   if(stops.length===1){
     const st=stops[0];
-    return `<div class="event-map-single"><a class="map-open-link" target="_blank" rel="noopener" href="${esc(mapSearch(st.query))}" aria-label="Google 地圖搜尋：${esc(st.label)}">📍 開啟 Google 地圖 <span aria-hidden="true">↗</span></a></div>`;
+    return `<div class="event-map-single"><a class="map-open-link" target="_blank" rel="noopener" href="${esc(mapSearch(st.query))}" aria-label="Google 地圖搜尋：${esc(st.label)}">📍 導航 <span aria-hidden="true">↗</span></a></div>`;
   }
-  const optionCount=stops.filter(s=>s.kind==="option").length;
-  const caption=optionCount?`・含 ${optionCount} 間／項候選`:'';
-  return `<details class="event-map-multi" data-no-guide-hold="1"><summary><span aria-hidden="true">📍</span> 這段有 ${stops.length} 個地點可導航${caption}<span class="event-map-chevron" aria-hidden="true">⌄</span></summary><div class="event-map-list">${stops.map(st=>{
-    const mark=st.kind==="conditional"?"選配":st.kind==="option"?"候選":st.kind==="logistics"?"交通／採買":"景點";
+  return `<details class="event-map-multi" data-no-guide-hold="1"><summary><span aria-hidden="true">📍</span> 導航（${stops.length} 個地點）<span class="event-map-chevron" aria-hidden="true">⌄</span></summary><div class="event-map-list">${stops.map(st=>{
+    const mark="導航";
     return `<a target="_blank" rel="noopener" href="${esc(mapSearch(st.query))}" aria-label="Google 地圖搜尋：${esc(st.label)}"><span class="event-map-label">${esc(st.label)}</span><span class="event-map-kind">${mark}</span><span aria-hidden="true">↗</span></a>`;
   }).join("")}</div></details>`;
 }
+function renderEventShopPicks(e){
+  if(!Array.isArray(e?.recommendedShops)||!e.recommendedShops.length)return "";
+  const shops=e.recommendedShops.filter(s=>s&&s.label&&s.query);
+  if(!shops.length)return "";
+  const top=shops.slice(0,4).map(s=>`<span class="shop-pick-chip">${esc(s.label)}</span>`).join("");
+  const full=shops.map(s=>`<a class="shop-pick-row" target="_blank" rel="noopener" href="${esc(mapSearch(s.query))}" aria-label="導航到${esc(s.label)}"><span>${esc(s.label)}</span><small>${esc(s.kind||"選逛")}</small><b>導航 ↗</b></a>`).join("");
+  return `<section class="event-shop-picks" data-no-guide-hold="1"><div class="shop-picks-head"><b>10月由布院店家清單</b><small>選2–3間，不用全逛</small></div><div class="shop-picks-preview">${top}</div><details class="shop-picks-more" data-no-guide-hold="1"><summary>查看全部 ${shops.length} 間店與導航</summary><div class="shop-picks-all">${full}</div></details></section>`;
+}
+
 function renderEventExtras(e){
   const chips=[
     e.status?`<span class="info-chip">${esc(e.status)}</span>`:"",
@@ -1393,6 +1400,10 @@ function bindSafeHold(el,handler,{ms=750,move=10,allowInteractiveRoot=false}={})
 
 function bindGuideTargets(visibleEvents=[]){
   $$("#timeline .event-card").forEach((card,i)=>bindSafeHold(card,()=>openGuide(buildEventGuide(visibleEvents[i]))));
+  $$("#timeline .event-guide-button").forEach(button=>{
+    const event=visibleEvents[Number(button.dataset.eventGuideIndex)];
+    if(event)button.addEventListener("click",()=>openGuide(buildEventGuide(event)));
+  });
   const dayScene=$("#daySceneCard");if(dayScene)bindSafeHold(dayScene,()=>openGuide(buildDayGuide()),{allowInteractiveRoot:true});
 }
 
@@ -1448,6 +1459,8 @@ function renderSchedule(){
       <div class="event-card" data-guide-enabled="1">
         <div class="event-top"><h3 class="event-title">${esc(e.title)}</h3><span class="tag">${esc(e.category||"行程")}</span></div>
         <div class="event-time">${esc(e.time)}</div>
+        ${e.guideBadge?`<button type="button" class="event-guide-button" data-event-guide-index="${i}" data-no-guide-hold="1">📖 ${esc(e.guideBadge)} · 也可點此開啟</button>`:""}
+        ${renderEventShopPicks(e)}
         ${renderEventExtras(e)}
         ${renderEventMapLinks(d,e)}
       </div>
